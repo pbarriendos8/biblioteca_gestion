@@ -1,4 +1,6 @@
-package com.pablobn.biblioteca;
+package com.pablobn.biblioteca.modelo;
+
+import com.pablobn.biblioteca.util.EstadoPrestamo;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -20,9 +22,9 @@ public class Prestamo {
     @Basic
     @Column(name = "fecha_devolucion_real")
     private Date fechaDevolucionReal;
-    @Basic
+    @Enumerated(EnumType.STRING)
     @Column(name = "estado")
-    private Object estado;
+    private EstadoPrestamo estado;
     @Basic
     @Column(name = "observaciones")
     private String observaciones;
@@ -64,11 +66,11 @@ public class Prestamo {
         this.fechaDevolucionReal = fechaDevolucionReal;
     }
 
-    public Object getEstado() {
+    public EstadoPrestamo getEstado() {
         return estado;
     }
 
-    public void setEstado(Object estado) {
+    public void setEstado(EstadoPrestamo estado) {
         this.estado = estado;
     }
 

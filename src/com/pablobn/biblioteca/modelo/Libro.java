@@ -1,4 +1,4 @@
-package com.pablobn.biblioteca;
+package com.pablobn.biblioteca.modelo;
 
 import javax.persistence.*;
 import java.sql.Date;

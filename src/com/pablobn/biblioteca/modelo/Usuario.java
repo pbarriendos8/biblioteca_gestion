@@ -1,4 +1,6 @@
-package com.pablobn.biblioteca;
+package com.pablobn.biblioteca.modelo;
+
+import com.pablobn.biblioteca.util.TipoUsuario;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -21,9 +23,9 @@ public class Usuario {
     @Basic
     @Column(name = "password")
     private String password;
-    @Basic
+    @Enumerated(EnumType.STRING) // Usamos EnumType.STRING para almacenar el nombre del enum como texto
     @Column(name = "tipo_usuario")
-    private Object tipoUsuario;
+    private TipoUsuario tipoUsuario;
     @Basic
     @Column(name = "nombre_completo")
     private String nombreCompleto;
@@ -71,11 +73,11 @@ public class Usuario {
         this.password = password;
     }
 
-    public Object getTipoUsuario() {
+    public TipoUsuario getTipoUsuario() {
         return tipoUsuario;
     }
 
-    public void setTipoUsuario(Object tipoUsuario) {
+    public void setTipoUsuario(TipoUsuario tipoUsuario) {
         this.tipoUsuario = tipoUsuario;
     }
 
