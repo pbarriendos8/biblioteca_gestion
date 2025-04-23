@@ -1,5 +1,8 @@
 package com.pablobn.biblioteca.vista;
 
+import com.pablobn.biblioteca.modelo.Usuario;
+import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -39,5 +42,29 @@ public class LoginPanel extends JPanel {
             frameRegistro.setLocationRelativeTo(null); // Centrar
             frameRegistro.setVisible(true);
         });
+
+        btnLogin.addActionListener(e -> autenticarUsuario());
+    }
+    private void autenticarUsuario() {
+        String usuario = txtUsuario.getText();
+        char[] passwordArray = txtPassword.getPassword();
+        String password = new String(passwordArray);
+
+        // Llamar al DAO para autenticar al usuario
+        Usuario usuarioLogueado = UsuarioDAO.autenticar(usuario, password);
+
+        if (usuarioLogueado != null) {
+            // Si el usuario es válido, abre la ventana principal y pasa el usuario
+            JFrame ventanaPrincipal = new VentanaPrincipal(usuarioLogueado);
+            ventanaPrincipal.setSize(1000, 700);
+            ventanaPrincipal.setLocationRelativeTo(null); // Centrar
+            ventanaPrincipal.setVisible(true);
+            // Cerrar el login después de iniciar sesión
+            JFrame loginFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            loginFrame.dispose();
+        } else {
+            // Si el usuario o contraseña es incorrecto, mostrar mensaje
+            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

@@ -1,12 +1,10 @@
 package com.pablobn.biblioteca.vista;
 
 import com.pablobn.biblioteca.modelo.Usuario;
-import com.pablobn.biblioteca.modelo.UsuarioDAO;
-import com.pablobn.biblioteca.util.TipoUsuario;
+import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Date;
 
 public class RegistroUsuarioPanel extends JPanel {
 
