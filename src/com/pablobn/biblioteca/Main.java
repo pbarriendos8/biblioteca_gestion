@@ -1,12 +1,14 @@
 package com.pablobn.biblioteca;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.pablobn.biblioteca.util.Fuente;
 import com.pablobn.biblioteca.vista.LoginPanel;
 
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
+        Fuente.aplicarFuentePersonalizada();
         FlatLightLaf.setup();
 
         JFrame frame = new JFrame("Gestión Biblioteca");

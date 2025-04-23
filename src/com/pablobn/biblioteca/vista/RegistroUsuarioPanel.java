@@ -34,7 +34,7 @@ public class RegistroUsuarioPanel extends JPanel {
         add(new JLabel("Teléfono:"));
         add(telefonoField);
 
-        JButton crearCuentaBtn = new JButton("Crear cuenta");
+        JButton crearCuentaBtn = new JButton("Crear usuario");
         add(new JLabel());
         add(crearCuentaBtn);
 

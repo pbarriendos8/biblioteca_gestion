@@ -1,9 +1,7 @@
 package com.pablobn.biblioteca.vista;
 
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
 import javax.swing.*;
+import java.awt.*;
 
 public class LoginPanel extends JPanel {
     private JTextField txtUsuario;
@@ -12,27 +10,28 @@ public class LoginPanel extends JPanel {
     private JButton btnRegistro;
 
     public LoginPanel() {
+        setLayout(new GridLayout(4, 2, 10, 10)); // 4 filas x 2 columnas
+        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Bordes para espacio interior
+
         txtUsuario = new JTextField();
         txtPassword = new JPasswordField();
         btnLogin = new JButton("Iniciar Sesión");
         btnRegistro = new JButton("Registrarse");
 
-        setLayout(new FormLayout(
-                "10dlu, right:pref, 5dlu, 150dlu, 10dlu",
-                "10dlu, p, 5dlu, p, 10dlu, p, 5dlu, p, 10dlu"
-        ));
+        // Añadir los componentes con el mismo estilo que el registro
+        add(new JLabel("Nombre de Usuario:"));
+        add(txtUsuario);
 
-        CellConstraints cc = new CellConstraints();
+        add(new JLabel("Contraseña:"));
+        add(txtPassword);
 
-        add(new JLabel("Usuario:"), cc.xy(2, 2));
-        add(txtUsuario, cc.xy(4, 2));
+        add(new JLabel()); // Espacio vacío
+        add(btnLogin);
 
-        add(new JLabel("Contraseña:"), cc.xy(2, 4));
-        add(txtPassword, cc.xy(4, 4));
+        add(new JLabel()); // Espacio vacío
+        add(btnRegistro);
 
-        add(btnLogin, cc.xy(4, 6));
-        add(btnRegistro, cc.xy(4, 8));
-
+        // Acción al pulsar Registrarse
         btnRegistro.addActionListener(e -> {
             JFrame frameRegistro = new JFrame("Registro de Usuario");
             frameRegistro.setContentPane(new RegistroUsuarioPanel());
@@ -40,6 +39,5 @@ public class LoginPanel extends JPanel {
             frameRegistro.setLocationRelativeTo(null); // Centrar
             frameRegistro.setVisible(true);
         });
-
     }
 }
