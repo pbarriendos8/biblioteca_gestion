@@ -2,6 +2,9 @@ package com.pablobn.biblioteca.vista;
 
 import com.pablobn.biblioteca.util.TipoUsuario;
 import com.pablobn.biblioteca.vista.forms.FormularioAutorNew;
+import com.pablobn.biblioteca.vista.forms.FormularioLibroNew;
+import com.pablobn.biblioteca.vista.forms.FormularioPrestamoNew;
+import com.pablobn.biblioteca.vista.forms.FormularioUsuarioNew;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,6 +15,7 @@ public class PanelEntidad extends JPanel {
     private final JButton btnNuevo;
     private final JButton btnEditar;
     private final JButton btnEliminar;
+    private final JButton btnFinalizar;
 
     public PanelEntidad(String entidad, TipoUsuario tipoUsuario) {
         this.entidad = entidad;
@@ -24,17 +28,18 @@ public class PanelEntidad extends JPanel {
         btnNuevo = new JButton("Nuevo");
         btnEditar = new JButton("Editar");
         btnEliminar = new JButton("Eliminar");
+        btnFinalizar = new JButton("Finalizar"); // botón nuevo
 
         panelBotones.add(btnNuevo);
         panelBotones.add(btnEditar);
         panelBotones.add(btnEliminar);
+        if (entidad.equals("Préstamos")) { // solo en préstamos
+            panelBotones.add(btnFinalizar);
+        }
 
         add(panelBotones, BorderLayout.NORTH);
 
-        // Panel central para mostrar los datos de la entidad (Ej: Lista de autores)
         JPanel panelCentro = new JPanel(new BorderLayout());
-        // Aquí puedes agregar una tabla o lista para mostrar los autores, libros, etc.
-        // Por ahora solo un área de texto como ejemplo:
         JTextArea areaTexto = new JTextArea(20, 50);
         areaTexto.setText("Mostrar los datos de la entidad " + entidad + " aquí...");
         areaTexto.setEditable(false);
@@ -43,7 +48,6 @@ public class PanelEntidad extends JPanel {
 
         add(panelCentro, BorderLayout.CENTER);
 
-        // Configurar accesos dependiendo del tipo de usuario
         if (tipoUsuario == TipoUsuario.CONSULTA) {
             btnNuevo.setEnabled(false);
             btnEditar.setEnabled(false);
@@ -62,14 +66,19 @@ public class PanelEntidad extends JPanel {
         btnNuevo.addActionListener(e -> mostrarVentanaNuevo());
         btnEditar.addActionListener(e -> mostrarVentanaEditar());
         btnEliminar.addActionListener(e -> mostrarVentanaEliminar());
+        btnFinalizar.addActionListener(e -> finalizarPrestamo());
     }
 
     // Mostrar ventana para agregar nuevo
     private void mostrarVentanaNuevo() {
         if (entidad.equals("Autores")) {
             new FormularioAutorNew((JFrame) SwingUtilities.getWindowAncestor(this));
-        } else {
-            JOptionPane.showMessageDialog(this, "Ventana para agregar nuevo " + entidad);
+        }else if (entidad.equals("Libros")) {
+            new FormularioLibroNew((JFrame) SwingUtilities.getWindowAncestor(this));
+        }else if (entidad.equals("Usuarios")) {
+            new FormularioUsuarioNew((JFrame) SwingUtilities.getWindowAncestor(this));
+        }else if (entidad.equals("Préstamos")) {
+            new FormularioPrestamoNew((JFrame) SwingUtilities.getWindowAncestor(this));
         }
     }
 
@@ -86,5 +95,10 @@ public class PanelEntidad extends JPanel {
         if (respuesta == JOptionPane.YES_OPTION) {
             JOptionPane.showMessageDialog(this, "Eliminado con éxito.");
         }
+    }
+
+    private void finalizarPrestamo() {
+        // De momento no hace nada
+        JOptionPane.showMessageDialog(this, "Aquí se finalizará el préstamo más adelante.");
     }
 }

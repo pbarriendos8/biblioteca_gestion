@@ -1,6 +1,5 @@
 package com.pablobn.biblioteca.vista.forms;
 
-
 import com.pablobn.biblioteca.modelo.Autor;
 import com.pablobn.biblioteca.modelo.dao.AutorDAO;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.Properties;
 
 public class FormularioAutorNew extends JDialog {
@@ -28,12 +26,11 @@ public class FormularioAutorNew extends JDialog {
 
     public FormularioAutorNew(JFrame parent) {
         super(parent, "Nuevo Autor", true);
-        setSize(500, 600);
+        setSize(600, 700);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
-
-        // Panel principal con padding
+        
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panelPrincipal);
@@ -68,24 +65,20 @@ public class FormularioAutorNew extends JDialog {
         gbc.gridx = 1;
         panelCampos.add(datePicker, gbc);
 
-        // Biografía (con scroll)
+        // Biografía
         gbc.gridx = 0;
         gbc.gridy = 4;
-        gbc.gridwidth = 2;
         panelCampos.add(new JLabel("Biografía:"), gbc);
-
-        txtBiografia = new JTextArea(10, 30);
-        txtBiografia.setLineWrap(true);
-        txtBiografia.setWrapStyleWord(true);
+        gbc.gridx = 1;
+        txtBiografia = new JTextArea(5, 30);
         txtBiografia.setFont(inputFont);
         JScrollPane scrollBio = new JScrollPane(txtBiografia);
-        scrollBio.setPreferredSize(new Dimension(300, 200));
-        gbc.gridy = 5;
+        scrollBio.setPreferredSize(new Dimension(300, 100));
         panelCampos.add(scrollBio, gbc);
 
         // Foto
         gbc.gridx = 0;
-        gbc.gridy = 6;
+        gbc.gridy = 5;
         gbc.gridwidth = 2;
         lblFoto = new JLabel("Haz clic para subir una foto");
         lblFoto.setHorizontalAlignment(SwingConstants.CENTER);
@@ -143,7 +136,7 @@ public class FormularioAutorNew extends JDialog {
                 fotoBytes = Files.readAllBytes(archivo.toPath());
                 ImageIcon icon = new ImageIcon(new ImageIcon(fotoBytes).getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH));
                 lblFoto.setIcon(icon);
-                lblFoto.setText(""); // Quitar texto por defecto
+                lblFoto.setText("");
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error al leer la imagen.");
             }
@@ -157,7 +150,7 @@ public class FormularioAutorNew extends JDialog {
             autor.setApellidos(txtApellidos.getText());
             java.util.Date selectedDate = (java.util.Date) datePicker.getModel().getValue();
             if (selectedDate != null) {
-                autor.setFechaNacimiento(new java.sql.Date(selectedDate.getTime()));
+                autor.setFechaNacimiento(new Date(selectedDate.getTime()));
             }
             autor.setNacionalidad(txtNacionalidad.getText());
             autor.setBiografia(txtBiografia.getText());
