@@ -30,7 +30,7 @@ public class FormularioAutorNew extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
-        
+
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panelPrincipal);
