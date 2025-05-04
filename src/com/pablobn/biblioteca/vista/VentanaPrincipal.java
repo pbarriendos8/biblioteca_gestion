@@ -99,10 +99,74 @@ public class VentanaPrincipal extends JFrame {
 
         panel.add(menu, BorderLayout.CENTER);
 
+        // Panel de botones inferiores
+        JPanel panelInferior = new JPanel();
+        panelInferior.setBackground(colorFondo);
+        panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
+        panelInferior.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+
+        // Botón cerrar sesión
+        JButton btnCerrarSesion = new JButton("Cerrar Sesión");
+        btnCerrarSesion.setFont(fuenteBoton);
+        btnCerrarSesion.setFocusPainted(false);
+        btnCerrarSesion.setBackground(new Color(150, 150, 150));
+        btnCerrarSesion.setForeground(Color.WHITE);
+        btnCerrarSesion.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnCerrarSesion.setMaximumSize(new Dimension(300, 40));
+        btnCerrarSesion.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnCerrarSesion.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Deseas cerrar sesión?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                this.dispose();
+                JFrame loginFrame = new JFrame("Login");
+                loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                loginFrame.setContentPane(new LoginPanel());
+                loginFrame.setSize(500, 500);
+                loginFrame.setLocationRelativeTo(null);
+                loginFrame.setVisible(true);
+            }
+        });
+
+        // Botón salir
+        JButton btnSalir = new JButton("Salir");
+        btnSalir.setFont(fuenteBoton);
+        btnSalir.setFocusPainted(false);
+        btnSalir.setBackground(new Color(120, 120, 120));
+        btnSalir.setForeground(Color.WHITE);
+        btnSalir.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnSalir.setMaximumSize(new Dimension(300, 40));
+        btnSalir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnSalir.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Deseas salir de la aplicación?", "Confirmar salida", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+
+        // Hover effects (opcionales)
+        addHoverEffect(btnCerrarSesion, new Color(130, 130, 130), new Color(150, 150, 150));
+        addHoverEffect(btnSalir, new Color(90, 90, 90), new Color(120, 120, 120));
+
+        // Añadir botones al panel inferior
+        panelInferior.add(btnCerrarSesion);
+        panelInferior.add(Box.createRigidArea(new Dimension(0, 10)));
+        panelInferior.add(btnSalir);
+
+        panel.add(panelInferior, BorderLayout.SOUTH);
         return panel;
     }
 
+    private void addHoverEffect(JButton btn, Color hoverColor, Color normalColor) {
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn.setBackground(hoverColor);
+            }
 
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn.setBackground(normalColor);
+            }
+        });
+    }
     private JButton crearBotonMenu(String nombre) {
         JButton boton = new JButton(nombre.toUpperCase());
         boton.setFont(fuenteBoton);

@@ -71,10 +71,14 @@ public class RegistroUsuarioPanel extends JPanel {
             JOptionPane.showMessageDialog(this, "Usuario registrado correctamente.");
         });
 
-        // Acción salir
         salirBtn.addActionListener(e -> {
-            Window window = SwingUtilities.getWindowAncestor(this);
-            if (window != null) window.dispose();
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Deseas cerrar esta ventana?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                Window window = SwingUtilities.windowForComponent(this);
+                if (window != null) {
+                    window.dispose();
+                }
+            }
         });
     }
 

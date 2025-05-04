@@ -89,6 +89,12 @@ public class LoginPanel extends JPanel {
         });
 
         btnLogin.addActionListener(e -> autenticarUsuario());
+        btnSalir.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Deseas salir de la aplicación?", "Confirmar salida", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
     }
 
     private JButton crearBoton(String texto, Color color) {
@@ -100,7 +106,7 @@ public class LoginPanel extends JPanel {
         boton.setBackground(color);  // Usamos el color activo para el fondo del botón
         boton.setForeground(Color.WHITE);  // Color del texto blanco para contraste
         boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-        
+
 
         return boton;
     }
