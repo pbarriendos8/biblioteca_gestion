@@ -1,70 +1,126 @@
 package com.pablobn.biblioteca.vista;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.pablobn.biblioteca.modelo.Usuario;
 import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.prefs.Preferences;
 
 public class LoginPanel extends JPanel {
+
     private JTextField txtUsuario;
     private JPasswordField txtPassword;
     private JButton btnLogin;
     private JButton btnRegistro;
+    private JButton btnSalir;
+    private final Preferences prefs = Preferences.userNodeForPackage(getClass());
+
+    private final Font fuenteBoton = new Font("SansSerif", Font.BOLD, 14);
+    private final Color colorHover = new Color(21, 101, 192);
+    private final Color colorFondo = new Color(245, 245, 250);
+    private final Color colorSalir = new Color(120, 120, 120);
+    private final Color colorActivo = new Color(70, 130, 255);  // Azul cuando el botón está seleccionado
+
 
     public LoginPanel() {
-        setLayout(new GridLayout(4, 2, 10, 10)); // 4 filas x 2 columnas
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Bordes para espacio interior
+        setLayout(new BorderLayout(20, 20));
+        setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+        setBackground(colorFondo);
 
-        txtUsuario = new JTextField();
-        txtPassword = new JPasswordField();
-        btnLogin = new JButton("Iniciar Sesión");
-        btnRegistro = new JButton("Registrarse");
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setOpaque(false);
+        JLabel lblLogo = new JLabel("📚", SwingConstants.CENTER);
+        lblLogo.setFont(new Font("SansSerif", Font.PLAIN, 48));
+        JLabel lblTitulo = new JLabel("Biblioteca Central", SwingConstants.CENTER);
+        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 24));
+        topPanel.add(lblLogo, BorderLayout.NORTH);
+        topPanel.add(lblTitulo, BorderLayout.CENTER);
+        add(topPanel, BorderLayout.NORTH);
 
-        // Añadir los componentes con el mismo estilo que el registro
-        add(new JLabel("Nombre de Usuario:"));
-        add(txtUsuario);
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        add(new JLabel("Contraseña:"));
-        add(txtPassword);
+        JLabel lblUsuario = new JLabel("Nombre de Usuario:");
+        txtUsuario = new JTextField(15);
+        JLabel lblPassword = new JLabel("Contraseña:");
+        txtPassword = new JPasswordField(15);
 
-        add(new JLabel()); // Espacio vacío
-        add(btnLogin);
+        btnLogin = crearBoton("Iniciar Sesión", colorActivo);
+        btnRegistro = crearBoton("Registrarse", colorActivo);
+        btnSalir = crearBoton("Salir", colorSalir);
 
-        add(new JLabel()); // Espacio vacío
-        add(btnRegistro);
 
-        // Acción al pulsar Registrarse
+        gbc.gridx = 0; gbc.gridy = 0;
+        formPanel.add(lblUsuario, gbc);
+        gbc.gridx = 1;
+        formPanel.add(txtUsuario, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        formPanel.add(lblPassword, gbc);
+        gbc.gridx = 1;
+        formPanel.add(txtPassword, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
+        formPanel.add(btnLogin, gbc);
+
+        gbc.gridy = 3;
+        formPanel.add(btnRegistro, gbc);
+
+        gbc.gridy = 4;
+        formPanel.add(btnSalir, gbc);
+
+
+        add(formPanel, BorderLayout.CENTER);
+
+
+        // Listeners
         btnRegistro.addActionListener(e -> {
             JFrame frameRegistro = new JFrame("Registro de Usuario");
             frameRegistro.setContentPane(new RegistroUsuarioPanel());
-            frameRegistro.setSize(400, 500);
-            frameRegistro.setLocationRelativeTo(null); // Centrar
+            frameRegistro.setSize(400, 550);
+            frameRegistro.setLocationRelativeTo(null);
             frameRegistro.setVisible(true);
         });
 
         btnLogin.addActionListener(e -> autenticarUsuario());
     }
+
+    private JButton crearBoton(String texto, Color color) {
+        JButton boton = new JButton(texto);
+        boton.setFont(fuenteBoton);
+        boton.setFocusPainted(false);
+        boton.setContentAreaFilled(true);
+        boton.setOpaque(true);
+        boton.setBackground(color);  // Usamos el color activo para el fondo del botón
+        boton.setForeground(Color.WHITE);  // Color del texto blanco para contraste
+        boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        
+
+        return boton;
+    }
+
     private void autenticarUsuario() {
         String usuario = txtUsuario.getText();
-        char[] passwordArray = txtPassword.getPassword();
-        String password = new String(passwordArray);
+        String password = new String(txtPassword.getPassword());
 
-        // Llamar al DAO para autenticar al usuario
         Usuario usuarioLogueado = UsuarioDAO.autenticar(usuario, password);
 
         if (usuarioLogueado != null) {
-            // Si el usuario es válido, abre la ventana principal y pasa el usuario
             JFrame ventanaPrincipal = new VentanaPrincipal(usuarioLogueado);
             ventanaPrincipal.setSize(1000, 700);
-            ventanaPrincipal.setLocationRelativeTo(null); // Centrar
+            ventanaPrincipal.setLocationRelativeTo(null);
             ventanaPrincipal.setVisible(true);
-            // Cerrar el login después de iniciar sesión
+
             JFrame loginFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             loginFrame.dispose();
         } else {
-            // Si el usuario o contraseña es incorrecto, mostrar mensaje
-            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de autenticación", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }

@@ -13,7 +13,7 @@ public class Main {
 
         JFrame frame = new JFrame("Gestión Biblioteca");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 300);
+        frame.setSize(500, 500);
         frame.setLocationRelativeTo(null);
 
         frame.setContentPane(new LoginPanel());

@@ -109,8 +109,8 @@ public class VentanaPrincipal extends JFrame {
         boton.setFocusPainted(false);
         boton.setContentAreaFilled(true);
         boton.setOpaque(true);
-        boton.setBackground(colorFondo);
-        boton.setForeground(colorTextoNormal);
+        boton.setBackground(colorFondo);  // Color de fondo por defecto (gris muy claro)
+        boton.setForeground(colorTextoNormal);  // Color de texto gris oscuro
         boton.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 10));
         boton.setAlignmentX(Component.LEFT_ALIGNMENT);
         boton.setHorizontalAlignment(SwingConstants.LEFT);
@@ -120,34 +120,35 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 if (boton != botonSeleccionado) {
-                    boton.setBackground(colorHover);
+                    boton.setBackground(colorHover);  // Cambiar al color hover cuando el mouse pasa por encima
                 }
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 if (boton != botonSeleccionado) {
-                    boton.setBackground(colorFondo);
+                    boton.setBackground(colorFondo);  // Volver al color por defecto cuando el mouse sale
                 }
             }
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 if (botonSeleccionado != null) {
-                    botonSeleccionado.setBackground(colorFondo);
+                    botonSeleccionado.setBackground(colorFondo);  // Restablecer el color del botón previamente seleccionado
                     botonSeleccionado.setForeground(colorTextoNormal);
                 }
 
-                boton.setBackground(colorActivo);
-                boton.setForeground(colorTextoActivo);
+                boton.setBackground(colorActivo);  // Color cuando el botón es seleccionado
+                boton.setForeground(colorTextoActivo);  // Cambiar el color del texto a blanco
                 botonSeleccionado = boton;
 
-                cardLayout.show(panelContenido, nombre);
+                cardLayout.show(panelContenido, nombre);  // Cambiar la vista asociada
             }
         });
 
         return boton;
     }
+
 
 
 
