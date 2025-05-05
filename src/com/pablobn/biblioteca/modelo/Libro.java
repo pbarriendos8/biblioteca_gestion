@@ -40,6 +40,18 @@ public class Libro {
     @JoinColumn(name = "id_libro", referencedColumnName = "id_libro", nullable = false)
     private Prestamo prestamo;
 
+    @Basic
+    @Column(name = "nombre_archivo_pdf")
+    private String nombreArchivoPdf;
+
+    public String getNombreArchivoPdf() {
+        return nombreArchivoPdf;
+    }
+
+    public void setNombreArchivoPdf(String nombreArchivoPdf) {
+        this.nombreArchivoPdf = nombreArchivoPdf;
+    }
+
     public int getIdLibro() {
         return idLibro;
     }

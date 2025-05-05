@@ -1,0 +1,163 @@
+package com.pablobn.biblioteca.vista.forms;
+
+import com.pablobn.biblioteca.modelo.Autor;
+import com.pablobn.biblioteca.modelo.dao.AutorDAO;
+import org.jdatepicker.impl.*;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.sql.Date;
+import java.util.Properties;
+
+public class FormularioAutorEdit extends JDialog {
+    private final Autor autor;
+    private JTextField txtNombre;
+    private JTextField txtApellidos;
+    private JTextField txtNacionalidad;
+    private JTextArea txtBiografia;
+    private JLabel lblFoto;
+    private byte[] fotoBytes;
+    private JDatePickerImpl datePicker;
+
+    public FormularioAutorEdit(JFrame parent, Autor autor) {
+        super(parent, "Editar Autor", true);
+        this.autor = autor;
+
+        setSize(600, 700);
+        setLocationRelativeTo(parent);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setResizable(false);
+
+        JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
+        panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        add(panelPrincipal);
+
+        JPanel panelCampos = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+
+        Font labelFont = new Font("SansSerif", Font.BOLD, 14);
+        Font inputFont = new Font("SansSerif", Font.PLAIN, 13);
+
+        txtNombre = new JTextField(autor.getNombre());
+        txtApellidos = new JTextField(autor.getApellidos());
+        txtNacionalidad = new JTextField(autor.getNacionalidad());
+        txtBiografia = new JTextArea(autor.getBiografia(), 5, 30);
+        txtBiografia.setFont(inputFont);
+        txtBiografia.setLineWrap(true);
+        txtBiografia.setWrapStyleWord(true);
+        fotoBytes = autor.getFoto();
+
+        agregarCampo(panelCampos, gbc, "Nombre:", txtNombre, labelFont, inputFont, 0);
+        agregarCampo(panelCampos, gbc, "Apellidos:", txtApellidos, labelFont, inputFont, 1);
+        agregarCampo(panelCampos, gbc, "Nacionalidad:", txtNacionalidad, labelFont, inputFont, 2);
+
+        UtilDateModel model = new UtilDateModel();
+        if (autor.getFechaNacimiento() != null)
+            model.setValue(autor.getFechaNacimiento());
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, new Properties());
+        datePicker = new JDatePickerImpl(datePanel, new com.pablobn.biblioteca.util.DateFormat());
+        datePicker.getJFormattedTextField().setFont(inputFont);
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panelCampos.add(new JLabel("Fecha Nacimiento:", JLabel.RIGHT), gbc);
+        gbc.gridx = 1;
+        panelCampos.add(datePicker, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        panelCampos.add(new JLabel("Biografía:"), gbc);
+        gbc.gridx = 1;
+        JScrollPane scrollBio = new JScrollPane(txtBiografia);
+        scrollBio.setPreferredSize(new Dimension(300, 100));
+        panelCampos.add(scrollBio, gbc);
+
+        // Foto
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
+        lblFoto = new JLabel("Haz clic para cambiar foto", JLabel.CENTER);
+        lblFoto.setPreferredSize(new Dimension(180, 180));
+        lblFoto.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        lblFoto.setOpaque(true);
+        lblFoto.setBackground(Color.WHITE);
+        lblFoto.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        if (fotoBytes != null) {
+            lblFoto.setIcon(new ImageIcon(new ImageIcon(fotoBytes).getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH)));
+            lblFoto.setText("");
+        }
+        lblFoto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                seleccionarFoto();
+            }
+        });
+        panelCampos.add(lblFoto, gbc);
+
+        panelPrincipal.add(panelCampos, BorderLayout.CENTER);
+
+        JButton btnGuardar = new JButton("Guardar Cambios");
+        btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnGuardar.setBackground(new Color(33, 150, 243));
+        btnGuardar.setForeground(Color.WHITE);
+        btnGuardar.setFocusPainted(false);
+        btnGuardar.setPreferredSize(new Dimension(180, 40));
+        btnGuardar.addActionListener(e -> guardarCambios());
+
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelBoton.add(btnGuardar);
+        panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+    private void agregarCampo(JPanel panel, GridBagConstraints gbc, String texto, JTextField campo, Font fontLabel, Font fontInput, int fila) {
+        gbc.gridx = 0;
+        gbc.gridy = fila;
+        JLabel lbl = new JLabel(texto, JLabel.RIGHT);
+        lbl.setFont(fontLabel);
+        panel.add(lbl, gbc);
+
+        gbc.gridx = 1;
+        campo.setFont(fontInput);
+        panel.add(campo, gbc);
+    }
+
+    private void seleccionarFoto() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Selecciona una imagen");
+        chooser.setFileFilter(new FileNameExtensionFilter("Imágenes", "jpg", "png", "jpeg", "gif"));
+
+        int resultado = chooser.showOpenDialog(this);
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            File archivo = chooser.getSelectedFile();
+            try {
+                fotoBytes = Files.readAllBytes(archivo.toPath());
+                lblFoto.setIcon(new ImageIcon(new ImageIcon(fotoBytes).getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH)));
+                lblFoto.setText("");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al leer la imagen.");
+            }
+        }
+    }
+
+    private void guardarCambios() {
+        autor.setNombre(txtNombre.getText());
+        autor.setApellidos(txtApellidos.getText());
+        autor.setNacionalidad(txtNacionalidad.getText());
+        autor.setBiografia(txtBiografia.getText());
+        autor.setFoto(fotoBytes);
+        java.util.Date selectedDate = (java.util.Date) datePicker.getModel().getValue();
+        if (selectedDate != null)
+            autor.setFechaNacimiento(new Date(selectedDate.getTime()));
+
+        AutorDAO.actualizarAutor(autor);
+        JOptionPane.showMessageDialog(this, "Autor actualizado correctamente.");
+        dispose();
+    }
+}

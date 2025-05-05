@@ -24,4 +24,25 @@ public class AutorDAO {
             return session.createQuery("from Autor", Autor.class).list();
         }
     }
+
+    public static void actualizarAutor(Autor autor) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.update(autor);
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void eliminarAutor(Autor autor) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.delete(autor);
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

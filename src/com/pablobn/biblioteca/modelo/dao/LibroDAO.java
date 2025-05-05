@@ -24,4 +24,14 @@ public class LibroDAO {
             return session.createQuery("from Libro", Libro.class).list();
         }
     }
+    // Eliminar libro
+    public static void eliminarLibro(Libro libro) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.delete(libro);
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

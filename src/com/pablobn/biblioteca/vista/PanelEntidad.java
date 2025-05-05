@@ -1,6 +1,8 @@
 package com.pablobn.biblioteca.vista;
 
 import com.pablobn.biblioteca.modelo.*;
+import com.pablobn.biblioteca.modelo.dao.AutorDAO;
+import com.pablobn.biblioteca.modelo.dao.LibroDAO;
 import com.pablobn.biblioteca.util.TipoUsuario;
 import com.pablobn.biblioteca.vista.forms.*;
 import org.hibernate.Session;
@@ -155,17 +157,70 @@ public class PanelEntidad extends JPanel {
             case "Usuarios": new FormularioUsuarioNew(frame); break;
             case "Préstamos": new FormularioPrestamoNew(frame); break;
         }
+        cargarDatos();
     }
 
     private void mostrarVentanaEditar() {
-        JOptionPane.showMessageDialog(this, "Ventana para editar " + entidad);
+        int id;
+        int fila = table.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona un registro para editar.");
+            return;
+        }
+
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+        switch (entidad) {
+            case "Autores":
+                id = (int) tableModel.getValueAt(fila, 0);
+                Autor autor = AutorDAO.obtenerTodos().stream().filter(a -> a.getIdAutor() == id).findFirst().orElse(null);
+                if (autor != null) new FormularioAutorEdit(frame, autor);
+                break;
+            case "Libros":
+                id = (int) tableModel.getValueAt(fila, 0);
+                Libro libro = LibroDAO.obtenerTodosLibros().stream().filter(a -> a.getIdLibro() == id).findFirst().orElse(null);
+                if (libro != null) new FormularioLibroEdit(frame, libro);
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Edición no disponible para esta entidad.");
+        }
+
+        cargarDatos(); // recarga la tabla tras edición
     }
 
     private void mostrarVentanaEliminar() {
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que deseas eliminar este " + entidad + "?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
-        if (respuesta == JOptionPane.YES_OPTION) {
-            JOptionPane.showMessageDialog(this, "Eliminado con éxito.");
+        int id;
+        int fila = table.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona un registro para eliminar.");
+            return;
         }
+
+        int confirm = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar este registro?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        switch (entidad) {
+            case "Autores":
+                id = (int) tableModel.getValueAt(fila, 0);
+                Autor autor = AutorDAO.obtenerTodos().stream().filter(a -> a.getIdAutor() == id).findFirst().orElse(null);
+                if (autor != null) {
+                    AutorDAO.eliminarAutor(autor);
+                    JOptionPane.showMessageDialog(this, "Autor eliminado.");
+                }
+                break;
+            case "Libros":
+                id = (int) tableModel.getValueAt(fila, 0);
+                Libro libro = LibroDAO.obtenerTodosLibros().stream().filter(a -> a.getIdLibro() == id).findFirst().orElse(null);
+                if (libro != null) {
+                    LibroDAO.eliminarLibro(libro);
+                    JOptionPane.showMessageDialog(this, "Libro eliminado.");
+                }
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Eliminación no disponible para esta entidad.");
+        }
+
+        cargarDatos(); // actualiza tabla
     }
 
     private void finalizarPrestamo() {
