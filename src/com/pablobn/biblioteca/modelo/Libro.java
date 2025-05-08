@@ -121,12 +121,12 @@ public class Libro {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Libro libro = (Libro) o;
-        return idLibro == libro.idLibro && disponible == libro.disponible && Objects.equals(titulo, libro.titulo) && Objects.equals(descripcion, libro.descripcion) && Objects.equals(fechaPublicacion, libro.fechaPublicacion) && Arrays.equals(portada, libro.portada) && Arrays.equals(archivoPdf, libro.archivoPdf) && Objects.equals(isbn, libro.isbn);
+        return idLibro == libro.idLibro && disponible == libro.disponible && Objects.equals(titulo, libro.titulo) && Objects.equals(descripcion, libro.descripcion) && Objects.equals(fechaPublicacion, libro.fechaPublicacion) && Arrays.equals(portada, libro.portada) && Arrays.equals(archivoPdf, libro.archivoPdf) && Objects.equals(isbn, libro.isbn) && Objects.equals(nombreArchivoPdf, libro.nombreArchivoPdf);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(idLibro, titulo, descripcion, fechaPublicacion, isbn, disponible);
+        int result = Objects.hash(idLibro, titulo, descripcion, fechaPublicacion, isbn, disponible, nombreArchivoPdf);
         result = 31 * result + Arrays.hashCode(portada);
         result = 31 * result + Arrays.hashCode(archivoPdf);
         return result;
@@ -146,5 +146,10 @@ public class Libro {
 
     public void setPrestamo(Prestamo prestamo) {
         this.prestamo = prestamo;
+    }
+
+    @Override
+    public String toString() {
+        return this.titulo;
     }
 }

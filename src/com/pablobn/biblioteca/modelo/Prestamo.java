@@ -31,7 +31,8 @@ public class Prestamo {
     @ManyToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     private Usuario usuario;
-    @OneToOne(mappedBy = "prestamo")
+    @OneToOne
+    @JoinColumn(name = "id_libro", referencedColumnName = "id_libro")
     private Libro libro;
 
     public int getIdPrestamo() {

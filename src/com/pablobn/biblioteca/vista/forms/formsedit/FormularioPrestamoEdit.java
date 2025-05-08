@@ -1,8 +1,6 @@
-package com.pablobn.biblioteca.vista.forms;
+package com.pablobn.biblioteca.vista.forms.formsedit;
 
-import com.pablobn.biblioteca.modelo.Libro;
-import com.pablobn.biblioteca.modelo.Usuario;
-import com.pablobn.biblioteca.modelo.Prestamo;
+import com.pablobn.biblioteca.modelo.*;
 import com.pablobn.biblioteca.modelo.dao.LibroDAO;
 import com.pablobn.biblioteca.modelo.dao.PrestamoDAO;
 import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
@@ -18,7 +16,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Properties;
 
-public class FormularioPrestamoNew extends JDialog {
+public class FormularioPrestamoEdit extends JDialog {
 
     private final UtilDateModel modelFechaInicio = new UtilDateModel();
     private final UtilDateModel modelFechaFin = new UtilDateModel();
@@ -28,19 +26,21 @@ public class FormularioPrestamoNew extends JDialog {
     private final JComboBox<Libro> comboLibros;
     private final JTextArea textObservaciones;
 
-    public FormularioPrestamoNew(JFrame parent) {
-        super(parent, "Nuevo Préstamo", true);
+    private final Prestamo prestamo;
+
+    public FormularioPrestamoEdit(JFrame parent, Prestamo prestamo) {
+        super(parent, "Editar Préstamo", true);
+        this.prestamo = prestamo;
+
         setSize(600, 700);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
-        // Panel principal
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panelPrincipal);
 
-        // Panel de campos
         JPanel panelCampos = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
@@ -50,7 +50,6 @@ public class FormularioPrestamoNew extends JDialog {
         Font labelFont = new Font("SansSerif", Font.BOLD, 14);
         Font inputFont = new Font("SansSerif", Font.PLAIN, 13);
 
-        // Configuración date pickers
         Properties p = new Properties();
         p.put("text.today", "Hoy");
         p.put("text.month", "Mes");
@@ -61,7 +60,6 @@ public class FormularioPrestamoNew extends JDialog {
         datePickerInicio.getJFormattedTextField().setFont(inputFont);
         datePickerFin.getJFormattedTextField().setFont(inputFont);
 
-        // ComboBoxes
         comboUsuarios = new JComboBox<>();
         comboUsuarios.setFont(inputFont);
         comboLibros = new JComboBox<>();
@@ -70,7 +68,6 @@ public class FormularioPrestamoNew extends JDialog {
         cargarUsuarios();
         cargarLibros();
 
-        // Observaciones
         textObservaciones = new JTextArea(5, 30);
         textObservaciones.setFont(inputFont);
         textObservaciones.setLineWrap(true);
@@ -78,7 +75,6 @@ public class FormularioPrestamoNew extends JDialog {
         JScrollPane scrollObservaciones = new JScrollPane(textObservaciones);
         scrollObservaciones.setPreferredSize(new Dimension(300, 100));
 
-        // Añadir campos
         agregarCampo(panelCampos, gbc, "Fecha Inicio:", datePickerInicio, labelFont, 0);
         agregarCampo(panelCampos, gbc, "Fecha Fin:", datePickerFin, labelFont, 1);
         agregarCampo(panelCampos, gbc, "Usuario:", comboUsuarios, labelFont, 2);
@@ -93,18 +89,19 @@ public class FormularioPrestamoNew extends JDialog {
 
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
 
-        // Botón Guardar
-        JButton btnGuardar = new JButton("Guardar Préstamo");
+        JButton btnGuardar = new JButton("Guardar Cambios");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setFocusPainted(false);
         btnGuardar.setPreferredSize(new Dimension(160, 40));
-        btnGuardar.addActionListener(e -> guardarPrestamo());
+        btnGuardar.addActionListener(e -> guardarCambios());
 
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBoton.add(btnGuardar);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
+
+        cargarDatosPrestamo();
 
         setVisible(true);
     }
@@ -136,31 +133,52 @@ public class FormularioPrestamoNew extends JDialog {
         }
     }
 
-    private void guardarPrestamo() {
+    private void cargarDatosPrestamo() {
+        modelFechaInicio.setValue(prestamo.getFechaInicio());
+        modelFechaFin.setValue(prestamo.getFechaFin());
+
+        comboUsuarios.setSelectedItem(prestamo.getUsuario());
+        comboLibros.setSelectedItem(prestamo.getLibro());
+        textObservaciones.setText(prestamo.getObservaciones());
+    }
+
+    private void guardarCambios() {
         java.util.Date fechaInicioUtil = (java.util.Date) datePickerInicio.getModel().getValue();
         java.util.Date fechaFinUtil = (java.util.Date) datePickerFin.getModel().getValue();
 
-        if (fechaInicioUtil == null || fechaFinUtil == null || comboUsuarios.getSelectedItem() == null || comboLibros.getSelectedItem() == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
+        if (fechaInicioUtil == null || fechaFinUtil == null) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar ambas fechas.");
             return;
         }
-
-        Date fechaInicio = new Date(fechaInicioUtil.getTime());
-        Date fechaFin = new Date(fechaFinUtil.getTime());
 
         Usuario usuarioSeleccionado = (Usuario) comboUsuarios.getSelectedItem();
         Libro libroSeleccionado = (Libro) comboLibros.getSelectedItem();
 
-        Prestamo prestamo = new Prestamo();
-        prestamo.setFechaInicio(fechaInicio);
-        prestamo.setFechaFin(fechaFin);
+        if (usuarioSeleccionado == null || libroSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un usuario y un libro.");
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "¿Deseas guardar los cambios en este préstamo?",
+                "Confirmar edición",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm != JOptionPane.YES_OPTION) return;
+
+        // Asignar nuevos valores al préstamo
+        prestamo.setFechaInicio(new Date(fechaInicioUtil.getTime()));
+        prestamo.setFechaFin(new Date(fechaFinUtil.getTime()));
         prestamo.setUsuario(usuarioSeleccionado);
         prestamo.setLibro(libroSeleccionado);
-        prestamo.setEstado(EstadoPrestamo.ACTIVO);
         prestamo.setObservaciones(textObservaciones.getText());
 
-        PrestamoDAO.guardarPrestamo(prestamo, usuarioSeleccionado.getIdUsuario(), libroSeleccionado.getIdLibro());
-        JOptionPane.showMessageDialog(this, "Préstamo guardado con éxito.");
-        dispose();
+        // Guardar cambios en la base de datos
+        PrestamoDAO.actualizarPrestamo(prestamo);
+
+        JOptionPane.showMessageDialog(this, "Préstamo actualizado correctamente.");
+        dispose(); // cerrar la ventana
     }
 }

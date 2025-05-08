@@ -9,6 +9,8 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PrestamoDAO {
 
@@ -40,6 +42,34 @@ public class PrestamoDAO {
                 prestamo.setFechaDevolucionReal(new Date(System.currentTimeMillis()));
             }
 
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static List<Prestamo> obtenerTodosPrestamos() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.createQuery("from Prestamo", Prestamo.class).list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    public static void actualizarPrestamo(Prestamo prestamo) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.update(prestamo);
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void eliminarPrestamo(Prestamo prestamo) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.delete(prestamo);
             tx.commit();
         } catch (Exception e) {
             e.printStackTrace();

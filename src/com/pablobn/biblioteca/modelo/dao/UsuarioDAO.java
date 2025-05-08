@@ -1,5 +1,6 @@
 package com.pablobn.biblioteca.modelo.dao;
 
+import com.pablobn.biblioteca.modelo.Prestamo;
 import com.pablobn.biblioteca.modelo.Usuario;
 import com.pablobn.biblioteca.util.HibernateUtil;
 import com.pablobn.biblioteca.util.TipoUsuario;
@@ -61,6 +62,25 @@ public class UsuarioDAO {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    public static void eliminarUsuario(Usuario usuario) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.delete(usuario);
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void actualizarUsuario(Usuario nuevoUsuario) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.update(nuevoUsuario);
+            tx.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }

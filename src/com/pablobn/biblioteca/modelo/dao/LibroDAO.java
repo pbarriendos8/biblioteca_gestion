@@ -34,4 +34,15 @@ public class LibroDAO {
             e.printStackTrace();
         }
     }
+
+    public static void actualizarLibro(Libro libro) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction tx = session.beginTransaction();
+            session.update(libro);
+            tx.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

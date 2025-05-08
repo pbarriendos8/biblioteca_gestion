@@ -133,4 +133,9 @@ public class Usuario {
     public void setPrestamos(List<Prestamo> prestamos) {
         this.prestamos = prestamos;
     }
+
+    @Override
+    public String toString() {
+        return this.nombreCompleto;
+    }
 }

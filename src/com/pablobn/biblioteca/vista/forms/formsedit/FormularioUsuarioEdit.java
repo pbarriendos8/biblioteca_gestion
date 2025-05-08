@@ -1,4 +1,4 @@
-package com.pablobn.biblioteca.vista.forms;
+package com.pablobn.biblioteca.vista.forms.formsedit;
 
 import com.pablobn.biblioteca.modelo.Usuario;
 import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
@@ -7,7 +7,8 @@ import com.pablobn.biblioteca.util.TipoUsuario;
 import javax.swing.*;
 import java.awt.*;
 
-public class FormularioUsuarioNew extends JDialog {
+public class FormularioUsuarioEdit extends JDialog {
+
     private JTextField txtNombreUsuario;
     private JTextField txtCorreo;
     private JPasswordField txtPassword;
@@ -16,8 +17,12 @@ public class FormularioUsuarioNew extends JDialog {
     private JTextField txtDireccion;
     private JTextField txtTelefono;
 
-    public FormularioUsuarioNew(JFrame parent) {
-        super(parent, "Nuevo Usuario", true);
+    private final Usuario usuario;
+
+    public FormularioUsuarioEdit(JFrame parent, Usuario usuario) {
+        super(parent, "Editar Usuario", true);
+        this.usuario = usuario;
+
         setSize(600, 600);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -37,39 +42,27 @@ public class FormularioUsuarioNew extends JDialog {
 
         int fila = 0;
 
-        // Nombre Usuario
         agregarCampo(panelCampos, gbc, fila++, "Nombre de Usuario:", txtNombreUsuario = new JTextField());
-
-        // Correo
         agregarCampo(panelCampos, gbc, fila++, "Correo:", txtCorreo = new JTextField());
-
-        // Contraseña
         agregarCampo(panelCampos, gbc, fila++, "Contraseña:", txtPassword = new JPasswordField());
-
-        // Tipo de Usuario (ComboBox)
         agregarCampo(panelCampos, gbc, fila++, "Tipo de Usuario:", cmbTipoUsuario = new JComboBox<>(TipoUsuario.values()));
-
-        // Nombre Completo
         agregarCampo(panelCampos, gbc, fila++, "Nombre Completo:", txtNombreCompleto = new JTextField());
-
-        // Dirección
         agregarCampo(panelCampos, gbc, fila++, "Dirección:", txtDireccion = new JTextField());
-
-        // Teléfono
         agregarCampo(panelCampos, gbc, fila++, "Teléfono:", txtTelefono = new JTextField());
 
-        // Panel para botón
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnGuardar = new JButton("Guardar Usuario");
+        JButton btnGuardar = new JButton("Guardar Cambios");
         btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.setFocusPainted(false);
         btnGuardar.setBackground(new Color(33, 150, 243));
         btnGuardar.setForeground(Color.WHITE);
-        btnGuardar.addActionListener(e -> guardarUsuario());
+        btnGuardar.addActionListener(e -> guardarCambios());
         panelBoton.add(btnGuardar);
 
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
 
+        cargarDatosUsuario();
+        txtPassword.setEditable(false);
         setVisible(true);
     }
 
@@ -94,9 +87,18 @@ public class FormularioUsuarioNew extends JDialog {
         panel.add(campo, gbc);
     }
 
-    private void guardarUsuario() {
+    private void cargarDatosUsuario() {
+        txtNombreUsuario.setText(usuario.getNombreUsuario());
+        txtCorreo.setText(usuario.getCorreo());
+        txtPassword.setText(usuario.getPassword());
+        cmbTipoUsuario.setSelectedItem(usuario.getTipoUsuario());
+        txtNombreCompleto.setText(usuario.getNombreCompleto());
+        txtDireccion.setText(usuario.getDireccion());
+        txtTelefono.setText(usuario.getTelefono());
+    }
+
+    private void guardarCambios() {
         try {
-            Usuario usuario = new Usuario();
             usuario.setNombreUsuario(txtNombreUsuario.getText());
             usuario.setCorreo(txtCorreo.getText());
             usuario.setPassword(new String(txtPassword.getPassword()));
@@ -105,15 +107,12 @@ public class FormularioUsuarioNew extends JDialog {
             usuario.setDireccion(txtDireccion.getText());
             usuario.setTelefono(txtTelefono.getText());
 
-            // Setea la fecha actual (opcional, depende de tu lógica)
-            usuario.setFechaRegistro(new java.sql.Date(System.currentTimeMillis()));
+            UsuarioDAO.actualizarUsuario(usuario); // Asegúrate de tener este método
 
-            UsuarioDAO.crearUsuario(usuario);
-
-            JOptionPane.showMessageDialog(this, "Usuario guardado exitosamente.");
+            JOptionPane.showMessageDialog(this, "Usuario actualizado exitosamente.");
             dispose();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error al guardar usuario: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error al actualizar usuario: " + e.getMessage());
         }
     }
 }

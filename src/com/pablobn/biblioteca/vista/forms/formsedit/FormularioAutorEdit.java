@@ -1,4 +1,4 @@
-package com.pablobn.biblioteca.vista.forms;
+package com.pablobn.biblioteca.vista.forms.formsedit;
 
 import com.pablobn.biblioteca.modelo.Autor;
 import com.pablobn.biblioteca.modelo.dao.AutorDAO;

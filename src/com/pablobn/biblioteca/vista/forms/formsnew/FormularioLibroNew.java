@@ -1,4 +1,4 @@
-package com.pablobn.biblioteca.vista.forms;
+package com.pablobn.biblioteca.vista.forms.formsnew;
 
 import com.pablobn.biblioteca.modelo.Autor;
 import com.pablobn.biblioteca.modelo.Libro;
@@ -18,7 +18,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Properties;
 
-public class FormularioLibroEdit extends JDialog {
+public class FormularioLibroNew extends JDialog {
     private JTextField txtTitulo;
     private JTextArea txtDescripcion;
     private JTextField txtIsbn;
@@ -28,20 +28,23 @@ public class FormularioLibroEdit extends JDialog {
     private JLabel lblArchivoPdf;
     private byte[] archivoPdfBytes;
     private JDatePickerImpl datePicker;
-    private Libro libro;
 
-    public FormularioLibroEdit(JFrame parent, Libro libro) {
-        super(parent, "Editar Libro", true);
-        this.libro = libro;
+    private String nombreArchivoPdf;
+
+
+    public FormularioLibroNew(JFrame parent) {
+        super(parent, "Nuevo Libro", true);
         setSize(600, 700);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
+        // Panel principal con padding
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panelPrincipal);
 
+        // Panel de campos
         JPanel panelCampos = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
@@ -51,37 +54,37 @@ public class FormularioLibroEdit extends JDialog {
         Font labelFont = new Font("SansSerif", Font.BOLD, 14);
         Font inputFont = new Font("SansSerif", Font.PLAIN, 13);
 
-        agregarCampo(panelCampos, gbc, "Título:", txtTitulo = new JTextField(libro.getTitulo()), labelFont, inputFont, 0);
+        // Titulo
+        agregarCampo(panelCampos, gbc, "Título:", txtTitulo = new JTextField(), labelFont, inputFont, 0);
 
+        // Descripción
         gbc.gridx = 0;
         gbc.gridy = 1;
         panelCampos.add(new JLabel("Descripción:"), gbc);
         gbc.gridx = 1;
         txtDescripcion = new JTextArea(5, 30);
         txtDescripcion.setFont(inputFont);
-        txtDescripcion.setText(libro.getDescripcion());
         JScrollPane scrollDescripcion = new JScrollPane(txtDescripcion);
         scrollDescripcion.setPreferredSize(new Dimension(300, 100));
         panelCampos.add(scrollDescripcion, gbc);
 
+        // Fecha Publicación
         UtilDateModel model = new UtilDateModel();
-        if (libro.getFechaPublicacion() != null) {
-            model.setValue(libro.getFechaPublicacion());
-        }
         JDatePanelImpl datePanel = new JDatePanelImpl(model, new Properties());
         datePicker = new JDatePickerImpl(datePanel, new com.pablobn.biblioteca.util.DateFormat());
         datePicker.getJFormattedTextField().setFont(inputFont);
         gbc.gridx = 0;
         gbc.gridy = 2;
-        panelCampos.add(new JLabel("Fecha Publicación:"), gbc);
+        panelCampos.add(new JLabel("Fecha Publicación:", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         panelCampos.add(datePicker, gbc);
 
-        agregarCampo(panelCampos, gbc, "ISBN:", txtIsbn = new JTextField(libro.getIsbn()), labelFont, inputFont, 3);
+        // ISBN
+        agregarCampo(panelCampos, gbc, "ISBN:", txtIsbn = new JTextField(), labelFont, inputFont, 3);
 
+        // Seleccionar Autor
         List<Autor> autores = AutorDAO.obtenerTodos();
         cmbAutores = new JComboBox<>(autores.toArray(new Autor[0]));
-        cmbAutores.setSelectedItem(libro.getAutor());
         gbc.gridx = 0;
         gbc.gridy = 4;
         panelCampos.add(new JLabel("Autor:"), gbc);
@@ -104,14 +107,6 @@ public class FormularioLibroEdit extends JDialog {
                 seleccionarPortada();
             }
         });
-
-        if (libro.getPortada() != null) {
-            portadaBytes = libro.getPortada();
-            ImageIcon icon = new ImageIcon(new ImageIcon(portadaBytes).getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH));
-            lblPortada.setIcon(icon);
-            lblPortada.setText("");
-        }
-
         panelCampos.add(lblPortada, gbc);
 
         // Archivo PDF
@@ -130,21 +125,12 @@ public class FormularioLibroEdit extends JDialog {
                 seleccionarArchivoPdf();
             }
         });
-
-        if (libro.getNombreArchivoPdf() != null) {
-            lblArchivoPdf.setText(libro.getNombreArchivoPdf());
-        }
-
-        if (libro.getArchivoPdf() != null) {
-            archivoPdfBytes = libro.getArchivoPdf();
-        }
-
         panelCampos.add(lblArchivoPdf, gbc);
 
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
 
         // Botón Guardar
-        JButton btnGuardar = new JButton("Guardar Cambios");
+        JButton btnGuardar = new JButton("Guardar Libro");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
         btnGuardar.setForeground(Color.WHITE);
@@ -173,8 +159,8 @@ public class FormularioLibroEdit extends JDialog {
 
     private void seleccionarPortada() {
         JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Selecciona una imagen");
-        chooser.setFileFilter(new FileNameExtensionFilter("Imágenes", "jpg", "jpeg", "png", "gif"));
+        chooser.setDialogTitle("Selecciona una portada");
+        chooser.setFileFilter(new FileNameExtensionFilter("Imágenes", "jpg", "png", "jpeg", "gif"));
 
         int resultado = chooser.showOpenDialog(this);
         if (resultado == JFileChooser.APPROVE_OPTION) {
@@ -183,7 +169,7 @@ public class FormularioLibroEdit extends JDialog {
                 portadaBytes = Files.readAllBytes(archivo.toPath());
                 ImageIcon icon = new ImageIcon(new ImageIcon(portadaBytes).getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH));
                 lblPortada.setIcon(icon);
-                lblPortada.setText("");
+                lblPortada.setText(""); // Quitar texto por defecto
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error al leer la portada.");
             }
@@ -193,15 +179,15 @@ public class FormularioLibroEdit extends JDialog {
     private void seleccionarArchivoPdf() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Selecciona un archivo PDF");
-        chooser.setFileFilter(new FileNameExtensionFilter("PDF", "pdf"));
+        chooser.setFileFilter(new FileNameExtensionFilter("Archivos PDF", "pdf"));
 
         int resultado = chooser.showOpenDialog(this);
         if (resultado == JFileChooser.APPROVE_OPTION) {
             File archivo = chooser.getSelectedFile();
             try {
                 archivoPdfBytes = Files.readAllBytes(archivo.toPath());
-                lblArchivoPdf.setText(archivo.getName());
-                libro.setNombreArchivoPdf(archivo.getName());
+                nombreArchivoPdf = archivo.getName();  // <-- Aquí guardas el nombre
+                lblArchivoPdf.setText(nombreArchivoPdf); // Mostrar el nombre del archivo PDF
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error al leer el archivo PDF.");
             }
@@ -210,6 +196,7 @@ public class FormularioLibroEdit extends JDialog {
 
     private void guardarLibro() {
         try {
+            Libro libro = new Libro();
             libro.setTitulo(txtTitulo.getText());
             libro.setDescripcion(txtDescripcion.getText());
             java.util.Date selectedDate = (java.util.Date) datePicker.getModel().getValue();
@@ -217,19 +204,15 @@ public class FormularioLibroEdit extends JDialog {
                 libro.setFechaPublicacion(new Date(selectedDate.getTime()));
             }
             libro.setIsbn(txtIsbn.getText());
+            libro.setDisponible(true);
+            libro.setPortada(portadaBytes);
+            libro.setArchivoPdf(archivoPdfBytes);
+            libro.setNombreArchivoPdf(nombreArchivoPdf);
             libro.setAutor((Autor) cmbAutores.getSelectedItem());
-
-            if (portadaBytes != null) {
-                libro.setPortada(portadaBytes);
-            }
-
-            if (archivoPdfBytes != null) {
-                libro.setArchivoPdf(archivoPdfBytes);
-            }
 
             LibroDAO.guardarLibro(libro);
 
-            JOptionPane.showMessageDialog(this, "Libro actualizado con éxito.");
+            JOptionPane.showMessageDialog(this, "Libro guardado con éxito.");
             dispose();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error al guardar libro: " + e.getMessage());

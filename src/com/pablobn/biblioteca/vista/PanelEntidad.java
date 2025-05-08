@@ -3,8 +3,18 @@ package com.pablobn.biblioteca.vista;
 import com.pablobn.biblioteca.modelo.*;
 import com.pablobn.biblioteca.modelo.dao.AutorDAO;
 import com.pablobn.biblioteca.modelo.dao.LibroDAO;
+import com.pablobn.biblioteca.modelo.dao.PrestamoDAO;
+import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
+import com.pablobn.biblioteca.util.EstadoPrestamo;
 import com.pablobn.biblioteca.util.TipoUsuario;
-import com.pablobn.biblioteca.vista.forms.*;
+import com.pablobn.biblioteca.vista.forms.formsedit.FormularioAutorEdit;
+import com.pablobn.biblioteca.vista.forms.formsedit.FormularioLibroEdit;
+import com.pablobn.biblioteca.vista.forms.formsedit.FormularioPrestamoEdit;
+import com.pablobn.biblioteca.vista.forms.formsedit.FormularioUsuarioEdit;
+import com.pablobn.biblioteca.vista.forms.formsnew.FormularioAutorNew;
+import com.pablobn.biblioteca.vista.forms.formsnew.FormularioLibroNew;
+import com.pablobn.biblioteca.vista.forms.formsnew.FormularioPrestamoNew;
+import com.pablobn.biblioteca.vista.forms.formsnew.FormularioUsuarioNew;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -54,6 +64,22 @@ public class PanelEntidad extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         panelCentro.add(scrollPane, BorderLayout.CENTER);
         add(panelCentro, BorderLayout.CENTER);
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && table.getSelectedRow() != -1) {
+                int fila = table.getSelectedRow();
+                int id = (int) table.getValueAt(fila, 0);
+                Prestamo prestamo = PrestamoDAO.obtenerTodosPrestamos().stream()
+                        .filter(p -> p.getIdPrestamo() == id)
+                        .findFirst()
+                        .orElse(null);
+
+                if (prestamo != null && prestamo.getEstado() == EstadoPrestamo.FINALIZADO) {
+                    btnFinalizar.setEnabled(false);
+                } else {
+                    btnFinalizar.setEnabled(true);
+                }
+            }
+        });
 
         // Permisos
         if (tipoUsuario == TipoUsuario.CONSULTA) {
@@ -181,6 +207,16 @@ public class PanelEntidad extends JPanel {
                 Libro libro = LibroDAO.obtenerTodosLibros().stream().filter(a -> a.getIdLibro() == id).findFirst().orElse(null);
                 if (libro != null) new FormularioLibroEdit(frame, libro);
                 break;
+            case "Préstamos":
+                id = (int) tableModel.getValueAt(fila, 0);
+                Prestamo prestamo = PrestamoDAO.obtenerTodosPrestamos().stream().filter(p -> p.getIdPrestamo() == id).findFirst().orElse(null);
+                if (prestamo != null) new FormularioPrestamoEdit(frame, prestamo);
+                break;
+            case "Usuarios":
+                id = (int) tableModel.getValueAt(fila, 0);
+                Usuario usuario = UsuarioDAO.obtenerTodosUsuarios().stream().filter(p -> p.getIdUsuario() == id).findFirst().orElse(null);
+                if (usuario != null) new FormularioUsuarioEdit(frame, usuario);
+                break;
             default:
                 JOptionPane.showMessageDialog(this, "Edición no disponible para esta entidad.");
         }
@@ -216,14 +252,58 @@ public class PanelEntidad extends JPanel {
                     JOptionPane.showMessageDialog(this, "Libro eliminado.");
                 }
                 break;
+            case "Préstamos":
+                id = (int) tableModel.getValueAt(fila, 0);
+                Prestamo prestamo = PrestamoDAO.obtenerTodosPrestamos().stream().filter(a -> a.getIdPrestamo() == id).findFirst().orElse(null);
+                if (prestamo != null) {
+                    PrestamoDAO.eliminarPrestamo(prestamo);
+                    JOptionPane.showMessageDialog(this, "Prestamo eliminado.");
+                }
+                break;
+            case "Usuarios":
+                id = (int) tableModel.getValueAt(fila, 0);
+                Usuario usuario = UsuarioDAO.obtenerTodosUsuarios().stream().filter(a -> a.getIdUsuario() == id).findFirst().orElse(null);
+                if (usuario != null) {
+                    UsuarioDAO.eliminarUsuario(usuario);
+                    JOptionPane.showMessageDialog(this, "Usuario eliminado.");
+                }
+                break;
             default:
                 JOptionPane.showMessageDialog(this, "Eliminación no disponible para esta entidad.");
         }
 
-        cargarDatos(); // actualiza tabla
+        cargarDatos();
     }
 
     private void finalizarPrestamo() {
-        JOptionPane.showMessageDialog(this, "Aquí se finalizará el préstamo más adelante.");
+        int fila = table.getSelectedRow();
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Selecciona un préstamo para finalizar.");
+            return;
+        }
+
+        int id = (int) table.getValueAt(fila, 0);
+        Prestamo prestamo = PrestamoDAO.obtenerTodosPrestamos().stream()
+                .filter(p -> p.getIdPrestamo() == id)
+                .findFirst()
+                .orElse(null);
+
+        if (prestamo != null && prestamo.getEstado() != EstadoPrestamo.FINALIZADO) {
+            int opcion = JOptionPane.showConfirmDialog(
+                    this,
+                    "¿Estás seguro de que deseas finalizar este préstamo?",
+                    "Confirmar finalización",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                PrestamoDAO.finalizarPrestamo(id);
+                JOptionPane.showMessageDialog(this, "Préstamo finalizado correctamente.");
+                cargarDatos(); // Usa tu método para refrescar la tabla
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Este préstamo ya está finalizado.");
+        }
     }
 }
