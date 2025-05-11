@@ -5,6 +5,8 @@ import com.pablobn.biblioteca.util.TipoUsuario;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +70,19 @@ public class VentanaPrincipal extends JFrame {
 
         JLabel nombre = new JLabel(usuarioLogueado.getNombreCompleto().toUpperCase());
         nombre.setFont(new Font("SansSerif", Font.BOLD, 16));
+        nombre.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        nombre.setForeground(new Color(30, 70, 160)); // estilo link
+        nombre.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JFrame perfilFrame = new JFrame("Mi Perfil");
+                perfilFrame.setContentPane(new PanelPerfilUsuario(usuarioLogueado));
+                perfilFrame.setSize(500, 600);
+                perfilFrame.setLocationRelativeTo(null);
+                perfilFrame.setVisible(true);
+            }
+        });
+
 
         JLabel rol = new JLabel(usuarioLogueado.getTipoUsuario().name().toUpperCase());
         rol.setFont(new Font("SansSerif", Font.PLAIN, 14));

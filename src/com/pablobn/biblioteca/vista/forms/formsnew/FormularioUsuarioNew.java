@@ -58,17 +58,38 @@ public class FormularioUsuarioNew extends JDialog {
         // Teléfono
         agregarCampo(panelCampos, gbc, fila++, "Teléfono:", txtTelefono = new JTextField());
 
-        // Panel para botón
-        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnGuardar = new JButton("Guardar Usuario");
-        btnGuardar.setPreferredSize(new Dimension(160, 40));
-        btnGuardar.setFocusPainted(false);
+        // Panel de botones (ambos a la derecha)
+        JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+
+// Botón Guardar
+        JButton btnGuardar = new JButton("Guardar Autor");
+        btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
         btnGuardar.setForeground(Color.WHITE);
+        btnGuardar.setFocusPainted(false);
+        btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.addActionListener(e -> guardarUsuario());
-        panelBoton.add(btnGuardar);
 
+// Botón Salir
+        JButton btnSalir = new JButton("Salir");
+        btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnSalir.setBackground(new Color(120, 120, 120));
+        btnSalir.setForeground(Color.WHITE);
+        btnSalir.setFocusPainted(false);
+        btnSalir.setPreferredSize(new Dimension(160, 40));
+        btnSalir.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnSalir.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Deseas salir del formulario?", "Confirmar salida", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                dispose();
+            }
+        });
+
+// Añadir primero Guardar, luego Salir (para que Salir quede más a la derecha)
+        panelBoton.add(btnGuardar);
+        panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
+
 
         setVisible(true);
     }
