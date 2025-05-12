@@ -48,15 +48,23 @@ public class VentanaPrincipal extends JFrame {
         add(panelContenido, BorderLayout.CENTER);
 
         // Añadir vistas (puedes ir añadiendo más)
-        agregarVista("Libros", new PanelEntidad("Libros", usuarioLogueado.getTipoUsuario()));
-        agregarVista("Autores", new PanelEntidad("Autores", usuarioLogueado.getTipoUsuario()));
-        agregarVista("Préstamos", new PanelEntidad("Préstamos", usuarioLogueado.getTipoUsuario()));
+        agregarVista("Libros", new PanelEntidad("Libros", usuarioLogueado));
+        agregarVista("Autores", new PanelEntidad("Autores", usuarioLogueado));
+        agregarVista("Préstamos", new PanelEntidad("Préstamos", usuarioLogueado));
+
+        // Si el usuario es ADMIN, añadir la vista de Usuarios
         if (usuario.getTipoUsuario() == TipoUsuario.ADMIN) {
-            agregarVista("Usuarios", new PanelEntidad("Usuarios", usuarioLogueado.getTipoUsuario()));
+            agregarVista("Usuarios", new PanelEntidad("Usuarios", usuarioLogueado));
+        }
+
+        // Si el usuario es un Editor, no añadir la pestaña de "Usuarios"
+        if (usuario.getTipoUsuario() == TipoUsuario.EDITOR) {
+            // Puedes omitir la vista de "Usuarios" directamente aquí, sin agregarla.
         }
 
         setVisible(true);
     }
+
 
     private JPanel crearPanelIzquierdo() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -222,6 +230,12 @@ public class VentanaPrincipal extends JFrame {
                 botonSeleccionado = boton;
 
                 cardLayout.show(panelContenido, nombre);  // Cambiar la vista asociada
+                if (nombre.equals("Préstamos")) {
+                    JPanel panel = vistasPorEntidad.get("Préstamos");
+                    if (panel instanceof PanelEntidad) {
+                        ((PanelEntidad) panel).cargarDatos();
+                    }
+                }
             }
         });
 

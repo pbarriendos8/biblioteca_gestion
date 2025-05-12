@@ -5,7 +5,7 @@ import com.pablobn.biblioteca.modelo.dao.LibroDAO;
 import com.pablobn.biblioteca.modelo.dao.PrestamoDAO;
 import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
 import com.pablobn.biblioteca.util.DateFormat;
-import com.pablobn.biblioteca.util.EstadoPrestamo;
+import com.pablobn.biblioteca.util.TipoUsuario;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
@@ -25,12 +25,13 @@ public class FormularioPrestamoEdit extends JDialog {
     private final JComboBox<Usuario> comboUsuarios;
     private final JComboBox<Libro> comboLibros;
     private final JTextArea textObservaciones;
-
+    private final Usuario usuarioActual;
     private final Prestamo prestamo;
 
-    public FormularioPrestamoEdit(JFrame parent, Prestamo prestamo) {
+    public FormularioPrestamoEdit(JFrame parent, Prestamo prestamo, Usuario usuarioActual) {
         super(parent, "Editar Préstamo", true);
         this.prestamo = prestamo;
+        this.usuarioActual = usuarioActual;
 
         setSize(600, 700);
         setLocationRelativeTo(parent);
@@ -77,11 +78,18 @@ public class FormularioPrestamoEdit extends JDialog {
 
         agregarCampo(panelCampos, gbc, "Fecha Inicio:", datePickerInicio, labelFont, 0);
         agregarCampo(panelCampos, gbc, "Fecha Fin:", datePickerFin, labelFont, 1);
-        agregarCampo(panelCampos, gbc, "Usuario:", comboUsuarios, labelFont, 2);
-        agregarCampo(panelCampos, gbc, "Libro:", comboLibros, labelFont, 3);
+        if (usuarioActual.getTipoUsuario() != TipoUsuario.CONSULTA) {
+            agregarCampo(panelCampos, gbc, "Usuario:", comboUsuarios, labelFont, 2);
+            agregarCampo(panelCampos, gbc, "Libro:", comboLibros, labelFont, 3);
+            gbc.gridy = 4;
+        } else {
+            comboUsuarios.setVisible(false);
+            agregarCampo(panelCampos, gbc, "Libro:", comboLibros, labelFont, 2);
+            gbc.gridy = 3;
+        }
+
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
         panelCampos.add(new JLabel("Observaciones:", JLabel.RIGHT), gbc);
 
         gbc.gridx = 1;

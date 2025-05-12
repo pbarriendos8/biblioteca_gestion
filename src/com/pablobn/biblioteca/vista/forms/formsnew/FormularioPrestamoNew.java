@@ -8,6 +8,7 @@ import com.pablobn.biblioteca.modelo.dao.PrestamoDAO;
 import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
 import com.pablobn.biblioteca.util.DateFormat;
 import com.pablobn.biblioteca.util.EstadoPrestamo;
+import com.pablobn.biblioteca.util.TipoUsuario;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
@@ -27,9 +28,11 @@ public class FormularioPrestamoNew extends JDialog {
     private final JComboBox<Usuario> comboUsuarios;
     private final JComboBox<Libro> comboLibros;
     private final JTextArea textObservaciones;
+    private final Usuario usuarioActual;
 
-    public FormularioPrestamoNew(JFrame parent) {
+    public FormularioPrestamoNew(JFrame parent, Usuario usuarioActual) {
         super(parent, "Nuevo Préstamo", true);
+        this.usuarioActual = usuarioActual;
         setSize(600, 700);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -61,13 +64,17 @@ public class FormularioPrestamoNew extends JDialog {
         datePickerInicio.getJFormattedTextField().setFont(inputFont);
         datePickerFin.getJFormattedTextField().setFont(inputFont);
 
-        // ComboBoxes
-        comboUsuarios = new JComboBox<>();
-        comboUsuarios.setFont(inputFont);
+        if (usuarioActual.getTipoUsuario() != TipoUsuario.CONSULTA) {
+            comboUsuarios = new JComboBox<>();
+            comboUsuarios.setFont(inputFont);
+            cargarUsuarios();
+            agregarCampo(panelCampos, gbc, "Usuario:", comboUsuarios, labelFont, 2);
+        } else {
+            comboUsuarios = null; // No se usa
+        }
         comboLibros = new JComboBox<>();
         comboLibros.setFont(inputFont);
 
-        cargarUsuarios();
         cargarLibros();
 
         // Observaciones
@@ -81,11 +88,11 @@ public class FormularioPrestamoNew extends JDialog {
         // Añadir campos
         agregarCampo(panelCampos, gbc, "Fecha Inicio:", datePickerInicio, labelFont, 0);
         agregarCampo(panelCampos, gbc, "Fecha Fin:", datePickerFin, labelFont, 1);
-        agregarCampo(panelCampos, gbc, "Usuario:", comboUsuarios, labelFont, 2);
-        agregarCampo(panelCampos, gbc, "Libro:", comboLibros, labelFont, 3);
+        agregarCampo(panelCampos, gbc, "Libro:", comboLibros, labelFont, (usuarioActual.getTipoUsuario() == TipoUsuario.CONSULTA ? 2 : 3));
+
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = (usuarioActual.getTipoUsuario() == TipoUsuario.CONSULTA ? 3 : 4);
         panelCampos.add(new JLabel("Observaciones:", JLabel.RIGHT), gbc);
 
         gbc.gridx = 1;
@@ -160,7 +167,11 @@ public class FormularioPrestamoNew extends JDialog {
         java.util.Date fechaInicioUtil = (java.util.Date) datePickerInicio.getModel().getValue();
         java.util.Date fechaFinUtil = (java.util.Date) datePickerFin.getModel().getValue();
 
-        if (fechaInicioUtil == null || fechaFinUtil == null || comboUsuarios.getSelectedItem() == null || comboLibros.getSelectedItem() == null) {
+        if (usuarioActual.getTipoUsuario().equals(TipoUsuario.ADMIN ) && (fechaInicioUtil == null || fechaFinUtil == null || comboUsuarios.getSelectedItem() == null || comboLibros.getSelectedItem() == null)) {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
+            return;
+        }
+        if (usuarioActual.getTipoUsuario().equals(TipoUsuario.CONSULTA ) && (fechaInicioUtil == null || fechaFinUtil == null || comboLibros.getSelectedItem() == null)) {
             JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
             return;
         }
@@ -168,7 +179,9 @@ public class FormularioPrestamoNew extends JDialog {
         Date fechaInicio = new Date(fechaInicioUtil.getTime());
         Date fechaFin = new Date(fechaFinUtil.getTime());
 
-        Usuario usuarioSeleccionado = (Usuario) comboUsuarios.getSelectedItem();
+        Usuario usuarioSeleccionado = (usuarioActual.getTipoUsuario() == TipoUsuario.CONSULTA)
+                ? usuarioActual
+                : (Usuario) comboUsuarios.getSelectedItem();
         Libro libroSeleccionado = (Libro) comboLibros.getSelectedItem();
 
         Prestamo prestamo = new Prestamo();

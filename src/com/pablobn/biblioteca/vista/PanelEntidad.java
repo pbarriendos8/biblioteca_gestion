@@ -11,10 +11,7 @@ import com.pablobn.biblioteca.vista.forms.formsedit.FormularioAutorEdit;
 import com.pablobn.biblioteca.vista.forms.formsedit.FormularioLibroEdit;
 import com.pablobn.biblioteca.vista.forms.formsedit.FormularioPrestamoEdit;
 import com.pablobn.biblioteca.vista.forms.formsedit.FormularioUsuarioEdit;
-import com.pablobn.biblioteca.vista.forms.formsnew.FormularioAutorNew;
-import com.pablobn.biblioteca.vista.forms.formsnew.FormularioLibroNew;
-import com.pablobn.biblioteca.vista.forms.formsnew.FormularioPrestamoNew;
-import com.pablobn.biblioteca.vista.forms.formsnew.FormularioUsuarioNew;
+import com.pablobn.biblioteca.vista.forms.formsnew.*;
 import org.hibernate.Session;
 
 import javax.swing.*;
@@ -29,8 +26,8 @@ import java.util.stream.Collectors;
 import static com.pablobn.biblioteca.util.HibernateUtil.getSession;
 
 public class PanelEntidad extends JPanel {
-    private final String entidad;
-    private final TipoUsuario tipoUsuario;
+    private String entidad;
+    private final Usuario usuarioLogueado;
     private final JButton btnNuevo;
     private final JButton btnEditar;
     private final JButton btnEliminar;
@@ -42,9 +39,9 @@ public class PanelEntidad extends JPanel {
 
     private PanelFiltroTabla panelFiltroVisual;
 
-    public PanelEntidad(String entidad, TipoUsuario tipoUsuario) {
+    public PanelEntidad(String entidad, Usuario usuarioLoguedo) {
         this.entidad = entidad;
-        this.tipoUsuario = tipoUsuario;
+        this.usuarioLogueado = usuarioLoguedo;
 
         setLayout(new BorderLayout());
 
@@ -75,22 +72,43 @@ public class PanelEntidad extends JPanel {
         btnEliminar = new JButton("Eliminar");
         btnFinalizar = new JButton("Finalizar");
 
+        // Desactivar botones si el usuario es consultor y entidad es Autor o Libro
+        if (usuarioLoguedo.getTipoUsuario() == TipoUsuario.CONSULTA && (entidad.equals("Autores") || entidad.equals("Libros"))) {
+            btnNuevo.setEnabled(false);
+            btnEditar.setEnabled(false);
+            btnEliminar.setEnabled(false);
+        }
+
         panelBotones.add(btnNuevo);
         panelBotones.add(btnEditar);
         panelBotones.add(btnEliminar);
         if (entidad.equals("Préstamos")) {
             panelBotones.add(btnFinalizar);
         }
+        if (usuarioLoguedo.getTipoUsuario() == TipoUsuario.CONSULTA && entidad.equals("Libros")) {
+            JButton btnHacerPrestamo = new JButton("Hacer préstamo");
+            panelBotones.add(btnHacerPrestamo);
+
+            btnHacerPrestamo.addActionListener(e -> {
+                int filaSeleccionada = table.getSelectedRow();
+                if (filaSeleccionada >= 0) {
+                    int id = (int) tableModel.getValueAt(filaSeleccionada, 0);
+                    Libro libro = LibroDAO.obtenerTodosLibros().stream().filter(a -> a.getIdLibro() == id).findFirst().orElse(null);
+                    new FormularioPrestamoConsulta((JFrame) SwingUtilities.getWindowAncestor(this), libro, usuarioLoguedo);
+                    cargarDatos();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Por favor, seleccione un libro primero.");
+                }
+            });
+        }
+
         // Panel que contendrá filtro visual y botones
         JPanel panelSuperior = new JPanel();
         panelSuperior.setLayout(new BorderLayout());
 
         panelSuperior.add(panelFiltroVisual, BorderLayout.WEST);
-
         panelSuperior.add(panelBotones, BorderLayout.EAST);
-
         add(panelSuperior, BorderLayout.NORTH);
-
 
         JPanel panelCentro = new JPanel(new BorderLayout());
         tableModel = new DefaultTableModel();
@@ -107,12 +125,30 @@ public class PanelEntidad extends JPanel {
         btnEditar.addActionListener(e -> mostrarVentanaEditar());
         btnEliminar.addActionListener(e -> mostrarVentanaEliminar());
         btnFinalizar.addActionListener(e -> finalizarPrestamo());
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && entidad.equals("Préstamos")) {
+                int fila = table.getSelectedRow();
+                if (fila >= 0) {
+                    int modeloFila = table.convertRowIndexToModel(fila);
+                    Object estadoObj = table.getModel().getValueAt(modeloFila, 5); // Columna "Estado"
+                    if (estadoObj != null && estadoObj instanceof EstadoPrestamo) {
+                        EstadoPrestamo estado = (EstadoPrestamo) estadoObj;
+                        btnFinalizar.setEnabled(estado != EstadoPrestamo.FINALIZADO);
+                    } else {
+                        btnFinalizar.setEnabled(true);
+                    }
+                } else {
+                    btnFinalizar.setEnabled(false);
+                }
+            }
+        });
 
         // Cargar datos
         cargarDatos();
     }
 
-    private void cargarDatos() {
+
+    public void cargarDatos() {
         String filtro = panelFiltroVisual.getSeleccion();
         Session session = getSession();
         try {
@@ -143,11 +179,20 @@ public class PanelEntidad extends JPanel {
                     break;
                 case "Préstamos":
                     List<Prestamo> prestamos = PrestamoDAO.obtenerTodosPrestamos();
+
+                    if (usuarioLogueado.getTipoUsuario() == TipoUsuario.CONSULTA) {
+                        // Mostrar solo los préstamos del usuario actual
+                        prestamos = prestamos.stream()
+                                .filter(p -> p.getUsuario() != null && p.getUsuario().getIdUsuario() == usuarioLogueado.getIdUsuario())
+                                .collect(Collectors.toList());
+                    }
+
                     if ("Finalizados".equals(filtro)) {
                         prestamos = prestamos.stream().filter(p -> p.getEstado() == EstadoPrestamo.FINALIZADO).collect(Collectors.toList());
                     } else if ("Activos".equals(filtro)) {
                         prestamos = prestamos.stream().filter(p -> p.getEstado() == EstadoPrestamo.ACTIVO).collect(Collectors.toList());
                     }
+
                     cargarPrestamosEnTabla(prestamos);
                     break;
             }
@@ -300,7 +345,7 @@ public class PanelEntidad extends JPanel {
             case "Autores": new FormularioAutorNew(frame); break;
             case "Libros": new FormularioLibroNew(frame); break;
             case "Usuarios": new FormularioUsuarioNew(frame); break;
-            case "Préstamos": new FormularioPrestamoNew(frame); break;
+            case "Préstamos": new FormularioPrestamoNew(frame, usuarioLogueado); break;
         }
         cargarDatos();
     }
@@ -329,7 +374,7 @@ public class PanelEntidad extends JPanel {
             case "Préstamos":
                 id = (int) tableModel.getValueAt(fila, 0);
                 Prestamo prestamo = PrestamoDAO.obtenerTodosPrestamos().stream().filter(p -> p.getIdPrestamo() == id).findFirst().orElse(null);
-                if (prestamo != null) new FormularioPrestamoEdit(frame, prestamo);
+                if (prestamo != null) new FormularioPrestamoEdit(frame, prestamo, usuarioLogueado);
                 break;
             case "Usuarios":
                 id = (int) tableModel.getValueAt(fila, 0);
