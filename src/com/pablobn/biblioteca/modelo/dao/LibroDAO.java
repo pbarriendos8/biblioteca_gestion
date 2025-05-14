@@ -45,4 +45,46 @@ public class LibroDAO {
         }
     }
 
+    public static boolean existeLibroPorTitulo(String titulo) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Long count = session.createQuery(
+                            "SELECT COUNT(*) FROM Libro WHERE lower(titulo) = :titulo", Long.class)
+                    .setParameter("titulo", titulo.toLowerCase())
+                    .uniqueResult();
+            return count != null && count > 0;
+        }
+    }
+
+    public static boolean existeLibroPorIsbn(String isbn) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Long count = session.createQuery(
+                            "SELECT COUNT(*) FROM Libro WHERE isbn = :isbn", Long.class)
+                    .setParameter("isbn", isbn)
+                    .uniqueResult();
+            return count != null && count > 0;
+        }
+    }
+    public static boolean existeOtroLibroConTitulo(String titulo, int idActual) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Long count = session.createQuery(
+                            "SELECT COUNT(*) FROM Libro WHERE lower(titulo) = :titulo AND id != :id", Long.class)
+                    .setParameter("titulo", titulo.toLowerCase())
+                    .setParameter("id", idActual)
+                    .uniqueResult();
+            return count != null && count > 0;
+        }
+    }
+
+    public static boolean existeOtroLibroConIsbn(String isbn, int idActual) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Long count = session.createQuery(
+                            "SELECT COUNT(*) FROM Libro WHERE isbn = :isbn AND id != :id", Long.class)
+                    .setParameter("isbn", isbn)
+                    .setParameter("id", idActual)
+                    .uniqueResult();
+            return count != null && count > 0;
+        }
+    }
+
+
 }

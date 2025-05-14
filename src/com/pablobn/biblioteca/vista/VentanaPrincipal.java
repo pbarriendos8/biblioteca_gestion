@@ -242,10 +242,6 @@ public class VentanaPrincipal extends JFrame {
         return boton;
     }
 
-
-
-
-
     private void agregarVista(String clave, JPanel panel) {
         panelContenido.add(panel, clave);
         vistasPorEntidad.put(clave, panel);

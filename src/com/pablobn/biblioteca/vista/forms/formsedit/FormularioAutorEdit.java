@@ -72,7 +72,9 @@ public class FormularioAutorEdit extends JDialog {
 
         gbc.gridx = 0;
         gbc.gridy = 4;
-        panelCampos.add(new JLabel("Biografía:"), gbc);
+        JLabel lblBiografia = new JLabel("Biografía:", JLabel.RIGHT);
+        lblBiografia.setPreferredSize(new Dimension(120, 25));
+        panelCampos.add(lblBiografia, gbc);
         gbc.gridx = 1;
         JScrollPane scrollBio = new JScrollPane(txtBiografia);
         scrollBio.setPreferredSize(new Dimension(300, 100));
@@ -168,6 +170,21 @@ public class FormularioAutorEdit extends JDialog {
     }
 
     private void guardarCambios() {
+        txtNombre.setBorder(UIManager.getBorder("TextField.border"));
+
+        StringBuilder errores = new StringBuilder();
+        boolean hayErrores = false;
+        String nombre = txtNombre.getText().trim();
+        if (nombre.isEmpty()) {
+            errores.append("- El nombre es obligatorio.\n");
+            txtNombre.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        if (hayErrores) {
+            JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
+                    "Errores de validación", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         autor.setNombre(txtNombre.getText());
         autor.setApellidos(txtApellidos.getText());
         autor.setNacionalidad(txtNacionalidad.getText());

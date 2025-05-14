@@ -1,5 +1,6 @@
 package com.pablobn.biblioteca.vista.forms.formsnew;
 
+import com.pablobn.biblioteca.modelo.Autor;
 import com.pablobn.biblioteca.modelo.Libro;
 import com.pablobn.biblioteca.modelo.Usuario;
 import com.pablobn.biblioteca.modelo.Prestamo;
@@ -50,7 +51,7 @@ public class FormularioPrestamoNew extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        Font labelFont = new Font("SansSerif", Font.BOLD, 14);
+        Font labelFont = new Font("SansSerif", Font.PLAIN, 14);
         Font inputFont = new Font("SansSerif", Font.PLAIN, 13);
 
         // Configuración date pickers
@@ -104,7 +105,7 @@ public class FormularioPrestamoNew extends JDialog {
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 
 // Botón Guardar
-        JButton btnGuardar = new JButton("Guardar Autor");
+        JButton btnGuardar = new JButton("Guardar Préstamo");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
         btnGuardar.setForeground(Color.WHITE);
@@ -149,30 +150,98 @@ public class FormularioPrestamoNew extends JDialog {
 
     private void cargarUsuarios() {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
+        comboUsuarios.addItem(null);
         List<Usuario> usuarios = usuarioDAO.obtenerTodosUsuarios();
         for (Usuario u : usuarios) {
             comboUsuarios.addItem(u);
         }
+        comboUsuarios.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    setText("-- Selecciona un usuario --");
+                } else {
+                    setText(value.toString());
+                }
+                return this;
+            }
+        });
     }
 
     private void cargarLibros() {
         LibroDAO libroDAO = new LibroDAO();
         List<Libro> libros = libroDAO.obtenerTodosLibros();
+        comboLibros.addItem(null);
         for (Libro l : libros) {
             comboLibros.addItem(l);
         }
+        comboLibros.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    setText("-- Selecciona un libro --");
+                } else {
+                    setText(value.toString());
+                }
+                return this;
+            }
+        });
     }
 
     private void guardarPrestamo() {
         java.util.Date fechaInicioUtil = (java.util.Date) datePickerInicio.getModel().getValue();
         java.util.Date fechaFinUtil = (java.util.Date) datePickerFin.getModel().getValue();
-
-        if (usuarioActual.getTipoUsuario().equals(TipoUsuario.ADMIN ) && (fechaInicioUtil == null || fechaFinUtil == null || comboUsuarios.getSelectedItem() == null || comboLibros.getSelectedItem() == null)) {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
-            return;
+        comboLibros.setBorder(UIManager.getBorder("ComboBox.border"));
+        if (!usuarioActual.getTipoUsuario().equals(TipoUsuario.CONSULTA)) {
+            comboUsuarios.setBorder(UIManager.getBorder("ComboBox.border"));
         }
-        if (usuarioActual.getTipoUsuario().equals(TipoUsuario.CONSULTA ) && (fechaInicioUtil == null || fechaFinUtil == null || comboLibros.getSelectedItem() == null)) {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos.");
+        StringBuilder errores = new StringBuilder();
+        boolean hayErrores = false;
+
+        if (usuarioActual.getTipoUsuario().equals(TipoUsuario.ADMIN)) {
+            if (fechaInicioUtil == null) {
+                errores.append("- La fecha de inicio es obligatoria.\n");
+                hayErrores = true;
+            }
+            if (fechaFinUtil == null) {
+                errores.append("- La fecha de fin es obligatoria.\n");
+                hayErrores = true;
+            }
+            Usuario usuario = (Usuario) comboUsuarios.getSelectedItem();
+            if (usuario == null) {
+                errores.append("- Debes seleccionar un usuario.\n");
+                comboUsuarios.setBorder(BorderFactory.createLineBorder(Color.RED));
+                hayErrores = true;
+            }
+            Libro libro = (Libro) comboLibros.getSelectedItem();
+            if (libro == null) {
+                errores.append("- Debes seleccionar un libro.\n");
+                comboLibros.setBorder(BorderFactory.createLineBorder(Color.RED));
+                hayErrores = true;
+            }
+
+        }
+        if (usuarioActual.getTipoUsuario().equals(TipoUsuario.CONSULTA)) {
+            if (fechaInicioUtil == null) {
+                errores.append("- La fecha de inicio es obligatoria.\n");
+                hayErrores = true;
+            }
+            if (fechaFinUtil == null) {
+                errores.append("- La fecha de fin es obligatoria.\n");
+                hayErrores = true;
+            }
+            Libro libro = (Libro) comboLibros.getSelectedItem();
+            if (libro == null) {
+                errores.append("- Debes seleccionar un libro.\n");
+                comboLibros.setBorder(BorderFactory.createLineBorder(Color.RED));
+                hayErrores = true;
+            }
+        }
+        if (hayErrores) {
+            JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
+                    "Errores de validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

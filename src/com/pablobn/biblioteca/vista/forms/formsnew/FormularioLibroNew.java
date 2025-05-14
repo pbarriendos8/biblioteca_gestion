@@ -28,8 +28,9 @@ public class FormularioLibroNew extends JDialog {
     private JLabel lblArchivoPdf;
     private byte[] archivoPdfBytes;
     private JDatePickerImpl datePicker;
-
     private String nombreArchivoPdf;
+
+    private static final int ANCHO_LABEL = 120;
 
 
     public FormularioLibroNew(JFrame parent) {
@@ -51,7 +52,7 @@ public class FormularioLibroNew extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        Font labelFont = new Font("SansSerif", Font.BOLD, 14);
+        Font labelFont = new Font("SansSerif", Font.PLAIN, 14);
         Font inputFont = new Font("SansSerif", Font.PLAIN, 13);
 
         // Titulo
@@ -60,7 +61,10 @@ public class FormularioLibroNew extends JDialog {
         // Descripción
         gbc.gridx = 0;
         gbc.gridy = 1;
-        panelCampos.add(new JLabel("Descripción:"), gbc);
+        JLabel lblDescripcion = new JLabel("Descripción:", JLabel.RIGHT);
+        lblDescripcion.setPreferredSize(new Dimension(ANCHO_LABEL, 25));
+        panelCampos.add(lblDescripcion, gbc);
+
         gbc.gridx = 1;
         txtDescripcion = new JTextArea(5, 30);
         txtDescripcion.setFont(inputFont);
@@ -75,7 +79,10 @@ public class FormularioLibroNew extends JDialog {
         datePicker.getJFormattedTextField().setFont(inputFont);
         gbc.gridx = 0;
         gbc.gridy = 2;
-        panelCampos.add(new JLabel("Fecha Publicación:", JLabel.RIGHT), gbc);
+        JLabel lblFecha = new JLabel("Fecha Publicación:", JLabel.RIGHT);
+        lblFecha.setPreferredSize(new Dimension(127, 25));
+        panelCampos.add(lblFecha, gbc);
+
         gbc.gridx = 1;
         panelCampos.add(datePicker, gbc);
 
@@ -84,10 +91,30 @@ public class FormularioLibroNew extends JDialog {
 
         // Seleccionar Autor
         List<Autor> autores = AutorDAO.obtenerTodos();
-        cmbAutores = new JComboBox<>(autores.toArray(new Autor[0]));
+        cmbAutores = new JComboBox<>();
+        cmbAutores.addItem(null);
+        for (Autor autor : autores) {
+            cmbAutores.addItem(autor);
+        }
+        cmbAutores.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    setText("-- Selecciona un autor --");
+                } else {
+                    setText(value.toString());
+                }
+                return this;
+            }
+        });
+
         gbc.gridx = 0;
         gbc.gridy = 4;
-        panelCampos.add(new JLabel("Autor:"), gbc);
+        JLabel lblAutor = new JLabel("Autor:", JLabel.RIGHT);
+        lblAutor.setPreferredSize(new Dimension(ANCHO_LABEL, 25));
+        panelCampos.add(lblAutor, gbc);
+
         gbc.gridx = 1;
         panelCampos.add(cmbAutores, gbc);
 
@@ -132,7 +159,6 @@ public class FormularioLibroNew extends JDialog {
         // Panel de botones (ambos a la derecha)
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 
-// Botón Guardar
         JButton btnGuardar = new JButton("Guardar Autor");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
@@ -141,7 +167,6 @@ public class FormularioLibroNew extends JDialog {
         btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.addActionListener(e -> guardarLibro());
 
-// Botón Salir
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnSalir.setBackground(new Color(120, 120, 120));
@@ -169,6 +194,7 @@ public class FormularioLibroNew extends JDialog {
         gbc.gridx = 0;
         gbc.gridy = fila;
         JLabel lbl = new JLabel(texto, JLabel.RIGHT);
+        lbl.setPreferredSize(new Dimension(ANCHO_LABEL, 25));
         lbl.setFont(fontLabel);
         panel.add(lbl, gbc);
 
@@ -215,20 +241,74 @@ public class FormularioLibroNew extends JDialog {
     }
 
     private void guardarLibro() {
+        // Restaurar bordes a su estado normal
+        txtTitulo.setBorder(UIManager.getBorder("TextField.border"));
+        txtIsbn.setBorder(UIManager.getBorder("TextField.border"));
+        cmbAutores.setBorder(UIManager.getBorder("ComboBox.border"));
+
+        StringBuilder errores = new StringBuilder();
+        boolean hayErrores = false;
+
+        // Validar título
+        String titulo = txtTitulo.getText().trim();
+        if (titulo.isEmpty()) {
+            errores.append("- El título es obligatorio.\n");
+            txtTitulo.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+
+        // Validar ISBN
+        String isbn = txtIsbn.getText().trim();
+        if (isbn.isEmpty()) {
+            errores.append("- El ISBN es obligatorio.\n");
+            txtIsbn.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        } else if (!isbn.matches("\\d{3}-\\d-\\d{2}-\\d{6}-\\d")) {
+            errores.append("- El ISBN debe tener el formato 111-1-11-111111-1.\n");
+            txtIsbn.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        if (LibroDAO.existeLibroPorTitulo(titulo)) {
+            errores.append("- Ya existe un libro con ese título.\n");
+            txtTitulo.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+
+        if (LibroDAO.existeLibroPorIsbn(isbn)) {
+            errores.append("- Ya existe un libro con ese ISBN.\n");
+            txtIsbn.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        // Validar autor
+        Autor autorSeleccionado = (Autor) cmbAutores.getSelectedItem();
+        if (autorSeleccionado == null) {
+            errores.append("- Debes seleccionar un autor.\n");
+            cmbAutores.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+
+        if (hayErrores) {
+            JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
+                    "Errores de validación", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+
+
         try {
             Libro libro = new Libro();
-            libro.setTitulo(txtTitulo.getText());
-            libro.setDescripcion(txtDescripcion.getText());
+            libro.setTitulo(titulo);
+            libro.setDescripcion(txtDescripcion.getText().trim());
             java.util.Date selectedDate = (java.util.Date) datePicker.getModel().getValue();
             if (selectedDate != null) {
                 libro.setFechaPublicacion(new Date(selectedDate.getTime()));
             }
-            libro.setIsbn(txtIsbn.getText());
+            libro.setIsbn(isbn);
             libro.setDisponible(true);
             libro.setPortada(portadaBytes);
             libro.setArchivoPdf(archivoPdfBytes);
             libro.setNombreArchivoPdf(nombreArchivoPdf);
-            libro.setAutor((Autor) cmbAutores.getSelectedItem());
+            libro.setAutor(autorSeleccionado);
 
             LibroDAO.guardarLibro(libro);
 
@@ -238,4 +318,5 @@ public class FormularioLibroNew extends JDialog {
             JOptionPane.showMessageDialog(this, "Error al guardar libro: " + e.getMessage());
         }
     }
+
 }

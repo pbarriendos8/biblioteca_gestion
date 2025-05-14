@@ -210,7 +210,7 @@ public class PanelEntidad extends JPanel {
                     a.getFechaNacimiento(), a.getNacionalidad()
             });
         }
-        panelFiltroBusqueda.setOpcionesCampo(new String[]{"Nombre", "Apellidos", "Nacionalidad"});
+        panelFiltroBusqueda.setOpcionesCampo(new String[]{"Nombre", "Apellidos"});
         panelFiltroBusqueda.getCampoBusqueda().getDocument().addDocumentListener(new DocumentListener() {
             public void insertUpdate(DocumentEvent e) { filtrarAutores(); }
             public void removeUpdate(DocumentEvent e) { filtrarAutores(); }
@@ -230,10 +230,7 @@ public class PanelEntidad extends JPanel {
         int columna = 1;
         if ("Apellidos".equals(campo)) {
             columna = 2;
-        } else if ("Nacionalidad".equals(campo)) {
-            columna = 3;
         }
-
         rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto, columna));
     }
 
@@ -278,12 +275,13 @@ public class PanelEntidad extends JPanel {
     }
 
     private void cargarUsuariosEnTabla(List<Usuario> lista) {
-        tableModel.setColumnIdentifiers(new Object[]{"ID", "Usuario", "Correo", "Nombre", "Tipo"});
+        tableModel.setColumnIdentifiers(new Object[]{"ID", "Usuario", "Correo", "Nombre", "Tipo", "Fecha Registro"});
         tableModel.setRowCount(0);
         for (Usuario u : lista) {
             tableModel.addRow(new Object[]{
                     u.getIdUsuario(), u.getNombreUsuario(), u.getCorreo(),
-                    u.getNombreCompleto(), u.getTipoUsuario()
+                    u.getNombreCompleto(), u.getTipoUsuario(),
+                    u.getFechaRegistro()
             });
         }
         panelFiltroBusqueda.setOpcionesCampo(new String[]{"Usuario", "Correo"});
@@ -308,14 +306,13 @@ public class PanelEntidad extends JPanel {
 
 
     private void cargarPrestamosEnTabla(List<Prestamo> lista) {
-        tableModel.setColumnIdentifiers(new Object[]{"ID", "Usuario", "Libro", "Inicio", "Fin", "Estado"});
+        tableModel.setColumnIdentifiers(new Object[]{"ID", "Usuario", "Libro", "Fecha inicio", "Fecha limite", "Fecha devuelto", "Estado"});
         tableModel.setRowCount(0);
         for (Prestamo p : lista) {
             tableModel.addRow(new Object[]{
-                    p.getIdPrestamo(),
-                    p.getUsuario() != null ? p.getUsuario().getNombreUsuario() : "Desconocido",
+                    p.getIdPrestamo(), p.getUsuario() != null ? p.getUsuario().getNombreUsuario() : "Desconocido",
                     p.getLibro() != null ? p.getLibro().getTitulo() : "Desconocido",
-                    p.getFechaInicio(), p.getFechaFin(), p.getEstado()
+                    p.getFechaInicio(), p.getFechaFin(), p.getFechaDevolucionReal(), p.getEstado(),
             });
         }
         panelFiltroBusqueda.setOpcionesCampo(new String[]{"Usuario", "Libro"});

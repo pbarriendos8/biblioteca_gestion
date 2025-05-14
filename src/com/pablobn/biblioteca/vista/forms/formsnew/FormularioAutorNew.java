@@ -42,7 +42,7 @@ public class FormularioAutorNew extends JDialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.anchor = GridBagConstraints.WEST;
 
-        Font labelFont = new Font("SansSerif", Font.BOLD, 14);
+        Font labelFont = new Font("SansSerif", Font.PLAIN, 14);
         Font inputFont = new Font("SansSerif", Font.PLAIN, 13);
 
         // Nombre
@@ -68,7 +68,9 @@ public class FormularioAutorNew extends JDialog {
         // Biografía
         gbc.gridx = 0;
         gbc.gridy = 4;
-        panelCampos.add(new JLabel("Biografía:"), gbc);
+        JLabel lblBiografia = new JLabel("Biografía:", JLabel.RIGHT);
+        lblBiografia.setPreferredSize(new Dimension(120, 25));
+        panelCampos.add(lblBiografia, gbc);
         gbc.gridx = 1;
         txtBiografia = new JTextArea(5, 30);
         txtBiografia.setFont(inputFont);
@@ -164,6 +166,21 @@ public class FormularioAutorNew extends JDialog {
     }
 
     private void guardarAutor() {
+        txtNombre.setBorder(UIManager.getBorder("TextField.border"));
+
+        StringBuilder errores = new StringBuilder();
+        boolean hayErrores = false;
+        String nombre = txtNombre.getText().trim();
+        if (nombre.isEmpty()) {
+            errores.append("- El nombre es obligatorio.\n");
+            txtNombre.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        if (hayErrores) {
+            JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
+                    "Errores de validación", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         try {
             Autor autor = new Autor();
             autor.setNombre(txtNombre.getText());
