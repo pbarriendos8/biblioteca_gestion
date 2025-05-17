@@ -1,12 +1,20 @@
 package com.pablobn.biblioteca.vista;
 
+import com.pablobn.biblioteca.jasper.GeneradorReporte;
 import com.pablobn.biblioteca.modelo.Usuario;
+import com.pablobn.biblioteca.util.HibernateUtil;
 import com.pablobn.biblioteca.util.TipoUsuario;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
+import org.hibernate.Session;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.InputStream;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -119,6 +127,38 @@ public class VentanaPrincipal extends JFrame {
             menu.add(boton);
             menu.add(Box.createRigidArea(new Dimension(0, 5)));
         }
+        // --- Aquí añadimos el bloque de botones de informes ---
+        // Título sección informes
+        JLabel labelInformes = new JLabel("INFORMES");
+        labelInformes.setFont(new Font("SansSerif", Font.BOLD, 14));
+        labelInformes.setForeground(new Color(70, 130, 255));
+        labelInformes.setBorder(BorderFactory.createEmptyBorder(15, 30, 10, 10));
+        labelInformes.setAlignmentX(Component.LEFT_ALIGNMENT);
+        menu.add(labelInformes);
+
+        // Botón informe "Libros por Autor"
+        JButton btnInformeLibrosAutor = new JButton("Libros por Autor");
+        btnInformeLibrosAutor.setFont(fuenteBoton);
+        btnInformeLibrosAutor.setFocusPainted(false);
+        btnInformeLibrosAutor.setBackground(colorFondo);
+        btnInformeLibrosAutor.setForeground(colorTextoNormal);
+        btnInformeLibrosAutor.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 10));
+        btnInformeLibrosAutor.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnInformeLibrosAutor.setMaximumSize(new Dimension(300, 40));
+        btnInformeLibrosAutor.setHorizontalAlignment(SwingConstants.LEFT);
+        btnInformeLibrosAutor.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnInformeLibrosAutor.addActionListener(e -> generarInformeLibrosPorAutor());
+
+        menu.add(btnInformeLibrosAutor);
+        menu.add(Box.createRigidArea(new Dimension(0, 5)));
+
+        // Aquí puedes añadir más botones para otros informes igual
+
+        panel.add(menu, BorderLayout.CENTER);
+
+        // Panel inferior (cerrar sesión, salir) - igual que antes
+        // ...
+
 
         panel.add(menu, BorderLayout.CENTER);
 
@@ -178,6 +218,11 @@ public class VentanaPrincipal extends JFrame {
         panel.add(panelInferior, BorderLayout.SOUTH);
         return panel;
     }
+
+    private void generarInformeLibrosPorAutor() {
+        GeneradorReporte.mostrarInformeLibrosPorAutor(HibernateUtil.getSession());
+    }
+
 
     private void addHoverEffect(JButton btn, Color hoverColor, Color normalColor) {
         btn.addMouseListener(new java.awt.event.MouseAdapter() {

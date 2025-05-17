@@ -401,40 +401,59 @@ public class PanelEntidad extends JPanel {
                 id = (int) tableModel.getValueAt(fila, 0);
                 Autor autor = AutorDAO.obtenerTodos().stream().filter(a -> a.getIdAutor() == id).findFirst().orElse(null);
                 if (autor != null) {
+                    boolean tieneLibros = LibroDAO.obtenerTodosLibros().stream()
+                            .anyMatch(libro -> libro.getAutor().getIdAutor() == id);
+                    if (tieneLibros) {
+                        JOptionPane.showMessageDialog(this, "Este autor no se puede eliminar porque tiene libros asociados.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
                     AutorDAO.eliminarAutor(autor);
                     JOptionPane.showMessageDialog(this, "Autor eliminado.");
                 }
                 break;
+
             case "Libros":
                 id = (int) tableModel.getValueAt(fila, 0);
-                Libro libro = LibroDAO.obtenerTodosLibros().stream().filter(a -> a.getIdLibro() == id).findFirst().orElse(null);
+                Libro libro = LibroDAO.obtenerTodosLibros().stream().filter(l -> l.getIdLibro() == id).findFirst().orElse(null);
                 if (libro != null) {
+                    boolean tienePrestamos = PrestamoDAO.obtenerTodosPrestamos().stream()
+                            .anyMatch(prestamo -> prestamo.getLibro().getIdLibro() == id);
+                    if (tienePrestamos) {
+                        JOptionPane.showMessageDialog(this, "Este libro no se puede eliminar porque tiene préstamos asociados.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
                     LibroDAO.eliminarLibro(libro);
                     JOptionPane.showMessageDialog(this, "Libro eliminado.");
                 }
                 break;
+
             case "Préstamos":
                 id = (int) tableModel.getValueAt(fila, 0);
-                Prestamo prestamo = PrestamoDAO.obtenerTodosPrestamos().stream().filter(a -> a.getIdPrestamo() == id).findFirst().orElse(null);
+                Prestamo prestamo = PrestamoDAO.obtenerTodosPrestamos().stream().filter(p -> p.getIdPrestamo() == id).findFirst().orElse(null);
                 if (prestamo != null) {
                     PrestamoDAO.eliminarPrestamo(prestamo);
-                    JOptionPane.showMessageDialog(this, "Prestamo eliminado.");
+                    JOptionPane.showMessageDialog(this, "Préstamo eliminado.");
                 }
                 break;
+
             case "Usuarios":
                 id = (int) tableModel.getValueAt(fila, 0);
-                Usuario usuario = UsuarioDAO.obtenerTodosUsuarios().stream().filter(a -> a.getIdUsuario() == id).findFirst().orElse(null);
+                Usuario usuario = UsuarioDAO.obtenerTodosUsuarios().stream().filter(u -> u.getIdUsuario() == id).findFirst().orElse(null);
                 if (usuario != null) {
                     UsuarioDAO.eliminarUsuario(usuario);
                     JOptionPane.showMessageDialog(this, "Usuario eliminado.");
                 }
                 break;
+
             default:
                 JOptionPane.showMessageDialog(this, "Eliminación no disponible para esta entidad.");
         }
 
         cargarDatos();
     }
+
 
     private void finalizarPrestamo() {
         int fila = table.getSelectedRow();
