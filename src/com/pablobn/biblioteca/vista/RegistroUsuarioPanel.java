@@ -2,6 +2,7 @@ package com.pablobn.biblioteca.vista;
 
 import com.pablobn.biblioteca.modelo.Usuario;
 import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
+import com.pablobn.biblioteca.util.HashUtil;
 
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
@@ -32,43 +33,83 @@ public class RegistroUsuarioPanel extends JPanel {
         JTextField nombreUsuarioField = createTextField();
         JTextField correoField = createTextField();
         JPasswordField contrasenaField = createPasswordField();
+        JPasswordField repetirContrasenaField = createPasswordField();
         JTextField nombreCompletoField = createTextField();
         JTextField direccionField = createTextField();
         JTextField telefonoField = createTextField();
 
-        // Etiquetas y campos
-        addField("Nombre de Usuario:", nombreUsuarioField, gbc);
-        addField("Correo:", correoField, gbc);
-        addField("Contraseña:", contrasenaField, gbc);
-        addField("Nombre completo:", nombreCompletoField, gbc);
-        addField("Dirección:", direccionField, gbc);
-        addField("Teléfono:", telefonoField, gbc);
+        int fila = 1;
+        fila = addField("Nombre de Usuario:", nombreUsuarioField, gbc, fila);
+        fila = addField("Correo:", correoField, gbc, fila);
+        fila = addField("Contraseña:", contrasenaField, gbc, fila);
+        fila = addField("Repetir Contraseña:", repetirContrasenaField, gbc, fila);
+        fila = addField("Nombre completo:", nombreCompletoField, gbc, fila);
+        fila = addField("Dirección:", direccionField, gbc, fila);
+        fila = addField("Teléfono:", telefonoField, gbc, fila);
 
         // Botón crear
         JButton crearCuentaBtn = crearBoton("Crear Usuario", new Color(70, 130, 255));
         gbc.gridx = 0;
-        gbc.gridy++;
+        gbc.gridy = fila++;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         add(crearCuentaBtn, gbc);
 
         // Botón salir
         JButton salirBtn = crearBoton("Salir", new Color(120, 120, 120));
-        gbc.gridy++;
+        gbc.gridy = fila;
         add(salirBtn, gbc);
 
         // Acción crear usuario
         crearCuentaBtn.addActionListener(e -> {
+            resetFieldBorders(nombreUsuarioField, contrasenaField, repetirContrasenaField);
+
+            String nombreUsuario = nombreUsuarioField.getText().trim();
+            String password = new String(contrasenaField.getPassword()).trim();
+            String repetirPassword = new String(repetirContrasenaField.getPassword()).trim();
+
+            StringBuilder errores = new StringBuilder();
+            boolean hayErrores = false;
+
+            if (nombreUsuario.isEmpty()) {
+                errores.append("• El nombre de usuario no puede estar vacío.\n");
+                marcarError(nombreUsuarioField);
+                hayErrores = true;
+            }
+
+            if (password.isEmpty()) {
+                errores.append("• La contraseña no puede estar vacía.\n");
+                marcarError(contrasenaField);
+                marcarError(repetirContrasenaField);
+                hayErrores = true;
+            } else if (!password.equals(repetirPassword)) {
+                errores.append("• Las contraseñas no coinciden.\n");
+                marcarError(contrasenaField);
+                marcarError(repetirContrasenaField);
+                hayErrores = true;
+            }
+
+            if (hayErrores) {
+                JOptionPane.showMessageDialog(this, errores.toString(), "Error de Validación", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             Usuario nuevoUsuario = new Usuario();
-            nuevoUsuario.setNombreUsuario(nombreUsuarioField.getText());
+            nuevoUsuario.setNombreUsuario(nombreUsuario);
             nuevoUsuario.setCorreo(correoField.getText());
-            nuevoUsuario.setPassword(new String(contrasenaField.getPassword()));
+            nuevoUsuario.setPassword(HashUtil.hashPassword(password));
             nuevoUsuario.setNombreCompleto(nombreCompletoField.getText());
             nuevoUsuario.setDireccion(direccionField.getText());
             nuevoUsuario.setTelefono(telefonoField.getText());
 
             UsuarioDAO.registrarUsuario(nuevoUsuario);
             JOptionPane.showMessageDialog(this, "Usuario registrado correctamente.");
+
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window != null) {
+                window.dispose();
+            }
+
         });
 
         salirBtn.addActionListener(e -> {
@@ -82,29 +123,32 @@ public class RegistroUsuarioPanel extends JPanel {
         });
     }
 
-    private void addField(String label, JComponent field, GridBagConstraints gbc) {
-        JLabel jLabel = new JLabel(label);
-        jLabel.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        jLabel.setForeground(new Color(60, 63, 65));
+    private int addField(String labelText, JComponent field, GridBagConstraints gbc, int fila) {
+        JLabel label = new JLabel(labelText);
+        label.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        label.setForeground(new Color(60, 63, 65));
+        label.setHorizontalAlignment(SwingConstants.RIGHT);
 
         gbc.gridx = 0;
-        gbc.gridy++;
+        gbc.gridy = fila;
         gbc.anchor = GridBagConstraints.EAST;
-        add(jLabel, gbc);
+        add(label, gbc);
 
         gbc.gridx = 1;
         gbc.anchor = GridBagConstraints.WEST;
         add(field, gbc);
+
+        return fila + 1;
     }
 
     private JTextField createTextField() {
-        JTextField field = new JTextField(15); // Igual al login
+        JTextField field = new JTextField(20);
         styleField(field);
         return field;
     }
 
     private JPasswordField createPasswordField() {
-        JPasswordField field = new JPasswordField(15); // Igual al login
+        JPasswordField field = new JPasswordField(20);
         styleField(field);
         return field;
     }
@@ -115,6 +159,19 @@ public class RegistroUsuarioPanel extends JPanel {
                 BorderFactory.createLineBorder(new Color(200, 200, 200)),
                 BorderFactory.createEmptyBorder(6, 8, 6, 8)
         ));
+    }
+
+    private void marcarError(JComponent field) {
+        field.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+    }
+
+    private void resetFieldBorders(JComponent... fields) {
+        for (JComponent field : fields) {
+            field.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                    BorderFactory.createEmptyBorder(6, 8, 6, 8)
+            ));
+        }
     }
 
     private JButton crearBoton(String texto, Color fondo) {

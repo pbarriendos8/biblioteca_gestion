@@ -2,6 +2,7 @@ package com.pablobn.biblioteca.vista.forms.formsedit;
 
 import com.pablobn.biblioteca.modelo.Usuario;
 import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
+import com.pablobn.biblioteca.util.HashUtil;
 import com.pablobn.biblioteca.util.TipoUsuario;
 
 import javax.swing.*;
@@ -120,10 +121,46 @@ public class FormularioUsuarioEdit extends JDialog {
     }
 
     private void guardarCambios() {
+        cmbTipoUsuario.setBorder(UIManager.getBorder("ComboBox.border"));
+        txtNombreUsuario.setBorder(UIManager.getBorder("TextField.border"));
+        txtCorreo.setBorder(UIManager.getBorder("TextField.border"));
+        txtPassword.setBorder(UIManager.getBorder("TextField.border"));
+        StringBuilder errores = new StringBuilder();
+        boolean hayErrores = false;
+
+        String nombreUsuario = txtNombreUsuario.getText().trim();
+        if (nombreUsuario.isEmpty()) {
+            errores.append("- El nombre del usuario es obligatorio.\n");
+            txtNombreUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        String email = txtCorreo.getText().trim();
+        if (nombreUsuario.isEmpty()) {
+            errores.append("- El Email es obligatorio.\n");
+            txtCorreo.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        String password = new String(txtPassword.getPassword()).trim();
+        if (password.isEmpty()) {
+            errores.append("- La contraseña es obligatoria.\n");
+            txtPassword.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        TipoUsuario tipoUsuario = (TipoUsuario) cmbTipoUsuario.getSelectedItem();
+        if (tipoUsuario == null) {
+            errores.append("- Debes seleccionar un tipo de usuario.\n");
+            cmbTipoUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        if (hayErrores) {
+            JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
+                    "Errores de validación", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         try {
             usuario.setNombreUsuario(txtNombreUsuario.getText());
             usuario.setCorreo(txtCorreo.getText());
-            usuario.setPassword(new String(txtPassword.getPassword()));
+            usuario.setPassword(HashUtil.hashPassword(password));
             usuario.setTipoUsuario((TipoUsuario) cmbTipoUsuario.getSelectedItem());
             usuario.setNombreCompleto(txtNombreCompleto.getText());
             usuario.setDireccion(txtDireccion.getText());

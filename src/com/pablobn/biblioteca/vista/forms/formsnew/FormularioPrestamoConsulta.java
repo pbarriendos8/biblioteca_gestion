@@ -106,9 +106,25 @@ public class FormularioPrestamoConsulta extends JDialog {
     private void confirmarPrestamo() {
         java.util.Date fechaInicioUtil = (java.util.Date) datePickerInicio.getModel().getValue();
         java.util.Date fechaFinUtil = (java.util.Date) datePickerFin.getModel().getValue();
+        StringBuilder errores = new StringBuilder();
+        boolean hayErrores = false;
 
-        if (fechaInicioUtil == null || fechaFinUtil == null) {
-            JOptionPane.showMessageDialog(this, "Por favor, complete todas las fechas.");
+        if (fechaInicioUtil == null) {
+            errores.append("- La fecha de inicio es obligatoria.\n");
+            hayErrores = true;
+        }
+        if (fechaFinUtil == null) {
+            errores.append("- La fecha de fin es obligatoria.\n");
+            hayErrores = true;
+        }
+
+        if (fechaInicioUtil != null && fechaFinUtil != null && fechaFinUtil.before(fechaInicioUtil)) {
+            errores.append("- La fecha de fin no puede ser anterior a la fecha de inicio.\n");
+            hayErrores = true;
+        }
+        if (hayErrores) {
+            JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
+                    "Errores de validación", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

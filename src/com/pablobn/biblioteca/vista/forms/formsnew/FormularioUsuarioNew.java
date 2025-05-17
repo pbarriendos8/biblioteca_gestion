@@ -1,7 +1,9 @@
 package com.pablobn.biblioteca.vista.forms.formsnew;
 
+import com.pablobn.biblioteca.modelo.Libro;
 import com.pablobn.biblioteca.modelo.Usuario;
 import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
+import com.pablobn.biblioteca.util.HashUtil;
 import com.pablobn.biblioteca.util.TipoUsuario;
 
 import javax.swing.*;
@@ -47,7 +49,26 @@ public class FormularioUsuarioNew extends JDialog {
         agregarCampo(panelCampos, gbc, fila++, "Contraseña:", txtPassword = new JPasswordField());
 
         // Tipo de Usuario (ComboBox)
-        agregarCampo(panelCampos, gbc, fila++, "Tipo de Usuario:", cmbTipoUsuario = new JComboBox<>(TipoUsuario.values()));
+        cmbTipoUsuario = new JComboBox<>();
+        cmbTipoUsuario.addItem(null); // Placeholder
+        for (TipoUsuario tipo : TipoUsuario.values()) {
+            cmbTipoUsuario.addItem(tipo);
+        }
+        cmbTipoUsuario.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    setText("-- Selecciona un tipo de usuario --");
+                } else {
+                    setText(value.toString());
+                }
+                return this;
+            }
+        });
+
+        agregarCampo(panelCampos, gbc, fila++, "Tipo de Usuario:", cmbTipoUsuario);
+
 
         // Nombre Completo
         agregarCampo(panelCampos, gbc, fila++, "Nombre Completo:", txtNombreCompleto = new JTextField());
@@ -98,8 +119,10 @@ public class FormularioUsuarioNew extends JDialog {
         gbc.gridx = 0;
         gbc.gridy = fila;
         gbc.weightx = 0;
-        JLabel lbl = new JLabel(etiqueta);
-        lbl.setFont(new Font("SansSerif", Font.BOLD, 14));
+
+        JLabel lbl = new JLabel(etiqueta, SwingConstants.RIGHT); // Alineación derecha
+        lbl.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        lbl.setPreferredSize(new Dimension(140, 30)); // Tamaño fijo para todas las etiquetas
         panel.add(lbl, gbc);
 
         gbc.gridx = 1;
@@ -115,12 +138,50 @@ public class FormularioUsuarioNew extends JDialog {
         panel.add(campo, gbc);
     }
 
+
     private void guardarUsuario() {
+        cmbTipoUsuario.setBorder(UIManager.getBorder("ComboBox.border"));
+        txtNombreUsuario.setBorder(UIManager.getBorder("TextField.border"));
+        txtCorreo.setBorder(UIManager.getBorder("TextField.border"));
+        txtPassword.setBorder(UIManager.getBorder("TextField.border"));
+        StringBuilder errores = new StringBuilder();
+        boolean hayErrores = false;
+
+        String nombreUsuario = txtNombreUsuario.getText().trim();
+        if (nombreUsuario.isEmpty()) {
+            errores.append("- El nombre del usuario es obligatorio.\n");
+            txtNombreUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        String email = txtCorreo.getText().trim();
+        if (nombreUsuario.isEmpty()) {
+            errores.append("- El Email es obligatorio.\n");
+            txtCorreo.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        String password = new String(txtPassword.getPassword()).trim();
+        if (password.isEmpty()) {
+            errores.append("- La contraseña es obligatoria.\n");
+            txtPassword.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        TipoUsuario tipoUsuario = (TipoUsuario) cmbTipoUsuario.getSelectedItem();
+        if (tipoUsuario == null) {
+            errores.append("- Debes seleccionar un tipo de usuario.\n");
+            cmbTipoUsuario.setBorder(BorderFactory.createLineBorder(Color.RED));
+            hayErrores = true;
+        }
+        if (hayErrores) {
+            JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
+                    "Errores de validación", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         try {
             Usuario usuario = new Usuario();
             usuario.setNombreUsuario(txtNombreUsuario.getText());
             usuario.setCorreo(txtCorreo.getText());
-            usuario.setPassword(new String(txtPassword.getPassword()));
+            usuario.setPassword(HashUtil.hashPassword(password));
             usuario.setTipoUsuario((TipoUsuario) cmbTipoUsuario.getSelectedItem());
             usuario.setNombreCompleto(txtNombreCompleto.getText());
             usuario.setDireccion(txtDireccion.getText());

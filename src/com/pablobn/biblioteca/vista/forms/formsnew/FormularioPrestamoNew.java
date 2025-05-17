@@ -239,6 +239,11 @@ public class FormularioPrestamoNew extends JDialog {
                 hayErrores = true;
             }
         }
+
+        if (fechaInicioUtil != null && fechaFinUtil != null && fechaFinUtil.before(fechaInicioUtil)) {
+            errores.append("- La fecha de fin no puede ser anterior a la fecha de inicio.\n");
+            hayErrores = true;
+        }
         if (hayErrores) {
             JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
                     "Errores de validación", JOptionPane.WARNING_MESSAGE);

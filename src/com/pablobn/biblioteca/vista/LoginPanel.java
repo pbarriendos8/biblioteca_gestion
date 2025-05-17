@@ -83,7 +83,7 @@ public class LoginPanel extends JPanel {
         btnRegistro.addActionListener(e -> {
             JFrame frameRegistro = new JFrame("Registro de Usuario");
             frameRegistro.setContentPane(new RegistroUsuarioPanel());
-            frameRegistro.setSize(400, 550);
+            frameRegistro.setSize(480, 620);
             frameRegistro.setLocationRelativeTo(null);
             frameRegistro.setVisible(true);
         });

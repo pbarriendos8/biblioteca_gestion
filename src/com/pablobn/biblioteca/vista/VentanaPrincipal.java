@@ -76,7 +76,7 @@ public class VentanaPrincipal extends JFrame {
         infoUsuario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 10));
         infoUsuario.setBackground(colorFondo);
 
-        JLabel nombre = new JLabel(usuarioLogueado.getNombreCompleto().toUpperCase());
+        JLabel nombre = new JLabel(usuarioLogueado.getNombreUsuario().toUpperCase());
         nombre.setFont(new Font("SansSerif", Font.BOLD, 16));
         nombre.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         nombre.setForeground(new Color(30, 70, 160)); // estilo link

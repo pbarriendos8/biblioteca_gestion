@@ -204,16 +204,15 @@ public class FormularioPrestamoEdit extends JDialog {
         comboUsuarios.setBorder(UIManager.getBorder("ComboBox.border"));
         StringBuilder errores = new StringBuilder();
         boolean hayErrores = false;
-
+        if (fechaInicioUtil == null) {
+            errores.append("- La fecha de inicio es obligatoria.\n");
+            hayErrores = true;
+        }
+        if (fechaFinUtil == null) {
+            errores.append("- La fecha de fin es obligatoria.\n");
+            hayErrores = true;
+        }
         if (usuarioActual.getTipoUsuario().equals(TipoUsuario.ADMIN)) {
-            if (fechaInicioUtil == null) {
-                errores.append("- La fecha de inicio es obligatoria.\n");
-                hayErrores = true;
-            }
-            if (fechaFinUtil == null) {
-                errores.append("- La fecha de fin es obligatoria.\n");
-                hayErrores = true;
-            }
             Usuario usuario = (Usuario) comboUsuarios.getSelectedItem();
             if (usuario == null) {
                 errores.append("- Debes seleccionar un usuario.\n");
@@ -229,20 +228,17 @@ public class FormularioPrestamoEdit extends JDialog {
 
         }
         if (usuarioActual.getTipoUsuario().equals(TipoUsuario.CONSULTA)) {
-            if (fechaInicioUtil == null) {
-                errores.append("- La fecha de inicio es obligatoria.\n");
-                hayErrores = true;
-            }
-            if (fechaFinUtil == null) {
-                errores.append("- La fecha de fin es obligatoria.\n");
-                hayErrores = true;
-            }
             Libro libro = (Libro) comboLibros.getSelectedItem();
             if (libro == null) {
                 errores.append("- Debes seleccionar un libro.\n");
                 comboLibros.setBorder(BorderFactory.createLineBorder(Color.RED));
                 hayErrores = true;
             }
+        }
+
+        if (fechaInicioUtil != null && fechaFinUtil != null && fechaFinUtil.before(fechaInicioUtil)) {
+            errores.append("- La fecha de fin no puede ser anterior a la fecha de inicio.\n");
+            hayErrores = true;
         }
         if (hayErrores) {
             JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
@@ -257,7 +253,9 @@ public class FormularioPrestamoEdit extends JDialog {
                 JOptionPane.YES_NO_OPTION
         );
 
-        if (confirm != JOptionPane.YES_OPTION) return;
+        if (confirm != JOptionPane.YES_OPTION){
+            return;
+        }
 
         // Asignar nuevos valores al préstamo
         prestamo.setFechaInicio(new Date(fechaInicioUtil.getTime()));
