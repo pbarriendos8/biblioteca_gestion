@@ -37,13 +37,9 @@ public class FormularioPrestamoNew extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
-
-        // Panel principal
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panelPrincipal);
-
-        // Panel de campos
         JPanel panelCampos = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
@@ -52,8 +48,6 @@ public class FormularioPrestamoNew extends JDialog {
 
         Font labelFont = new Font("SansSerif", Font.PLAIN, 14);
         Font inputFont = new Font("SansSerif", Font.PLAIN, 13);
-
-        // Configuración date pickers
         Properties p = new Properties();
         p.put("text.today", "Hoy");
         p.put("text.month", "Mes");
@@ -70,22 +64,18 @@ public class FormularioPrestamoNew extends JDialog {
             cargarUsuarios();
             agregarCampo(panelCampos, gbc, "Usuario:", comboUsuarios, labelFont, 2);
         } else {
-            comboUsuarios = null; // No se usa
+            comboUsuarios = null;
         }
         comboLibros = new JComboBox<>();
         comboLibros.setFont(inputFont);
 
         cargarLibros();
-
-        // Observaciones
         textObservaciones = new JTextArea(5, 30);
         textObservaciones.setFont(inputFont);
         textObservaciones.setLineWrap(true);
         textObservaciones.setWrapStyleWord(true);
         JScrollPane scrollObservaciones = new JScrollPane(textObservaciones);
         scrollObservaciones.setPreferredSize(new Dimension(300, 100));
-
-        // Añadir campos
         agregarCampo(panelCampos, gbc, "Fecha Inicio:", datePickerInicio, labelFont, 0);
         agregarCampo(panelCampos, gbc, "Fecha Fin:", datePickerFin, labelFont, 1);
         agregarCampo(panelCampos, gbc, "Libro:", comboLibros, labelFont, (usuarioActual.getTipoUsuario() == TipoUsuario.CONSULTA ? 2 : 3));
@@ -99,11 +89,7 @@ public class FormularioPrestamoNew extends JDialog {
         panelCampos.add(scrollObservaciones, gbc);
 
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
-
-        // Panel de botones (ambos a la derecha)
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-
-// Botón Guardar
         JButton btnGuardar = new JButton("Guardar Préstamo");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
@@ -111,8 +97,6 @@ public class FormularioPrestamoNew extends JDialog {
         btnGuardar.setFocusPainted(false);
         btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.addActionListener(e -> guardarPrestamo());
-
-// Botón Salir
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnSalir.setBackground(new Color(120, 120, 120));
@@ -126,8 +110,6 @@ public class FormularioPrestamoNew extends JDialog {
                 dispose();
             }
         });
-
-// Añadir primero Guardar, luego Salir (para que Salir quede más a la derecha)
         panelBoton.add(btnGuardar);
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);

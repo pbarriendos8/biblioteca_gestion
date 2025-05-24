@@ -79,8 +79,6 @@ public class FormularioAutorEdit extends JDialog {
         JScrollPane scrollBio = new JScrollPane(txtBiografia);
         scrollBio.setPreferredSize(new Dimension(300, 100));
         panelCampos.add(scrollBio, gbc);
-
-        // Foto
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 2;
@@ -102,11 +100,7 @@ public class FormularioAutorEdit extends JDialog {
         panelCampos.add(lblFoto, gbc);
 
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
-
-        // Panel de botones (ambos a la derecha)
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-
-// Botón Guardar
         JButton btnGuardar = new JButton("Guardar Autor");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
@@ -114,8 +108,6 @@ public class FormularioAutorEdit extends JDialog {
         btnGuardar.setFocusPainted(false);
         btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.addActionListener(e -> guardarCambios());
-
-// Botón Salir
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnSalir.setBackground(new Color(120, 120, 120));
@@ -129,8 +121,6 @@ public class FormularioAutorEdit extends JDialog {
                 dispose();
             }
         });
-
-// Añadir primero Guardar, luego Salir (para que Salir quede más a la derecha)
         panelBoton.add(btnGuardar);
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);

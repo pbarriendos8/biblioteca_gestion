@@ -16,8 +16,6 @@ public class RegistroUsuarioPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-
-        // Título
         JLabel titleLabel = new JLabel("Registro de Usuario");
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 22));
         titleLabel.setForeground(new Color(33, 37, 41));
@@ -28,8 +26,6 @@ public class RegistroUsuarioPanel extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
         add(titleLabel, gbc);
         gbc.gridwidth = 1;
-
-        // Campos
         JTextField nombreUsuarioField = createTextField();
         JTextField correoField = createTextField();
         JPasswordField contrasenaField = createPasswordField();
@@ -46,21 +42,15 @@ public class RegistroUsuarioPanel extends JPanel {
         fila = addField("Nombre completo:", nombreCompletoField, gbc, fila);
         fila = addField("Dirección:", direccionField, gbc, fila);
         fila = addField("Teléfono:", telefonoField, gbc, fila);
-
-        // Botón crear
         JButton crearCuentaBtn = crearBoton("Crear Usuario", new Color(70, 130, 255));
         gbc.gridx = 0;
         gbc.gridy = fila++;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         add(crearCuentaBtn, gbc);
-
-        // Botón salir
         JButton salirBtn = crearBoton("Salir", new Color(120, 120, 120));
         gbc.gridy = fila;
         add(salirBtn, gbc);
-
-        // Acción crear usuario
         crearCuentaBtn.addActionListener(e -> {
             resetFieldBorders(nombreUsuarioField, contrasenaField, repetirContrasenaField);
 

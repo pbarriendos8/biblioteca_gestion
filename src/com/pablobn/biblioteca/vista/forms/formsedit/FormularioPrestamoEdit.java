@@ -96,10 +96,7 @@ public class FormularioPrestamoEdit extends JDialog {
         panelCampos.add(scrollObservaciones, gbc);
 
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
-        // Panel de botones (ambos a la derecha)
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-
-// Botón Guardar
         JButton btnGuardar = new JButton("Guardar Préstamo");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
@@ -107,8 +104,6 @@ public class FormularioPrestamoEdit extends JDialog {
         btnGuardar.setFocusPainted(false);
         btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.addActionListener(e -> guardarCambios());
-
-// Botón Salir
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnSalir.setBackground(new Color(120, 120, 120));
@@ -122,8 +117,6 @@ public class FormularioPrestamoEdit extends JDialog {
                 dispose();
             }
         });
-
-// Añadir primero Guardar, luego Salir (para que Salir quede más a la derecha)
         panelBoton.add(btnGuardar);
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
@@ -256,18 +249,14 @@ public class FormularioPrestamoEdit extends JDialog {
         if (confirm != JOptionPane.YES_OPTION){
             return;
         }
-
-        // Asignar nuevos valores al préstamo
         prestamo.setFechaInicio(new Date(fechaInicioUtil.getTime()));
         prestamo.setFechaFin(new Date(fechaFinUtil.getTime()));
         prestamo.setUsuario((Usuario) comboUsuarios.getSelectedItem());
         prestamo.setLibro((Libro) comboLibros.getSelectedItem());
         prestamo.setObservaciones(textObservaciones.getText());
-
-        // Guardar cambios en la base de datos
         PrestamoDAO.actualizarPrestamo(prestamo);
 
         JOptionPane.showMessageDialog(this, "Préstamo actualizado correctamente.");
-        dispose(); // cerrar la ventana
+        dispose();
     }
 }

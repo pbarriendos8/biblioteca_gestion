@@ -14,11 +14,8 @@ import java.util.List;
 public class UsuarioDAO {
 
     public static void registrarUsuario(Usuario nuevoUsuario) {
-        // Establecer el tipo de usuario por defecto como "consulta"
-        nuevoUsuario.setTipoUsuario(TipoUsuario.CONSULTA); // Tipo por defecto
-        nuevoUsuario.setFechaRegistro(new Date(System.currentTimeMillis())); // Fecha actual
-
-        // Guardar el usuario en la base de datos
+        nuevoUsuario.setTipoUsuario(TipoUsuario.CONSULTA);
+        nuevoUsuario.setFechaRegistro(new Date(System.currentTimeMillis()));
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
             session.save(nuevoUsuario);
@@ -29,7 +26,7 @@ public class UsuarioDAO {
     }
 
     public static void crearUsuario(Usuario nuevoUsuario) {
-        nuevoUsuario.setFechaRegistro(new Date(System.currentTimeMillis())); // Fecha actual
+        nuevoUsuario.setFechaRegistro(new Date(System.currentTimeMillis()));
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();

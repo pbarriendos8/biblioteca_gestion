@@ -64,15 +64,11 @@ public class PanelEntidad extends JPanel {
         }
 
         panelFiltroVisual.getComboBox().addActionListener(e -> cargarDatos());
-
-        // Crear botones de acciones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         btnNuevo = new JButton("Nuevo");
         btnEditar = new JButton("Editar");
         btnEliminar = new JButton("Eliminar");
         btnFinalizar = new JButton("Finalizar");
-
-        // Desactivar botones si el usuario es consultor y entidad es Autor o Libro
         if (usuarioLoguedo.getTipoUsuario() == TipoUsuario.CONSULTA && (entidad.equals("Autores") || entidad.equals("Libros"))) {
             btnNuevo.setEnabled(false);
             btnEditar.setEnabled(false);
@@ -101,8 +97,6 @@ public class PanelEntidad extends JPanel {
                 }
             });
         }
-
-        // Panel que contendrá filtro visual y botones
         JPanel panelSuperior = new JPanel();
         panelSuperior.setLayout(new BorderLayout());
 
@@ -119,8 +113,6 @@ public class PanelEntidad extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         panelCentro.add(scrollPane, BorderLayout.CENTER);
         add(panelCentro, BorderLayout.CENTER);
-
-        // Acción de botones
         btnNuevo.addActionListener(e -> mostrarVentanaNuevo());
         btnEditar.addActionListener(e -> mostrarVentanaEditar());
         btnEliminar.addActionListener(e -> mostrarVentanaEliminar());
@@ -130,7 +122,7 @@ public class PanelEntidad extends JPanel {
                 int fila = table.getSelectedRow();
                 if (fila >= 0) {
                     int modeloFila = table.convertRowIndexToModel(fila);
-                    Object estadoObj = table.getModel().getValueAt(modeloFila, 5); // Columna "Estado"
+                    Object estadoObj = table.getModel().getValueAt(modeloFila, 5);
                     if (estadoObj != null && estadoObj instanceof EstadoPrestamo) {
                         EstadoPrestamo estado = (EstadoPrestamo) estadoObj;
                         btnFinalizar.setEnabled(estado != EstadoPrestamo.FINALIZADO);
@@ -142,8 +134,6 @@ public class PanelEntidad extends JPanel {
                 }
             }
         });
-
-        // Cargar datos
         cargarDatos();
     }
 
@@ -181,7 +171,6 @@ public class PanelEntidad extends JPanel {
                     List<Prestamo> prestamos = PrestamoDAO.obtenerTodosPrestamos();
 
                     if (usuarioLogueado.getTipoUsuario() == TipoUsuario.CONSULTA) {
-                        // Mostrar solo los préstamos del usuario actual
                         prestamos = prestamos.stream()
                                 .filter(p -> p.getUsuario() != null && p.getUsuario().getIdUsuario() == usuarioLogueado.getIdUsuario())
                                 .collect(Collectors.toList());
@@ -479,7 +468,7 @@ public class PanelEntidad extends JPanel {
             if (opcion == JOptionPane.YES_OPTION) {
                 PrestamoDAO.finalizarPrestamo(id);
                 JOptionPane.showMessageDialog(this, "Préstamo finalizado correctamente.");
-                cargarDatos(); // Usa tu método para refrescar la tabla
+                cargarDatos();
             }
 
         } else {

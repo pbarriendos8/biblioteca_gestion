@@ -50,11 +50,7 @@ public class FormularioUsuarioEdit extends JDialog {
         agregarCampo(panelCampos, gbc, fila++, "Nombre Completo:", txtNombreCompleto = new JTextField());
         agregarCampo(panelCampos, gbc, fila++, "Dirección:", txtDireccion = new JTextField());
         agregarCampo(panelCampos, gbc, fila++, "Teléfono:", txtTelefono = new JTextField());
-
-        // Panel de botones (ambos a la derecha)
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-
-// Botón Guardar
         JButton btnGuardar = new JButton("Guardar Autor");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
@@ -62,8 +58,6 @@ public class FormularioUsuarioEdit extends JDialog {
         btnGuardar.setFocusPainted(false);
         btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.addActionListener(e -> guardarCambios());
-
-// Botón Salir
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnSalir.setBackground(new Color(120, 120, 120));
@@ -77,8 +71,6 @@ public class FormularioUsuarioEdit extends JDialog {
                 dispose();
             }
         });
-
-// Añadir primero Guardar, luego Salir (para que Salir quede más a la derecha)
         panelBoton.add(btnGuardar);
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
@@ -166,7 +158,7 @@ public class FormularioUsuarioEdit extends JDialog {
             usuario.setDireccion(txtDireccion.getText());
             usuario.setTelefono(txtTelefono.getText());
 
-            UsuarioDAO.actualizarUsuario(usuario); // Asegúrate de tener este método
+            UsuarioDAO.actualizarUsuario(usuario);
 
             JOptionPane.showMessageDialog(this, "Usuario actualizado exitosamente.");
             dispose();

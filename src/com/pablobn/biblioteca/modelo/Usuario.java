@@ -23,7 +23,7 @@ public class Usuario {
     @Basic
     @Column(name = "password")
     private String password;
-    @Enumerated(EnumType.STRING) // Usamos EnumType.STRING para almacenar el nombre del enum como texto
+    @Enumerated(EnumType.STRING)
     @Column(name = "tipo_usuario")
     private TipoUsuario tipoUsuario;
     @Basic

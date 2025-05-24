@@ -37,19 +37,11 @@ public class FormularioUsuarioNew extends JDialog {
         gbc.weightx = 1;
 
         int fila = 0;
-
-        // Nombre Usuario
         agregarCampo(panelCampos, gbc, fila++, "Nombre de Usuario:", txtNombreUsuario = new JTextField());
-
-        // Correo
         agregarCampo(panelCampos, gbc, fila++, "Correo:", txtCorreo = new JTextField());
-
-        // Contraseña
         agregarCampo(panelCampos, gbc, fila++, "Contraseña:", txtPassword = new JPasswordField());
-
-        // Tipo de Usuario (ComboBox)
         cmbTipoUsuario = new JComboBox<>();
-        cmbTipoUsuario.addItem(null); // Placeholder
+        cmbTipoUsuario.addItem(null);
         for (TipoUsuario tipo : TipoUsuario.values()) {
             cmbTipoUsuario.addItem(tipo);
         }
@@ -67,21 +59,10 @@ public class FormularioUsuarioNew extends JDialog {
         });
 
         agregarCampo(panelCampos, gbc, fila++, "Tipo de Usuario:", cmbTipoUsuario);
-
-
-        // Nombre Completo
         agregarCampo(panelCampos, gbc, fila++, "Nombre Completo:", txtNombreCompleto = new JTextField());
-
-        // Dirección
         agregarCampo(panelCampos, gbc, fila++, "Dirección:", txtDireccion = new JTextField());
-
-        // Teléfono
         agregarCampo(panelCampos, gbc, fila++, "Teléfono:", txtTelefono = new JTextField());
-
-        // Panel de botones (ambos a la derecha)
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-
-// Botón Guardar
         JButton btnGuardar = new JButton("Guardar Autor");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
@@ -89,8 +70,6 @@ public class FormularioUsuarioNew extends JDialog {
         btnGuardar.setFocusPainted(false);
         btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.addActionListener(e -> guardarUsuario());
-
-// Botón Salir
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnSalir.setBackground(new Color(120, 120, 120));
@@ -104,8 +83,6 @@ public class FormularioUsuarioNew extends JDialog {
                 dispose();
             }
         });
-
-// Añadir primero Guardar, luego Salir (para que Salir quede más a la derecha)
         panelBoton.add(btnGuardar);
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
@@ -119,9 +96,9 @@ public class FormularioUsuarioNew extends JDialog {
         gbc.gridy = fila;
         gbc.weightx = 0;
 
-        JLabel lbl = new JLabel(etiqueta, SwingConstants.RIGHT); // Alineación derecha
+        JLabel lbl = new JLabel(etiqueta, SwingConstants.RIGHT);
         lbl.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        lbl.setPreferredSize(new Dimension(140, 30)); // Tamaño fijo para todas las etiquetas
+        lbl.setPreferredSize(new Dimension(140, 30));
         panel.add(lbl, gbc);
 
         gbc.gridx = 1;
@@ -185,8 +162,6 @@ public class FormularioUsuarioNew extends JDialog {
             usuario.setNombreCompleto(txtNombreCompleto.getText());
             usuario.setDireccion(txtDireccion.getText());
             usuario.setTelefono(txtTelefono.getText());
-
-            // Setea la fecha actual (opcional, depende de tu lógica)
             usuario.setFechaRegistro(new java.sql.Date(System.currentTimeMillis()));
 
             UsuarioDAO.crearUsuario(usuario);

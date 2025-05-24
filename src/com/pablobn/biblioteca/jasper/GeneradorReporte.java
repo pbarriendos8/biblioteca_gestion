@@ -14,7 +14,6 @@ public class GeneradorReporte {
 
     public static void mostrarInformeLibrosPorAutor(Session session) {
         try {
-            // Cargar desde el classpath
             InputStream jasperStream = GeneradorReporte.class.getResourceAsStream("/informes/InformeLibrosPorAutor.jasper");
             if (jasperStream == null) {
                 throw new RuntimeException("No se encontró el archivo del informe .jasper");
@@ -35,7 +34,6 @@ public class GeneradorReporte {
     }
     public static void mostrarInformePrestamosPorUsuario(Session session) {
         try {
-            // Cargar desde el classpath
             InputStream jasperStream = GeneradorReporte.class.getResourceAsStream("/informes/InformePrestamosPorUsuario.jasper");
             if (jasperStream == null) {
                 throw new RuntimeException("No se encontró el archivo del informe .jasper");
@@ -57,7 +55,6 @@ public class GeneradorReporte {
 
     public static void mostrarInformeGraficoPrestamos(Session session) {
         try {
-            // Cargar desde el classpath
             InputStream jasperStream = GeneradorReporte.class.getResourceAsStream("/informes/GraficoPrestamos.jasper");
             if (jasperStream == null) {
                 throw new RuntimeException("No se encontró el archivo del informe .jasper");
@@ -79,7 +76,6 @@ public class GeneradorReporte {
 
     public static void mostrarGraficoLibrosPorAutor(Session session) {
         try {
-            // Cargar desde el classpath
             InputStream jasperStream = GeneradorReporte.class.getResourceAsStream("/informes/GraficoLibrosPorAutor.jasper");
             if (jasperStream == null) {
                 throw new RuntimeException("No se encontró el archivo del informe .jasper");

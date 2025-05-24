@@ -16,15 +16,11 @@ public class PanelPerfilUsuario extends JPanel {
     public PanelPerfilUsuario(Usuario usuario) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        // Título
         JLabel lblTitulo = new JLabel("Mi Perfil");
         lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 24));
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         add(lblTitulo, BorderLayout.NORTH);
-
-        // Panel formulario
         JPanel formulario = new JPanel();
         formulario.setLayout(new GridBagLayout());
         formulario.setOpaque(false);
@@ -36,12 +32,12 @@ public class PanelPerfilUsuario extends JPanel {
         Font fieldFont = new Font("SansSerif", Font.PLAIN, 14);
         Dimension fieldSize = new Dimension(250, 30);
 
-        txtNombreCompleto = new JTextField(usuario.getNombreCompleto());
+        txtNombreCompleto = new JTextField(usuario.getNombreUsuario());
         txtCorreo = new JTextField(usuario.getCorreo());
         txtDireccion = new JTextField(usuario.getDireccion());
         txtTelefono = new JTextField(usuario.getTelefono());
         txtPassword = new JPasswordField(usuario.getPassword());
-        txtPassword.setEnabled(false); // Inicialmente deshabilitado
+        txtPassword.setEnabled(false);
 
         txtPassword.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -52,14 +48,11 @@ public class PanelPerfilUsuario extends JPanel {
                     if (confirm == JOptionPane.YES_OPTION) {
                         txtPassword.setEnabled(true);
                         txtPassword.requestFocus();
-                        txtPassword.setText(""); // Opcional: limpiar para escribir nueva
+                        txtPassword.setText("");
                     }
                 }
             }
         });
-
-
-        // Agrega campos al formulario
         addField(formulario, gbc, 0, "Nombre completo:", txtNombreCompleto, labelFont, fieldFont, fieldSize);
         addField(formulario, gbc, 1, "Correo:", txtCorreo, labelFont, fieldFont, fieldSize);
         addField(formulario, gbc, 2, "Dirección:", txtDireccion, labelFont, fieldFont, fieldSize);
@@ -67,8 +60,6 @@ public class PanelPerfilUsuario extends JPanel {
         addField(formulario, gbc, 4, "Contraseña:", txtPassword, labelFont, fieldFont, fieldSize);
 
         add(formulario, BorderLayout.CENTER);
-
-        // Botón guardar
         JButton btnGuardar = new JButton("Guardar Cambios");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));

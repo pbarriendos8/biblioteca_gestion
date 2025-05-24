@@ -34,8 +34,6 @@ public class FormularioAutorNew extends JDialog {
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panelPrincipal);
-
-        // Panel de campos
         JPanel panelCampos = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
@@ -44,17 +42,9 @@ public class FormularioAutorNew extends JDialog {
 
         Font labelFont = new Font("SansSerif", Font.PLAIN, 14);
         Font inputFont = new Font("SansSerif", Font.PLAIN, 13);
-
-        // Nombre
         agregarCampo(panelCampos, gbc, "Nombre:", txtNombre = new JTextField(), labelFont, inputFont, 0);
-
-        // Apellidos
         agregarCampo(panelCampos, gbc, "Apellidos:", txtApellidos = new JTextField(), labelFont, inputFont, 1);
-
-        // Nacionalidad
         agregarCampo(panelCampos, gbc, "Nacionalidad:", txtNacionalidad = new JTextField(), labelFont, inputFont, 2);
-
-        // Fecha Nacimiento
         UtilDateModel model = new UtilDateModel();
         JDatePanelImpl datePanel = new JDatePanelImpl(model, new Properties());
         datePicker = new JDatePickerImpl(datePanel, new com.pablobn.biblioteca.util.DateFormat());
@@ -64,8 +54,6 @@ public class FormularioAutorNew extends JDialog {
         panelCampos.add(new JLabel("Fecha Nacimiento:", JLabel.RIGHT), gbc);
         gbc.gridx = 1;
         panelCampos.add(datePicker, gbc);
-
-        // Biografía
         gbc.gridx = 0;
         gbc.gridy = 4;
         JLabel lblBiografia = new JLabel("Biografía:", JLabel.RIGHT);
@@ -77,8 +65,6 @@ public class FormularioAutorNew extends JDialog {
         JScrollPane scrollBio = new JScrollPane(txtBiografia);
         scrollBio.setPreferredSize(new Dimension(300, 100));
         panelCampos.add(scrollBio, gbc);
-
-        // Foto
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 2;
@@ -97,11 +83,7 @@ public class FormularioAutorNew extends JDialog {
         panelCampos.add(lblFoto, gbc);
 
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
-
-        // Panel de botones (ambos a la derecha)
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-
-// Botón Guardar
         JButton btnGuardar = new JButton("Guardar Autor");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
@@ -109,8 +91,6 @@ public class FormularioAutorNew extends JDialog {
         btnGuardar.setFocusPainted(false);
         btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.addActionListener(e -> guardarAutor());
-
-// Botón Salir
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnSalir.setBackground(new Color(120, 120, 120));
@@ -124,8 +104,6 @@ public class FormularioAutorNew extends JDialog {
                 dispose();
             }
         });
-
-// Añadir primero Guardar, luego Salir (para que Salir quede más a la derecha)
         panelBoton.add(btnGuardar);
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);

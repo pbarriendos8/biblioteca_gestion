@@ -20,7 +20,7 @@ public class LoginPanel extends JPanel {
     private final Color colorHover = new Color(21, 101, 192);
     private final Color colorFondo = new Color(245, 245, 250);
     private final Color colorSalir = new Color(120, 120, 120);
-    private final Color colorActivo = new Color(70, 130, 255);  // Azul cuando el botón está seleccionado
+    private final Color colorActivo = new Color(70, 130, 255);
 
 
     public LoginPanel() {
@@ -75,9 +75,6 @@ public class LoginPanel extends JPanel {
 
 
         add(formPanel, BorderLayout.CENTER);
-
-
-        // Listeners
         btnRegistro.addActionListener(e -> {
             JFrame frameRegistro = new JFrame("Registro de Usuario");
             frameRegistro.setContentPane(new RegistroUsuarioPanel());
@@ -101,8 +98,8 @@ public class LoginPanel extends JPanel {
         boton.setFocusPainted(false);
         boton.setContentAreaFilled(true);
         boton.setOpaque(true);
-        boton.setBackground(color);  // Usamos el color activo para el fondo del botón
-        boton.setForeground(Color.WHITE);  // Color del texto blanco para contraste
+        boton.setBackground(color);
+        boton.setForeground(Color.WHITE);
         boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
 
 

@@ -99,8 +99,6 @@ public class FormularioLibroEdit extends JDialog {
         panelCampos.add(lblAutor, gbc);
         gbc.gridx = 1;
         panelCampos.add(cmbAutores, gbc);
-
-        // Portada
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 2;
@@ -126,8 +124,6 @@ public class FormularioLibroEdit extends JDialog {
         }
 
         panelCampos.add(lblPortada, gbc);
-
-        // Archivo PDF
         gbc.gridx = 0;
         gbc.gridy = 6;
         lblArchivoPdf = new JLabel("Haz clic para subir el archivo PDF");
@@ -155,8 +151,6 @@ public class FormularioLibroEdit extends JDialog {
         panelCampos.add(lblArchivoPdf, gbc);
 
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
-
-        // Panel de botones (a la derecha)
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 
         JButton btnGuardar = new JButton("Guardar Libro");
@@ -240,23 +234,18 @@ public class FormularioLibroEdit extends JDialog {
     }
 
     private void guardarLibro() {
-        // Restaurar bordes a su estado normal
         txtTitulo.setBorder(UIManager.getBorder("TextField.border"));
         txtIsbn.setBorder(UIManager.getBorder("TextField.border"));
         cmbAutores.setBorder(UIManager.getBorder("ComboBox.border"));
 
         StringBuilder errores = new StringBuilder();
         boolean hayErrores = false;
-
-        // Validar título
         String titulo = txtTitulo.getText().trim();
         if (titulo.isEmpty()) {
             errores.append("- El título es obligatorio.\n");
             txtTitulo.setBorder(BorderFactory.createLineBorder(Color.RED));
             hayErrores = true;
         }
-
-        // Validar ISBN
         String isbn = txtIsbn.getText().trim();
         if (isbn.isEmpty()) {
             errores.append("- El ISBN es obligatorio.\n");
@@ -267,16 +256,12 @@ public class FormularioLibroEdit extends JDialog {
             txtIsbn.setBorder(BorderFactory.createLineBorder(Color.RED));
             hayErrores = true;
         }
-
-        // Validar autor
         Autor autorSeleccionado = (Autor) cmbAutores.getSelectedItem();
         if (autorSeleccionado == null) {
             errores.append("- Debes seleccionar un autor.\n");
             cmbAutores.setBorder(BorderFactory.createLineBorder(Color.RED));
             hayErrores = true;
         }
-
-        // Validar duplicados (excluyendo el propio libro actual)
         if (LibroDAO.existeOtroLibroConTitulo(titulo, libro.getIdLibro())) {
             errores.append("- Ya existe otro libro con ese título.\n");
             txtTitulo.setBorder(BorderFactory.createLineBorder(Color.RED));
@@ -288,8 +273,6 @@ public class FormularioLibroEdit extends JDialog {
             txtIsbn.setBorder(BorderFactory.createLineBorder(Color.RED));
             hayErrores = true;
         }
-
-        // Mostrar errores si los hay
         if (hayErrores) {
             JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
                     "Errores de validación", JOptionPane.WARNING_MESSAGE);

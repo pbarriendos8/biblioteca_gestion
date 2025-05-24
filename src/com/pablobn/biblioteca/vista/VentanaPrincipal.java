@@ -21,10 +21,10 @@ public class VentanaPrincipal extends JFrame {
 
     private final Font fuenteBoton = new Font("SansSerif", Font.BOLD, 14);
 
-    private final Color colorFondo = new Color(245, 245, 250);        // fondo gris muy claro
-    private final Color colorHover = new Color(220, 230, 255);        // hover azul claro
-    private final Color colorActivo = new Color(70, 130, 255);        // azul intenso
-    private final Color colorTextoNormal = new Color(50, 50, 50);     // gris oscuro
+    private final Color colorFondo = new Color(245, 245, 250);
+    private final Color colorHover = new Color(220, 230, 255);
+    private final Color colorActivo = new Color(70, 130, 255);
+    private final Color colorTextoNormal = new Color(50, 50, 50);
     private final Color colorTextoActivo = Color.WHITE;
 
     private JButton botonSeleccionado = null;
@@ -41,28 +41,20 @@ public class VentanaPrincipal extends JFrame {
 
         setLayout(new BorderLayout());
 
-        // Panel lateral izquierdo
         add(crearPanelIzquierdo(), BorderLayout.WEST);
 
-        // Panel central con CardLayout para cambiar de vista
         cardLayout = new CardLayout();
         panelContenido = new JPanel(cardLayout);
         add(panelContenido, BorderLayout.CENTER);
 
-        // Añadir vistas (puedes ir añadiendo más)
         agregarVista("Libros", new PanelEntidad("Libros", usuarioLogueado));
         agregarVista("Autores", new PanelEntidad("Autores", usuarioLogueado));
         agregarVista("Préstamos", new PanelEntidad("Préstamos", usuarioLogueado));
 
-        // Si el usuario es ADMIN, añadir la vista de Usuarios
         if (usuario.getTipoUsuario() == TipoUsuario.ADMIN) {
             agregarVista("Usuarios", new PanelEntidad("Usuarios", usuarioLogueado));
         }
 
-        // Si el usuario es un Editor, no añadir la pestaña de "Usuarios"
-        if (usuario.getTipoUsuario() == TipoUsuario.EDITOR) {
-            // Puedes omitir la vista de "Usuarios" directamente aquí, sin agregarla.
-        }
 
         setVisible(true);
     }
@@ -73,7 +65,6 @@ public class VentanaPrincipal extends JFrame {
         panel.setPreferredSize(new Dimension(250, getHeight()));
         panel.setBackground(colorFondo);
 
-        // Info de usuario arriba
         JPanel infoUsuario = new JPanel(new GridLayout(2, 1));
         infoUsuario.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 10));
         infoUsuario.setBackground(colorFondo);
@@ -81,7 +72,7 @@ public class VentanaPrincipal extends JFrame {
         JLabel nombre = new JLabel(usuarioLogueado.getNombreUsuario().toUpperCase());
         nombre.setFont(new Font("SansSerif", Font.BOLD, 16));
         nombre.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        nombre.setForeground(new Color(30, 70, 160)); // estilo link
+        nombre.setForeground(new Color(30, 70, 160));
         nombre.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -103,7 +94,6 @@ public class VentanaPrincipal extends JFrame {
 
         panel.add(infoUsuario, BorderLayout.NORTH);
 
-        // Menú de botones
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
         menu.setBackground(colorFondo);
@@ -113,7 +103,7 @@ public class VentanaPrincipal extends JFrame {
         for (String opcion : opciones) {
             JButton boton = crearBotonMenu(opcion);
             menu.add(boton);
-            menu.add(Box.createRigidArea(new Dimension(0, 5))); // Espacio entre botones
+            menu.add(Box.createRigidArea(new Dimension(0, 5)));
         }
 
         if (usuarioLogueado.getTipoUsuario() == TipoUsuario.ADMIN) {
@@ -121,8 +111,7 @@ public class VentanaPrincipal extends JFrame {
             menu.add(boton);
             menu.add(Box.createRigidArea(new Dimension(0, 5)));
         }
-        // --- Aquí añadimos el bloque de botones de informes ---
-        // Título sección informes
+
         JLabel labelInformes = new JLabel("INFORMES");
         labelInformes.setFont(new Font("SansSerif", Font.BOLD, 14));
         labelInformes.setForeground(new Color(70, 130, 255));
@@ -130,7 +119,6 @@ public class VentanaPrincipal extends JFrame {
         labelInformes.setAlignmentX(Component.LEFT_ALIGNMENT);
         menu.add(labelInformes);
 
-        // Botón informe "Libros por Autor"
         JButton btnInformeLibrosAutor = new JButton("Libros por Autor");
         btnInformeLibrosAutor.setFont(fuenteBoton);
         btnInformeLibrosAutor.setFocusPainted(false);
@@ -146,8 +134,6 @@ public class VentanaPrincipal extends JFrame {
         menu.add(btnInformeLibrosAutor);
         menu.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        // Aquí puedes añadir más botones para otros informes igual
-        // Botón informe "Préstamos por Usuario"
         JButton btnInformePrestamosUsuario = new JButton("Préstamos por Usuario");
         btnInformePrestamosUsuario.setFont(fuenteBoton);
         btnInformePrestamosUsuario.setFocusPainted(false);
@@ -181,19 +167,13 @@ public class VentanaPrincipal extends JFrame {
 
         panel.add(menu, BorderLayout.CENTER);
 
-        // Panel inferior (cerrar sesión, salir) - igual que antes
-        // ...
-
-
         panel.add(menu, BorderLayout.CENTER);
 
-        // Panel de botones inferiores
         JPanel panelInferior = new JPanel();
         panelInferior.setBackground(colorFondo);
         panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
         panelInferior.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
 
-        // Botón cerrar sesión
         JButton btnCerrarSesion = new JButton("Cerrar Sesión");
         btnCerrarSesion.setFont(fuenteBoton);
         btnCerrarSesion.setFocusPainted(false);
@@ -215,7 +195,6 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
-        // Botón salir
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(fuenteBoton);
         btnSalir.setFocusPainted(false);
@@ -231,11 +210,9 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
-        // Hover effects (opcionales)
         addHoverEffect(btnCerrarSesion, new Color(130, 130, 130), new Color(150, 150, 150));
         addHoverEffect(btnSalir, new Color(90, 90, 90), new Color(120, 120, 120));
 
-        // Añadir botones al panel inferior
         panelInferior.add(btnCerrarSesion);
         panelInferior.add(Box.createRigidArea(new Dimension(0, 10)));
         panelInferior.add(btnSalir);
@@ -253,25 +230,21 @@ public class VentanaPrincipal extends JFrame {
     }
 
     private void generarInformeLibrosPorAutor() {
-        // Crear ventana
         JFrame ventanaOpciones = new JFrame("Opciones de informe");
         ventanaOpciones.setSize(400, 250);
         ventanaOpciones.setLocationRelativeTo(null);
         ventanaOpciones.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ventanaOpciones.setLayout(new GridBagLayout());
 
-        // Fuente y colores
         Font fuenteBoton = new Font("SansSerif", Font.BOLD, 16);
-        Color colorPrincipal = new Color(33, 150, 243); // Azul Salesforce
+        Color colorPrincipal = new Color(33, 150, 243);
         Color colorTexto = Color.WHITE;
         Color colorSalir = new Color(120, 120, 120);
 
-        // Botones
         JButton btnInforme = new JButton("Ver Informe Detallado");
         JButton btnGrafico = new JButton("Ver Gráfico de Libros por Autor");
         JButton btnSalir = new JButton("Salir");
 
-        // Configurar estilo común
         JButton[] botones = {btnInforme, btnGrafico};
         for (JButton boton : botones) {
             boton.setFont(fuenteBoton);
@@ -281,14 +254,12 @@ public class VentanaPrincipal extends JFrame {
             boton.setPreferredSize(new Dimension(280, 40));
         }
 
-        // Botón salir
         btnSalir.setFont(fuenteBoton);
         btnSalir.setBackground(colorSalir);
         btnSalir.setForeground(colorTexto);
         btnSalir.setFocusPainted(false);
         btnSalir.setPreferredSize(new Dimension(280, 40));
 
-        // Acciones
         btnInforme.addActionListener(e -> {
             ventanaOpciones.dispose();
             GeneradorReporte.mostrarInformeLibrosPorAutor(HibernateUtil.getSession());
@@ -301,7 +272,6 @@ public class VentanaPrincipal extends JFrame {
 
         btnSalir.addActionListener(e -> ventanaOpciones.dispose());
 
-        // Layout con GridBagConstraints
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 0;
@@ -338,8 +308,8 @@ public class VentanaPrincipal extends JFrame {
         boton.setFocusPainted(false);
         boton.setContentAreaFilled(true);
         boton.setOpaque(true);
-        boton.setBackground(colorFondo);  // Color de fondo por defecto (gris muy claro)
-        boton.setForeground(colorTextoNormal);  // Color de texto gris oscuro
+        boton.setBackground(colorFondo);
+        boton.setForeground(colorTextoNormal);
         boton.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 10));
         boton.setAlignmentX(Component.LEFT_ALIGNMENT);
         boton.setHorizontalAlignment(SwingConstants.LEFT);
@@ -349,29 +319,29 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void mouseEntered(MouseEvent evt) {
                 if (boton != botonSeleccionado) {
-                    boton.setBackground(colorHover);  // Cambiar al color hover cuando el mouse pasa por encima
+                    boton.setBackground(colorHover);
                 }
             }
 
             @Override
             public void mouseExited(MouseEvent evt) {
                 if (boton != botonSeleccionado) {
-                    boton.setBackground(colorFondo);  // Volver al color por defecto cuando el mouse sale
+                    boton.setBackground(colorFondo);
                 }
             }
 
             @Override
             public void mouseClicked(MouseEvent evt) {
                 if (botonSeleccionado != null) {
-                    botonSeleccionado.setBackground(colorFondo);  // Restablecer el color del botón previamente seleccionado
+                    botonSeleccionado.setBackground(colorFondo);
                     botonSeleccionado.setForeground(colorTextoNormal);
                 }
 
-                boton.setBackground(colorActivo);  // Color cuando el botón es seleccionado
-                boton.setForeground(colorTextoActivo);  // Cambiar el color del texto a blanco
+                boton.setBackground(colorActivo);
+                boton.setForeground(colorTextoActivo);
                 botonSeleccionado = boton;
 
-                cardLayout.show(panelContenido, nombre);  // Cambiar la vista asociada
+                cardLayout.show(panelContenido, nombre);
                 if (nombre.equals("Préstamos")) {
                     JPanel panel = vistasPorEntidad.get("Préstamos");
                     if (panel instanceof PanelEntidad) {

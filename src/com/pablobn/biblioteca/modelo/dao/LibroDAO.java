@@ -18,13 +18,11 @@ public class LibroDAO {
         }
     }
 
-    // Método para obtener todos los libros
     public static List<Libro> obtenerTodosLibros() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("from Libro", Libro.class).list();
         }
     }
-    // Eliminar libro
     public static void eliminarLibro(Libro libro) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();

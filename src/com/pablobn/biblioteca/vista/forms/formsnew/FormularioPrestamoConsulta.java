@@ -32,13 +32,9 @@ public class FormularioPrestamoConsulta extends JDialog {
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
-
-        // Panel principal
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panelPrincipal);
-
-        // Configuración de date pickers
         Properties p = new Properties();
         p.put("text.today", "Hoy");
         p.put("text.month", "Mes");
@@ -46,13 +42,9 @@ public class FormularioPrestamoConsulta extends JDialog {
 
         datePickerInicio = new JDatePickerImpl(new JDatePanelImpl(modelFechaInicio, p), new DateFormat());
         datePickerFin = new JDatePickerImpl(new JDatePanelImpl(modelFechaFin, p), new DateFormat());
-
-        // Observaciones
         textObservaciones = new JTextArea(5, 30);
         JScrollPane scrollObservaciones = new JScrollPane(textObservaciones);
         scrollObservaciones.setPreferredSize(new Dimension(300, 100));
-
-        // Panel de campos
         JPanel panelCampos = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
@@ -68,8 +60,6 @@ public class FormularioPrestamoConsulta extends JDialog {
         agregarCampo(panelCampos, gbc, "Observaciones:", scrollObservaciones, labelFont, 3);
 
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
-
-        // Panel de botones
         JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         JButton btnConfirmar = new JButton("Confirmar Préstamo");
         btnConfirmar.setFont(new Font("SansSerif", Font.BOLD, 14));
