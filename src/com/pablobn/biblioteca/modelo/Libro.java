@@ -1,0 +1,155 @@
+package com.pablobn.biblioteca.modelo;
+
+import javax.persistence.*;
+import java.sql.Date;
+import java.util.Arrays;
+import java.util.Objects;
+
+@Entity
+@Table(name = "libros", schema = "biblioteca_pbarriendos", catalog = "")
+public class Libro {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "id_libro")
+    private int idLibro;
+    @Basic
+    @Column(name = "titulo")
+    private String titulo;
+    @Basic
+    @Column(name = "descripcion")
+    private String descripcion;
+    @Basic
+    @Column(name = "fecha_publicacion")
+    private Date fechaPublicacion;
+    @Basic
+    @Column(name = "portada")
+    private byte[] portada;
+    @Basic
+    @Column(name = "archivo_pdf")
+    private byte[] archivoPdf;
+    @Basic
+    @Column(name = "isbn")
+    private String isbn;
+    @Basic
+    @Column(name = "disponible")
+    private boolean disponible;
+    @ManyToOne
+    @JoinColumn(name = "id_autor", referencedColumnName = "id_autor")
+    private Autor autor;
+    @OneToOne
+    @JoinColumn(name = "id_libro", referencedColumnName = "id_libro", nullable = false)
+    private Prestamo prestamo;
+
+    @Basic
+    @Column(name = "nombre_archivo_pdf")
+    private String nombreArchivoPdf;
+
+    public String getNombreArchivoPdf() {
+        return nombreArchivoPdf;
+    }
+
+    public void setNombreArchivoPdf(String nombreArchivoPdf) {
+        this.nombreArchivoPdf = nombreArchivoPdf;
+    }
+
+    public int getIdLibro() {
+        return idLibro;
+    }
+
+    public void setIdLibro(int idLibro) {
+        this.idLibro = idLibro;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public Date getFechaPublicacion() {
+        return fechaPublicacion;
+    }
+
+    public void setFechaPublicacion(Date fechaPublicacion) {
+        this.fechaPublicacion = fechaPublicacion;
+    }
+
+    public byte[] getPortada() {
+        return portada;
+    }
+
+    public void setPortada(byte[] portada) {
+        this.portada = portada;
+    }
+
+    public byte[] getArchivoPdf() {
+        return archivoPdf;
+    }
+
+    public void setArchivoPdf(byte[] archivoPdf) {
+        this.archivoPdf = archivoPdf;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public boolean isDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Libro libro = (Libro) o;
+        return idLibro == libro.idLibro && disponible == libro.disponible && Objects.equals(titulo, libro.titulo) && Objects.equals(descripcion, libro.descripcion) && Objects.equals(fechaPublicacion, libro.fechaPublicacion) && Arrays.equals(portada, libro.portada) && Arrays.equals(archivoPdf, libro.archivoPdf) && Objects.equals(isbn, libro.isbn) && Objects.equals(nombreArchivoPdf, libro.nombreArchivoPdf);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(idLibro, titulo, descripcion, fechaPublicacion, isbn, disponible, nombreArchivoPdf);
+        result = 31 * result + Arrays.hashCode(portada);
+        result = 31 * result + Arrays.hashCode(archivoPdf);
+        return result;
+    }
+
+    public Autor getAutor() {
+        return autor;
+    }
+
+    public void setAutor(Autor autor) {
+        this.autor = autor;
+    }
+
+    public Prestamo getPrestamo() {
+        return prestamo;
+    }
+
+    public void setPrestamo(Prestamo prestamo) {
+        this.prestamo = prestamo;
+    }
+
+    @Override
+    public String toString() {
+        return this.titulo;
+    }
+}
