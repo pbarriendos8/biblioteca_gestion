@@ -32,7 +32,12 @@ public class FormularioLibroNew extends JDialog {
 
     private static final int ANCHO_LABEL = 120;
 
-
+    /**
+     * Constructor del formulario para crear un nuevo libro.
+     * Inicializa los componentes visuales y configura el formulario.
+     *
+     * @param parent la ventana padre sobre la cual se muestra este diálogo modal.
+     */
     public FormularioLibroNew(JFrame parent) {
         super(parent, "Nuevo Libro", true);
         setSize(600, 700);
@@ -164,10 +169,23 @@ public class FormularioLibroNew extends JDialog {
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
 
-
         setVisible(true);
     }
 
+
+
+    /**
+     * Añade un campo compuesto por una etiqueta y un JTextField al panel dado
+     * utilizando GridBagLayout con la configuración especificada.
+     *
+     * @param panel     El JPanel donde se agregará el campo.
+     * @param gbc       Las restricciones de GridBagConstraints para la posición.
+     * @param texto     El texto que mostrará la etiqueta.
+     * @param campo     El JTextField que se añadirá junto a la etiqueta.
+     * @param fontLabel La fuente que tendrá la etiqueta.
+     * @param fontInput La fuente que tendrá el campo de texto.
+     * @param fila      La fila donde se colocará el campo en el GridBagLayout.
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, String texto, JTextField campo, Font fontLabel, Font fontInput, int fila) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -181,6 +199,11 @@ public class FormularioLibroNew extends JDialog {
         panel.add(campo, gbc);
     }
 
+    /**
+     * Abre un JFileChooser para seleccionar una imagen que se usará como portada.
+     * Lee la imagen seleccionada y la muestra escalada en el JLabel lblPortada.
+     * En caso de error al leer el archivo muestra un mensaje de error.
+     */
     private void seleccionarPortada() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Selecciona una portada");
@@ -200,6 +223,12 @@ public class FormularioLibroNew extends JDialog {
         }
     }
 
+    /**
+     * Abre un JFileChooser para seleccionar un archivo PDF.
+     * Lee el archivo seleccionado y guarda su contenido en bytes además del nombre.
+     * Muestra el nombre del archivo en el JLabel lblArchivoPdf.
+     * En caso de error al leer el archivo muestra un mensaje de error.
+     */
     private void seleccionarArchivoPdf() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Selecciona un archivo PDF");
@@ -218,6 +247,11 @@ public class FormularioLibroNew extends JDialog {
         }
     }
 
+    /**
+     * Valida los datos ingresados en el formulario y, si son correctos,
+     * crea un nuevo objeto Libro con la información proporcionada y lo guarda en la base de datos.
+     * Muestra mensajes de error en caso de datos inválidos o de éxito al guardar.
+     */
     private void guardarLibro() {
         txtTitulo.setBorder(UIManager.getBorder("TextField.border"));
         txtIsbn.setBorder(UIManager.getBorder("TextField.border"));
@@ -265,8 +299,6 @@ public class FormularioLibroNew extends JDialog {
             return;
         }
 
-
-
         try {
             Libro libro = new Libro();
             libro.setTitulo(titulo);
@@ -290,5 +322,6 @@ public class FormularioLibroNew extends JDialog {
             JOptionPane.showMessageDialog(this, "Error al guardar libro: " + e.getMessage());
         }
     }
+
 
 }

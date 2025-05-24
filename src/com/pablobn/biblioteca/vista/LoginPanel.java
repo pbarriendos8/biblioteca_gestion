@@ -7,74 +7,152 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.prefs.Preferences;
 
+/**
+ * Panel de inicio de sesión de la aplicación.
+ * <p>
+ * Contiene campos para ingresar el nombre de usuario y la contraseña,
+ * así como botones para iniciar sesión, registrarse y salir de la aplicación.
+ * </p>
+ * <p>
+ * Al iniciar sesión correctamente, abre la ventana principal con el usuario autenticado.
+ * </p>
+ *
+ * @author Pablo Barriendos Navales
+ */
 public class LoginPanel extends JPanel {
 
+    /**
+     * Campo de texto para ingresar el nombre de usuario.
+     */
     private JTextField txtUsuario;
+
+    /**
+     * Campo de texto para ingresar la contraseña.
+     */
     private JPasswordField txtPassword;
+
+    /**
+     * Botón para iniciar sesión.
+     */
     private JButton btnLogin;
+
+    /**
+     * Botón para abrir el formulario de registro de usuarios.
+     */
     private JButton btnRegistro;
+
+    /**
+     * Botón para salir de la aplicación.
+     */
     private JButton btnSalir;
-    private final Preferences prefs = Preferences.userNodeForPackage(getClass());
 
-    private final Font fuenteBoton = new Font("SansSerif", Font.BOLD, 14);
-    private final Color colorHover = new Color(21, 101, 192);
-    private final Color colorFondo = new Color(245, 245, 250);
+    /**
+     * Fuente utilizada para los campos de texto.
+     */
+    private final Font fuenteTexto = new Font("SansSerif", Font.PLAIN, 16);
+
+    /**
+     * Fuente utilizada para las etiquetas.
+     */
+    private final Font fuenteEtiqueta = new Font("SansSerif", Font.BOLD, 16);
+
+    /**
+     * Fuente utilizada para los botones.
+     */
+    private final Font fuenteBoton = new Font("SansSerif", Font.BOLD, 16);
+
+    /**
+     * Color de fondo principal del panel.
+     */
+    private final Color colorFondo = new Color(250, 250, 250);
+
+    /**
+     * Color primario para botones activos (login, registro).
+     */
+    private final Color colorPrimario = new Color(70, 130, 255);
+
+    /**
+     * Color para el botón de salir.
+     */
     private final Color colorSalir = new Color(120, 120, 120);
-    private final Color colorActivo = new Color(70, 130, 255);
 
-
+    /**
+     * Constructor que crea y configura el panel de login, incluyendo todos
+     * los componentes gráficos y los eventos asociados.
+     */
     public LoginPanel() {
-        setLayout(new BorderLayout(20, 20));
-        setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+        setLayout(new BorderLayout());
         setBackground(colorFondo);
 
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setOpaque(false);
-        JLabel lblLogo = new JLabel("📚", SwingConstants.CENTER);
-        lblLogo.setFont(new Font("SansSerif", Font.PLAIN, 48));
-        JLabel lblTitulo = new JLabel("Biblioteca Central", SwingConstants.CENTER);
-        lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 24));
-        topPanel.add(lblLogo, BorderLayout.NORTH);
-        topPanel.add(lblTitulo, BorderLayout.CENTER);
-        add(topPanel, BorderLayout.NORTH);
+        // Panel superior con logo
+        JLabel lblLogoImg = new JLabel();
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/img/logotipo.png")); // Reemplaza con tu ruta
+        Image img = logoIcon.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+        lblLogoImg.setIcon(new ImageIcon(img));
+        lblLogoImg.setHorizontalAlignment(SwingConstants.CENTER);
+        lblLogoImg.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        add(lblLogoImg, BorderLayout.NORTH);
 
+        // Panel central con formulario
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        JLabel lblUsuario = new JLabel("Nombre de Usuario:");
-        txtUsuario = new JTextField(15);
-        JLabel lblPassword = new JLabel("Contraseña:");
-        txtPassword = new JPasswordField(15);
+        // Etiqueta Usuario
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.EAST;
+        formPanel.add(new JLabel("Nombre de Usuario:", JLabel.RIGHT) {{
+            setFont(fuenteEtiqueta);
+        }}, gbc);
 
-        btnLogin = crearBoton("Iniciar Sesión", colorActivo);
-        btnRegistro = crearBoton("Registrarse", colorActivo);
-        btnSalir = crearBoton("Salir", colorSalir);
-
-
-        gbc.gridx = 0; gbc.gridy = 0;
-        formPanel.add(lblUsuario, gbc);
+        // Campo Usuario
         gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        txtUsuario = new JTextField(20);
+        txtUsuario.setFont(fuenteTexto);
         formPanel.add(txtUsuario, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 1;
-        formPanel.add(lblPassword, gbc);
+        // Etiqueta Contraseña
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        formPanel.add(new JLabel("Contraseña:", JLabel.RIGHT) {{
+            setFont(fuenteEtiqueta);
+        }}, gbc);
+
+        // Campo Contraseña
         gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        txtPassword = new JPasswordField(20);
+        txtPassword.setFont(fuenteTexto);
         formPanel.add(txtPassword, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
+        // Botones
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 0;
+        btnLogin = crearBoton("Iniciar Sesión", colorPrimario);
         formPanel.add(btnLogin, gbc);
 
         gbc.gridy = 3;
+        btnRegistro = crearBoton("Registrarse", colorPrimario);
         formPanel.add(btnRegistro, gbc);
 
         gbc.gridy = 4;
+        btnSalir = crearBoton("Salir", colorSalir);
         formPanel.add(btnSalir, gbc);
 
-
+        formPanel.setBorder(BorderFactory.createEmptyBorder(20, 60, 20, 60));
         add(formPanel, BorderLayout.CENTER);
+
+        // Eventos
         btnRegistro.addActionListener(e -> {
             JFrame frameRegistro = new JFrame("Registro de Usuario");
             frameRegistro.setContentPane(new RegistroUsuarioPanel());
@@ -92,20 +170,30 @@ public class LoginPanel extends JPanel {
         });
     }
 
+    /**
+     * Crea un botón con el texto y color especificados, aplicando el estilo
+     * definido para los botones del panel.
+     *
+     * @param texto Texto que mostrará el botón.
+     * @param color Color de fondo del botón.
+     * @return JButton configurado con el estilo y texto indicados.
+     */
     private JButton crearBoton(String texto, Color color) {
         JButton boton = new JButton(texto);
         boton.setFont(fuenteBoton);
         boton.setFocusPainted(false);
-        boton.setContentAreaFilled(true);
-        boton.setOpaque(true);
         boton.setBackground(color);
         boton.setForeground(Color.WHITE);
-        boton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-
-
+        boton.setBorder(BorderFactory.createEmptyBorder(14, 30, 14, 30));
         return boton;
     }
 
+    /**
+     * Método que realiza la autenticación del usuario usando los datos ingresados
+     * en los campos de texto. Si la autenticación es correcta, abre la ventana principal
+     * con el usuario autenticado y cierra el panel de login. En caso contrario, muestra
+     * un mensaje de error.
+     */
     private void autenticarUsuario() {
         String usuario = txtUsuario.getText();
         String password = new String(txtPassword.getPassword());

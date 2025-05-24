@@ -18,7 +18,14 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Properties;
 
-
+/**
+ * Diálogo para editar los datos de un libro existente.
+ * Muestra un formulario con campos para modificar título, descripción, ISBN, autor,
+ * fecha de publicación, portada y archivo PDF asociados al libro.
+ * Los datos iniciales se cargan desde el objeto {@link Libro} pasado en el constructor.
+ * Permite seleccionar imagen para portada y archivo PDF desde el sistema de archivos.
+ * Al guardar, actualiza el libro en la base de datos mediante {@link LibroDAO}.
+ */
 public class FormularioLibroEdit extends JDialog {
     private static final int ANCHO_LABEL = 120;
     private JTextField txtTitulo;
@@ -32,6 +39,12 @@ public class FormularioLibroEdit extends JDialog {
     private JDatePickerImpl datePicker;
     private Libro libro;
 
+    /**
+     * Crea un nuevo formulario modal para editar un libro existente.
+     *
+     * @param parent ventana padre sobre la cual se centra este diálogo
+     * @param libro libro cuyos datos serán cargados y editados en el formulario
+     */
     public FormularioLibroEdit(JFrame parent, Libro libro) {
         super(parent, "Editar Libro", true);
         this.libro = libro;
@@ -183,6 +196,19 @@ public class FormularioLibroEdit extends JDialog {
         setVisible(true);
     }
 
+
+
+    /**
+     * Agrega un campo de texto junto con su etiqueta al panel usando GridBagLayout.
+     *
+     * @param panel     El panel donde se agregará el campo.
+     * @param gbc       Las restricciones de GridBagLayout para posicionar los componentes.
+     * @param texto     El texto de la etiqueta.
+     * @param campo     El campo de texto que se agregará.
+     * @param fontLabel La fuente que se aplicará a la etiqueta.
+     * @param fontInput La fuente que se aplicará al campo de texto.
+     * @param fila      La fila en la que se colocará el campo dentro del layout.
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, String texto, JTextField campo, Font fontLabel, Font fontInput, int fila) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -196,6 +222,12 @@ public class FormularioLibroEdit extends JDialog {
         panel.add(campo, gbc);
     }
 
+    /**
+     * Abre un selector de archivos para que el usuario elija una imagen de portada.
+     * La imagen seleccionada se lee como un arreglo de bytes, se muestra en el JLabel lblPortada
+     * y se guarda en la variable portadaBytes.
+     * Si ocurre un error al leer el archivo, muestra un mensaje de error.
+     */
     private void seleccionarPortada() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Selecciona una imagen");
@@ -215,6 +247,12 @@ public class FormularioLibroEdit extends JDialog {
         }
     }
 
+    /**
+     * Abre un selector de archivos para que el usuario elija un archivo PDF.
+     * El archivo seleccionado se lee como un arreglo de bytes, se muestra su nombre en lblArchivoPdf,
+     * y se guarda en archivoPdfBytes. También actualiza el nombre del archivo PDF en el objeto libro.
+     * Si ocurre un error al leer el archivo, muestra un mensaje de error.
+     */
     private void seleccionarArchivoPdf() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Selecciona un archivo PDF");
@@ -233,6 +271,12 @@ public class FormularioLibroEdit extends JDialog {
         }
     }
 
+    /**
+     * Valida los campos del formulario y, si son correctos, actualiza el objeto libro con los datos ingresados.
+     * Luego llama al DAO para actualizar el libro en la base de datos.
+     * Muestra mensajes de error si hay campos inválidos o si ocurre un error al guardar.
+     * Finalmente, cierra el formulario si la actualización fue exitosa.
+     */
     private void guardarLibro() {
         txtTitulo.setBorder(UIManager.getBorder("TextField.border"));
         txtIsbn.setBorder(UIManager.getBorder("TextField.border"));
@@ -312,5 +356,6 @@ public class FormularioLibroEdit extends JDialog {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
 }

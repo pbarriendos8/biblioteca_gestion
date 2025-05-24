@@ -6,6 +6,15 @@ import com.pablobn.biblioteca.modelo.dao.UsuarioDAO;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Panel para mostrar y editar el perfil del usuario logueado.
+ * <p>
+ * Permite modificar datos personales como nombre completo, correo,
+ * dirección, teléfono y contraseña (previa confirmación).
+ * Incluye validaciones básicas y actualiza el usuario en la base de datos
+ * mediante UsuarioDAO.
+ * </p>
+ */
 public class PanelPerfilUsuario extends JPanel {
     private final JTextField txtNombreCompleto;
     private final JTextField txtCorreo;
@@ -13,6 +22,11 @@ public class PanelPerfilUsuario extends JPanel {
     private final JTextField txtTelefono;
     private final JPasswordField txtPassword;
 
+    /**
+     * Construye el panel de perfil con los datos iniciales del usuario.
+     *
+     * @param usuario Usuario cuyos datos se mostrarán y podrán editarse.
+     */
     public PanelPerfilUsuario(Usuario usuario) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -21,6 +35,7 @@ public class PanelPerfilUsuario extends JPanel {
         lblTitulo.setHorizontalAlignment(SwingConstants.CENTER);
         lblTitulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         add(lblTitulo, BorderLayout.NORTH);
+
         JPanel formulario = new JPanel();
         formulario.setLayout(new GridBagLayout());
         formulario.setOpaque(false);
@@ -53,6 +68,7 @@ public class PanelPerfilUsuario extends JPanel {
                 }
             }
         });
+
         addField(formulario, gbc, 0, "Nombre completo:", txtNombreCompleto, labelFont, fieldFont, fieldSize);
         addField(formulario, gbc, 1, "Correo:", txtCorreo, labelFont, fieldFont, fieldSize);
         addField(formulario, gbc, 2, "Dirección:", txtDireccion, labelFont, fieldFont, fieldSize);
@@ -60,6 +76,7 @@ public class PanelPerfilUsuario extends JPanel {
         addField(formulario, gbc, 4, "Contraseña:", txtPassword, labelFont, fieldFont, fieldSize);
 
         add(formulario, BorderLayout.CENTER);
+
         JButton btnGuardar = new JButton("Guardar Cambios");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
@@ -95,6 +112,18 @@ public class PanelPerfilUsuario extends JPanel {
         add(panelBoton, BorderLayout.SOUTH);
     }
 
+    /**
+     * Método auxiliar para añadir una fila con etiqueta y campo al formulario.
+     *
+     * @param panel      Panel donde agregar los componentes.
+     * @param gbc        Constraints para GridBagLayout.
+     * @param y          Posición vertical (fila) en el GridBagLayout.
+     * @param labelText  Texto de la etiqueta.
+     * @param field      Componente de entrada (JTextField o JPasswordField).
+     * @param labelFont  Fuente para la etiqueta.
+     * @param fieldFont  Fuente para el campo.
+     * @param fieldSize  Tamaño preferido para el campo.
+     */
     private void addField(JPanel panel, GridBagConstraints gbc, int y, String labelText, JComponent field,
                           Font labelFont, Font fieldFont, Dimension fieldSize) {
         gbc.gridx = 0;

@@ -8,6 +8,13 @@ import com.pablobn.biblioteca.util.TipoUsuario;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Diálogo modal para crear un nuevo usuario en la aplicación.
+ * <p>
+ * Proporciona campos para ingresar nombre de usuario, correo electrónico, contraseña,
+ * tipo de usuario, nombre completo, dirección y teléfono.
+ * Realiza validaciones básicas antes de guardar el usuario en la base de datos.
+ */
 public class FormularioUsuarioNew extends JDialog {
     private JTextField txtNombreUsuario;
     private JTextField txtCorreo;
@@ -17,6 +24,11 @@ public class FormularioUsuarioNew extends JDialog {
     private JTextField txtDireccion;
     private JTextField txtTelefono;
 
+    /**
+     * Crea un nuevo formulario para agregar un usuario.
+     *
+     * @param parent la ventana padre sobre la que se mostrará este diálogo modal
+     */
     public FormularioUsuarioNew(JFrame parent) {
         super(parent, "Nuevo Usuario", true);
         setSize(600, 600);
@@ -91,6 +103,15 @@ public class FormularioUsuarioNew extends JDialog {
         setVisible(true);
     }
 
+    /**
+     * Agrega un campo con etiqueta y componente al panel usando GridBagLayout.
+     *
+     * @param panel   el panel donde se agregará el campo
+     * @param gbc     restricciones de GridBagLayout
+     * @param fila    fila en la que se agregará el campo
+     * @param etiqueta texto que se mostrará como etiqueta del campo
+     * @param campo   componente (campo de texto, contraseña o combo) a agregar
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, int fila, String etiqueta, JComponent campo) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -114,7 +135,21 @@ public class FormularioUsuarioNew extends JDialog {
         panel.add(campo, gbc);
     }
 
-
+    /**
+     * Valida los campos del formulario y guarda un nuevo usuario en la base de datos.
+     * <p>
+     * Realiza las siguientes validaciones:
+     * <ul>
+     *     <li>El nombre de usuario no puede estar vacío.</li>
+     *     <li>El correo electrónico no puede estar vacío.</li>
+     *     <li>La contraseña no puede estar vacía.</li>
+     *     <li>Debe seleccionarse un tipo de usuario.</li>
+     * </ul>
+     * <p>
+     * En caso de error muestra un mensaje indicando los campos faltantes y no realiza la operación.
+     * Si la validación es exitosa, encripta la contraseña, crea un objeto Usuario y lo persiste.
+     * Luego muestra un mensaje de éxito y cierra el formulario.
+     */
     private void guardarUsuario() {
         cmbTipoUsuario.setBorder(UIManager.getBorder("ComboBox.border"));
         txtNombreUsuario.setBorder(UIManager.getBorder("TextField.border"));

@@ -25,20 +25,86 @@ import java.util.stream.Collectors;
 
 import static com.pablobn.biblioteca.util.HibernateUtil.getSession;
 
+/**
+ * Panel genérico para la visualización y gestión de diferentes entidades
+ * (Usuarios, Préstamos, Libros, Autores, etc.) en la aplicación.
+ * <p>
+ * Proporciona una tabla para mostrar datos, filtros para búsqueda y
+ * botones para realizar acciones comunes como crear, editar, eliminar
+ * y finalizar (en el caso de préstamos).
+ * </p>
+ * <p>
+ * También gestiona los permisos de acuerdo al tipo de usuario autenticado,
+ * deshabilitando ciertas acciones para usuarios con perfil de consulta.
+ * </p>
+ *
+ * @author PabloBN
+ */
 public class PanelEntidad extends JPanel {
-    private String entidad;
-    private final Usuario usuarioLogueado;
-    private final JButton btnNuevo;
-    private final JButton btnEditar;
-    private final JButton btnEliminar;
-    private final JButton btnFinalizar;
-    private JTable table;
-    private DefaultTableModel tableModel;
-    private PanelFiltroBusqueda panelFiltroBusqueda;
-    private TableRowSorter<DefaultTableModel> rowSorter;
 
+    /**
+     * Nombre de la entidad que se está gestionando (ejemplo: "Usuarios", "Libros").
+     */
+    private String entidad;
+
+    /**
+     * Usuario autenticado actualmente, para validar permisos y acciones.
+     */
+    private final Usuario usuarioLogueado;
+
+    /**
+     * Botón para crear un nuevo registro de la entidad.
+     */
+    private final JButton btnNuevo;
+
+    /**
+     * Botón para editar el registro seleccionado.
+     */
+    private final JButton btnEditar;
+
+    /**
+     * Botón para eliminar el registro seleccionado.
+     */
+    private final JButton btnEliminar;
+
+    /**
+     * Botón para finalizar un préstamo (visible solo en entidad "Préstamos").
+     */
+    private final JButton btnFinalizar;
+
+    /**
+     * Tabla para mostrar los datos de la entidad.
+     */
+    private JTable table;
+
+    /**
+     * Modelo de tabla que maneja los datos mostrados en la tabla.
+     */
+    private DefaultTableModel tableModel;
+
+    /**
+     * Panel con campo de filtro para búsqueda textual en la tabla.
+     */
+    private PanelFiltroBusqueda panelFiltroBusqueda;
+
+    /**
+     * Filtro visual con opciones específicas según la entidad seleccionada.
+     */
     private PanelFiltroTabla panelFiltroVisual;
 
+    /**
+     * Ordenador de filas para la tabla, usado para aplicar filtros de búsqueda y orden.
+     */
+    private TableRowSorter<DefaultTableModel> rowSorter;
+
+    /**
+     * Constructor que inicializa el panel para la entidad especificada y
+     * el usuario autenticado, configurando los componentes gráficos, filtros,
+     * botones y eventos asociados.
+     *
+     * @param entidad       Nombre de la entidad que se gestionará.
+     * @param usuarioLoguedo Usuario autenticado que interactúa con el panel.
+     */
     public PanelEntidad(String entidad, Usuario usuarioLoguedo) {
         this.entidad = entidad;
         this.usuarioLogueado = usuarioLoguedo;
@@ -137,7 +203,18 @@ public class PanelEntidad extends JPanel {
         cargarDatos();
     }
 
-
+    /**
+     * Carga los datos correspondientes a la entidad actual en la tabla,
+     * aplicando filtros específicos según la selección en el panelFiltroVisual
+     * y el tipo de usuario logueado.
+     * <p>
+     * Obtiene los datos desde los DAOs correspondientes y los filtra en memoria
+     * antes de pasarlos al modelo de tabla para su visualización.
+     * </p>
+     * <p>
+     * Además, cierra la sesión de Hibernate (o similar) al finalizar la carga.
+     * </p>
+     */
     public void cargarDatos() {
         String filtro = panelFiltroVisual.getSeleccion();
         Session session = getSession();
@@ -190,6 +267,18 @@ public class PanelEntidad extends JPanel {
         }
     }
 
+    /**
+     * Configura la tabla para mostrar la lista de autores recibida,
+     * estableciendo las columnas, vaciando filas previas y agregando
+     * cada autor con sus datos.
+     * <p>
+     * También configura el panel de búsqueda para filtrar por "Nombre"
+     * o "Apellidos", añadiendo un DocumentListener para actualizar la tabla
+     * en tiempo real al escribir en el campo de búsqueda.
+     * </p>
+     *
+     * @param lista Lista de objetos Autor que se cargarán en la tabla.
+     */
     private void cargarAutoresEnTabla(List<Autor> lista) {
         tableModel.setColumnIdentifiers(new Object[]{"ID", "Nombre", "Apellidos", "Nacimiento", "Nacionalidad"});
         tableModel.setRowCount(0);
@@ -205,9 +294,17 @@ public class PanelEntidad extends JPanel {
             public void removeUpdate(DocumentEvent e) { filtrarAutores(); }
             public void changedUpdate(DocumentEvent e) { filtrarAutores(); }
         });
-
     }
 
+    /**
+     * Aplica un filtro a la tabla para mostrar únicamente los autores
+     * cuyo nombre o apellidos coincidan (parcialmente, sin distinción
+     * de mayúsculas/minúsculas) con el texto ingresado en el campo de búsqueda.
+     * <p>
+     * El filtro se aplica a la columna correspondiente según el campo seleccionado
+     * ("Nombre" o "Apellidos").
+     * </p>
+     */
     private void filtrarAutores() {
         String texto = panelFiltroBusqueda.getCampoBusqueda().getText().trim();
         String campo = panelFiltroBusqueda.getCampoSeleccionado();
@@ -224,6 +321,23 @@ public class PanelEntidad extends JPanel {
     }
 
 
+
+    /**
+     * Configura la tabla para mostrar la lista de libros recibida,
+     * estableciendo las columnas, vaciando filas previas y agregando
+     * cada libro con sus datos relevantes.
+     * <p>
+     * El autor se muestra concatenando nombre y apellidos; si no existe,
+     * se muestra "Desconocido".
+     * </p>
+     * <p>
+     * También configura el panel de búsqueda para filtrar por "Título"
+     * o "Autor", añadiendo un DocumentListener para actualizar la tabla
+     * en tiempo real al escribir en el campo de búsqueda.
+     * </p>
+     *
+     * @param lista Lista de objetos Libro que se cargarán en la tabla.
+     */
     private void cargarLibrosEnTabla(List<Libro> lista) {
         tableModel.setColumnIdentifiers(new Object[]{"ID", "Título", "Autor", "ISBN"});
         tableModel.setRowCount(0);
@@ -251,6 +365,15 @@ public class PanelEntidad extends JPanel {
 
     }
 
+    /**
+     * Aplica un filtro a la tabla para mostrar únicamente los libros
+     * cuyo título o autor coincidan (parcialmente, sin distinción
+     * de mayúsculas/minúsculas) con el texto ingresado en el campo de búsqueda.
+     * <p>
+     * El filtro se aplica a la columna correspondiente según el campo seleccionado
+     * ("Título" o "Autor").
+     * </p>
+     */
     private void filtrarLibros() {
         String texto = panelFiltroBusqueda.getCampoBusqueda().getText().trim();
         String campo = panelFiltroBusqueda.getCampoSeleccionado();
@@ -263,6 +386,18 @@ public class PanelEntidad extends JPanel {
         rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto, columna));
     }
 
+    /**
+     * Configura la tabla para mostrar la lista de usuarios recibida,
+     * estableciendo las columnas, vaciando filas previas y agregando
+     * cada usuario con sus datos relevantes.
+     * <p>
+     * También configura el panel de búsqueda para filtrar por "Usuario"
+     * o "Correo", añadiendo un DocumentListener para actualizar la tabla
+     * en tiempo real al escribir en el campo de búsqueda.
+     * </p>
+     *
+     * @param lista Lista de objetos Usuario que se cargarán en la tabla.
+     */
     private void cargarUsuariosEnTabla(List<Usuario> lista) {
         tableModel.setColumnIdentifiers(new Object[]{"ID", "Usuario", "Correo", "Nombre", "Tipo", "Fecha Registro"});
         tableModel.setRowCount(0);
@@ -281,6 +416,15 @@ public class PanelEntidad extends JPanel {
         });
 
     }
+    /**
+     * Aplica un filtro a la tabla para mostrar únicamente los usuarios
+     * cuyo nombre de usuario o correo coincidan (parcialmente, sin distinción
+     * de mayúsculas/minúsculas) con el texto ingresado en el campo de búsqueda.
+     * <p>
+     * El filtro se aplica a la columna correspondiente según el campo seleccionado
+     * ("Usuario" o "Correo").
+     * </p>
+     */
     private void filtrarUsuarios() {
         String texto = panelFiltroBusqueda.getCampoBusqueda().getText().trim();
         String campo = panelFiltroBusqueda.getCampoSeleccionado();
@@ -293,7 +437,22 @@ public class PanelEntidad extends JPanel {
         rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto, columna));
     }
 
-
+    /**
+     * Configura la tabla para mostrar la lista de préstamos recibida,
+     * estableciendo las columnas, vaciando filas previas y agregando
+     * cada préstamo con sus datos relevantes.
+     * <p>
+     * El usuario y libro se muestran con su nombre de usuario y título respectivamente,
+     * o "Desconocido" si no están asignados.
+     * </p>
+     * <p>
+     * También configura el panel de búsqueda para filtrar por "Usuario"
+     * o "Libro", añadiendo un DocumentListener para actualizar la tabla
+     * en tiempo real al escribir en el campo de búsqueda.
+     * </p>
+     *
+     * @param lista Lista de objetos Prestamo que se cargarán en la tabla.
+     */
     private void cargarPrestamosEnTabla(List<Prestamo> lista) {
         tableModel.setColumnIdentifiers(new Object[]{"ID", "Usuario", "Libro", "Fecha inicio", "Fecha limite", "Fecha devuelto", "Estado"});
         tableModel.setRowCount(0);
@@ -312,6 +471,16 @@ public class PanelEntidad extends JPanel {
         });
 
     }
+
+    /**
+     * Aplica un filtro a la tabla para mostrar únicamente los préstamos
+     * cuyo usuario o libro coincidan (parcialmente, sin distinción
+     * de mayúsculas/minúsculas) con el texto ingresado en el campo de búsqueda.
+     * <p>
+     * El filtro se aplica a la columna correspondiente según el campo seleccionado
+     * ("Usuario" o "Libro").
+     * </p>
+     */
     private void filtrarPrestamos() {
         String texto = panelFiltroBusqueda.getCampoBusqueda().getText().trim();
         String campo = panelFiltroBusqueda.getCampoSeleccionado();
@@ -324,7 +493,16 @@ public class PanelEntidad extends JPanel {
         rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + texto, columna));
     }
 
-
+    /**
+     * Muestra la ventana de creación de nuevo registro según la entidad actual.
+     * <p>
+     * Llama a la clase correspondiente para abrir el formulario de creación,
+     * pasando el JFrame padre y, si corresponde, el usuario logueado.
+     * </p>
+     * <p>
+     * Luego recarga los datos en la tabla para reflejar cualquier cambio.
+     * </p>
+     */
     private void mostrarVentanaNuevo() {
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         switch (entidad) {
@@ -336,6 +514,19 @@ public class PanelEntidad extends JPanel {
         cargarDatos();
     }
 
+
+    /**
+     * Muestra la ventana de edición del registro seleccionado en la tabla
+     * según la entidad actual.
+     * <p>
+     * Si no hay fila seleccionada, muestra un mensaje solicitando la selección.
+     * Obtiene el ID del registro seleccionado y busca el objeto correspondiente
+     * mediante DAO. Si se encuentra, abre el formulario de edición específico.
+     * </p>
+     * <p>
+     * Después de cerrar el formulario, recarga los datos para reflejar cambios.
+     * </p>
+     */
     private void mostrarVentanaEditar() {
         int id;
         int fila = table.getSelectedRow();
@@ -374,6 +565,18 @@ public class PanelEntidad extends JPanel {
         cargarDatos();
     }
 
+    /**
+     * Elimina el registro seleccionado en la tabla según la entidad actual,
+     * previa confirmación por parte del usuario.
+     * <p>
+     * Si no hay fila seleccionada, muestra un mensaje solicitando selección.
+     * Antes de eliminar un autor o libro, verifica si existen dependencias
+     * (libros asociados o préstamos asociados) para evitar eliminaciones inválidas.
+     * </p>
+     * <p>
+     * Luego de eliminar o cancelar, recarga los datos para actualizar la tabla.
+     * </p>
+     */
     private void mostrarVentanaEliminar() {
         int id;
         int fila = table.getSelectedRow();
@@ -443,7 +646,17 @@ public class PanelEntidad extends JPanel {
         cargarDatos();
     }
 
-
+    /**
+     * Finaliza el préstamo seleccionado en la tabla si está activo,
+     * previa confirmación del usuario.
+     * <p>
+     * Si no hay fila seleccionada, muestra un mensaje solicitando selección.
+     * Si el préstamo ya está finalizado, informa al usuario.
+     * </p>
+     * <p>
+     * Tras finalizar el préstamo, muestra un mensaje de éxito y recarga los datos.
+     * </p>
+     */
     private void finalizarPrestamo() {
         int fila = table.getSelectedRow();
         if (fila == -1) {
@@ -475,4 +688,5 @@ public class PanelEntidad extends JPanel {
             JOptionPane.showMessageDialog(this, "Este préstamo ya está finalizado.");
         }
     }
+
 }

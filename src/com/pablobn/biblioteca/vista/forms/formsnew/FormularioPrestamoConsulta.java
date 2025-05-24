@@ -15,6 +15,10 @@ import java.awt.*;
 import java.sql.Date;
 import java.util.Properties;
 
+/**
+ * Diálogo para realizar la consulta y creación de un nuevo préstamo de libro.
+ * Muestra campos para seleccionar fecha de inicio y fin, observaciones y confirma el préstamo.
+ */
 public class FormularioPrestamoConsulta extends JDialog {
     private final UtilDateModel modelFechaInicio = new UtilDateModel();
     private final UtilDateModel modelFechaFin = new UtilDateModel();
@@ -24,6 +28,13 @@ public class FormularioPrestamoConsulta extends JDialog {
     private final Libro libroSeleccionado;
     private final Usuario usuarioConsultor;
 
+    /**
+     * Constructor que inicializa el formulario para realizar un préstamo.
+     *
+     * @param parent           La ventana padre sobre la cual se mostrará el diálogo.
+     * @param libro            El libro que se desea prestar.
+     * @param usuarioConsultor  El usuario que realiza la consulta y préstamo.
+     */
     public FormularioPrestamoConsulta(JFrame parent, Libro libro, Usuario usuarioConsultor) {
         super(parent, "Realizar Préstamo", true);
         this.libroSeleccionado = libro;
@@ -82,6 +93,16 @@ public class FormularioPrestamoConsulta extends JDialog {
         setVisible(true);
     }
 
+    /**
+     * Añade un campo compuesto por una etiqueta y un componente al panel usando GridBagLayout.
+     *
+     * @param panel     El panel donde se añadirá el campo.
+     * @param gbc       Las restricciones de GridBagConstraints para la posición.
+     * @param texto     El texto de la etiqueta.
+     * @param componente El componente que se agregará al lado de la etiqueta.
+     * @param fontLabel La fuente que tendrá la etiqueta.
+     * @param fila      La fila en la que se colocará el campo.
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, String texto, JComponent componente, Font fontLabel, int fila) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -93,6 +114,10 @@ public class FormularioPrestamoConsulta extends JDialog {
         panel.add(componente, gbc);
     }
 
+    /**
+     * Valida los datos ingresados y crea un nuevo préstamo con la información proporcionada.
+     * Muestra mensajes de error si existen campos inválidos o confirmación al guardar.
+     */
     private void confirmarPrestamo() {
         java.util.Date fechaInicioUtil = (java.util.Date) datePickerInicio.getModel().getValue();
         java.util.Date fechaFinUtil = (java.util.Date) datePickerFin.getModel().getValue();
@@ -134,4 +159,3 @@ public class FormularioPrestamoConsulta extends JDialog {
         dispose();
     }
 }
-

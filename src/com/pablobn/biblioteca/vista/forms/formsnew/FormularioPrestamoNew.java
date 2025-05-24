@@ -30,6 +30,13 @@ public class FormularioPrestamoNew extends JDialog {
     private final JTextArea textObservaciones;
     private final Usuario usuarioActual;
 
+    /**
+     * Constructor que crea el formulario para agregar un nuevo préstamo.
+     * Si el usuario actual no es tipo CONSULTA, se muestra el combo para seleccionar usuario.
+     *
+     * @param parent       JFrame padre del diálogo.
+     * @param usuarioActual Usuario actual que abre el formulario.
+     */
     public FormularioPrestamoNew(JFrame parent, Usuario usuarioActual) {
         super(parent, "Nuevo Préstamo", true);
         this.usuarioActual = usuarioActual;
@@ -118,6 +125,16 @@ public class FormularioPrestamoNew extends JDialog {
         setVisible(true);
     }
 
+    /**
+     * Agrega un campo con etiqueta y componente al panel usando GridBagLayout.
+     *
+     * @param panel     Panel donde se agrega el campo.
+     * @param gbc       GridBagConstraints para control de posición.
+     * @param texto     Texto de la etiqueta.
+     * @param componente Componente Swing a mostrar.
+     * @param fontLabel Fuente de la etiqueta.
+     * @param fila      Fila donde se coloca el campo.
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, String texto, JComponent componente, Font fontLabel, int fila) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -129,6 +146,10 @@ public class FormularioPrestamoNew extends JDialog {
         panel.add(componente, gbc);
     }
 
+    /**
+     * Carga la lista de usuarios desde la base de datos y la añade al comboUsuarios.
+     * Incluye un ítem nulo para seleccionar.
+     */
     private void cargarUsuarios() {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         comboUsuarios.addItem(null);
@@ -150,6 +171,10 @@ public class FormularioPrestamoNew extends JDialog {
         });
     }
 
+    /**
+     * Carga la lista de libros desde la base de datos y la añade al comboLibros.
+     * Incluye un ítem nulo para seleccionar.
+     */
     private void cargarLibros() {
         LibroDAO libroDAO = new LibroDAO();
         List<Libro> libros = libroDAO.obtenerTodosLibros();
@@ -170,7 +195,22 @@ public class FormularioPrestamoNew extends JDialog {
             }
         });
     }
-
+    /**
+     * Valida los campos del formulario y guarda un nuevo préstamo en la base de datos.
+     * <p>
+     * Realiza las siguientes validaciones:
+     * <ul>
+     *     <li>Fecha de inicio y fecha de fin deben estar seleccionadas.</li>
+     *     <li>La fecha de fin no puede ser anterior a la fecha de inicio.</li>
+     *     <li>Si el usuario es ADMIN, debe seleccionar un usuario y un libro.</li>
+     *     <li>Si el usuario es CONSULTA, debe seleccionar un libro y usa el usuario actual.</li>
+     * </ul>
+     * <p>
+     * En caso de error, muestra un mensaje con las validaciones que fallaron y no guarda el préstamo.
+     * Si todo es correcto, crea un objeto {@code Prestamo}, lo configura con los datos del formulario y
+     * llama al método {@code PrestamoDAO.guardarPrestamo} para persistirlo en la base de datos.
+     * Luego muestra un mensaje de éxito y cierra el formulario.
+     */
     private void guardarPrestamo() {
         java.util.Date fechaInicioUtil = (java.util.Date) datePickerInicio.getModel().getValue();
         java.util.Date fechaFinUtil = (java.util.Date) datePickerFin.getModel().getValue();

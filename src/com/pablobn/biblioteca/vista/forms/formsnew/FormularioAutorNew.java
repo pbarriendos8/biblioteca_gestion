@@ -15,6 +15,14 @@ import java.nio.file.Files;
 import java.sql.Date;
 import java.util.Properties;
 
+/**
+ * Diálogo modal para crear un nuevo autor.
+ * <p>
+ * Permite ingresar datos del autor como nombre, apellidos, nacionalidad,
+ * fecha de nacimiento, biografía y foto.
+ * Valida campos requeridos y guarda el autor usando AutorDAO.
+ * </p>
+ */
 public class FormularioAutorNew extends JDialog {
     private JTextField txtNombre;
     private JTextField txtApellidos;
@@ -24,6 +32,11 @@ public class FormularioAutorNew extends JDialog {
     private byte[] fotoBytes;
     private JDatePickerImpl datePicker;
 
+    /**
+     * Crea el formulario para ingreso de nuevo autor.
+     *
+     * @param parent JFrame padre para centrar y bloquear el diálogo.
+     */
     public FormularioAutorNew(JFrame parent) {
         super(parent, "Nuevo Autor", true);
         setSize(600, 700);
@@ -108,10 +121,20 @@ public class FormularioAutorNew extends JDialog {
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
 
-
         setVisible(true);
     }
 
+    /**
+     * Método auxiliar para agregar una fila con etiqueta y campo de texto al formulario.
+     *
+     * @param panel     Panel contenedor.
+     * @param gbc       Constraints de GridBagLayout.
+     * @param texto     Texto de la etiqueta.
+     * @param campo     Campo de texto a agregar.
+     * @param fontLabel Fuente de la etiqueta.
+     * @param fontInput Fuente del campo.
+     * @param fila      Número de fila (posición vertical).
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, String texto, JTextField campo, Font fontLabel, Font fontInput, int fila) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -124,6 +147,10 @@ public class FormularioAutorNew extends JDialog {
         panel.add(campo, gbc);
     }
 
+    /**
+     * Abre un diálogo para seleccionar una imagen que se utilizará como foto del autor.
+     * La imagen seleccionada se escala y se muestra en el JLabel correspondiente.
+     */
     private void seleccionarFoto() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Selecciona una imagen");
@@ -143,6 +170,10 @@ public class FormularioAutorNew extends JDialog {
         }
     }
 
+    /**
+     * Valida los datos del formulario y, si son correctos, crea un nuevo autor y lo guarda en la base de datos.
+     * Muestra mensajes de error o éxito según corresponda.
+     */
     private void guardarAutor() {
         txtNombre.setBorder(UIManager.getBorder("TextField.border"));
 

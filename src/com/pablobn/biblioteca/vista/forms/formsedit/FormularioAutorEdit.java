@@ -13,6 +13,13 @@ import java.nio.file.Files;
 import java.sql.Date;
 import java.util.Properties;
 
+/**
+ * Formulario para editar los datos de un autor existente.
+ * Muestra los campos del autor cargados y permite modificar su información,
+ * incluyendo nombre, apellidos, nacionalidad, biografía, foto y fecha de nacimiento.
+ *
+ * Al guardar, actualiza el autor en la base de datos.
+ */
 public class FormularioAutorEdit extends JDialog {
     private final Autor autor;
     private JTextField txtNombre;
@@ -23,6 +30,12 @@ public class FormularioAutorEdit extends JDialog {
     private byte[] fotoBytes;
     private JDatePickerImpl datePicker;
 
+    /**
+     * Crea el formulario de edición de autor con los datos precargados.
+     *
+     * @param parent JFrame padre para centrar y establecer la modal.
+     * @param autor Autor a editar cuyos datos se muestran en el formulario.
+     */
     public FormularioAutorEdit(JFrame parent, Autor autor) {
         super(parent, "Editar Autor", true);
         this.autor = autor;
@@ -125,10 +138,20 @@ public class FormularioAutorEdit extends JDialog {
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
 
-
         setVisible(true);
     }
 
+    /**
+     * Agrega un campo JLabel y JTextField al panel con GridBagLayout en la fila especificada.
+     *
+     * @param panel Panel donde se agregarán los componentes.
+     * @param gbc Constraints de GridBagLayout para posicionamiento.
+     * @param texto Texto de la etiqueta.
+     * @param campo Campo de texto para entrada.
+     * @param fontLabel Fuente para la etiqueta.
+     * @param fontInput Fuente para el campo de texto.
+     * @param fila Número de fila para ubicar los componentes.
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, String texto, JTextField campo, Font fontLabel, Font fontInput, int fila) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -141,6 +164,11 @@ public class FormularioAutorEdit extends JDialog {
         panel.add(campo, gbc);
     }
 
+    /**
+     * Abre un JFileChooser para seleccionar una nueva foto para el autor.
+     * La imagen seleccionada se lee como bytes y se muestra en el JLabel.
+     * En caso de error, muestra un mensaje.
+     */
     private void seleccionarFoto() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Selecciona una imagen");
@@ -159,6 +187,11 @@ public class FormularioAutorEdit extends JDialog {
         }
     }
 
+    /**
+     * Valida los campos obligatorios y, si son correctos,
+     * actualiza el objeto autor con los datos del formulario y lo guarda en la base de datos.
+     * Muestra mensajes de error o confirmación según corresponda.
+     */
     private void guardarCambios() {
         txtNombre.setBorder(UIManager.getBorder("TextField.border"));
 

@@ -12,25 +12,79 @@ import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Ventana principal de la aplicación Biblioteca.
+ * Esta ventana actúa como el contenedor principal para las diferentes vistas (paneles)
+ * de la aplicación, como la gestión de libros, autores, préstamos y usuarios.
+ * También proporciona la navegación entre estas vistas y opciones para generar informes,
+ * ver el perfil del usuario, cerrar sesión y salir de la aplicación.
+ *
+ * @see JFrame
+ * @see CardLayout
+ * @see PanelEntidad
+ * @see Usuario
+ */
 public class VentanaPrincipal extends JFrame {
+    /**
+     * El usuario que ha iniciado sesión en la aplicación.
+     */
     private final Usuario usuarioLogueado;
+    /**
+     * Panel principal que utiliza CardLayout para mostrar diferentes vistas (paneles de entidad).
+     */
     private final JPanel panelContenido;
+    /**
+     * Layout manager para el {@code panelContenido}, permite cambiar entre diferentes paneles.
+     */
     private final CardLayout cardLayout;
 
+    /**
+     * Mapa que almacena los paneles de vista (generalmente {@link PanelEntidad}) asociados a una clave de cadena (nombre de la entidad).
+     */
     private final Map<String, JPanel> vistasPorEntidad = new HashMap<>();
 
+    /**
+     * Fuente estándar para los botones del menú.
+     */
     private final Font fuenteBoton = new Font("SansSerif", Font.BOLD, 14);
 
+    /**
+     * Color de fondo general para los paneles de la interfaz.
+     */
     private final Color colorFondo = new Color(245, 245, 250);
+    /**
+     * Color utilizado para el efecto hover en los botones del menú.
+     */
     private final Color colorHover = new Color(220, 230, 255);
+    /**
+     * Color utilizado para indicar un botón de menú activo o seleccionado.
+     */
     private final Color colorActivo = new Color(70, 130, 255);
+    /**
+     * Color de texto estándar para los botones del menú.
+     */
     private final Color colorTextoNormal = new Color(50, 50, 50);
+    /**
+     * Color de texto para los botones del menú cuando están activos o seleccionados.
+     */
     private final Color colorTextoActivo = Color.WHITE;
 
+    /**
+     * Referencia al botón de menú actualmente seleccionado.
+     */
     private JButton botonSeleccionado = null;
 
 
-
+    /**
+     * Constructor de la VentanaPrincipal.
+     * Inicializa la interfaz gráfica principal, configurando el título, tamaño,
+     * y añadiendo los paneles de navegación y contenido.
+     *
+     * @param usuario El {@link Usuario} que ha iniciado sesión. Este objeto se utiliza
+     * para personalizar la bienvenida y determinar los permisos de acceso
+     * a ciertas funcionalidades (por ejemplo, la vista de "Usuarios"
+     * solo es accesible para administradores).
+     */
     public VentanaPrincipal(Usuario usuario) {
         this.usuarioLogueado = usuario;
 
@@ -60,6 +114,14 @@ public class VentanaPrincipal extends JFrame {
     }
 
 
+    /**
+     * Crea y configura el panel izquierdo de la ventana.
+     * Este panel contiene la información del usuario logueado, el menú de navegación principal
+     * para las entidades (Libros, Autores, etc.), las opciones para generar informes,
+     * y los botones para cerrar sesión y salir de la aplicación.
+     *
+     * @return El {@link JPanel} configurado para el lado izquierdo de la ventana.
+     */
     private JPanel crearPanelIzquierdo() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setPreferredSize(new Dimension(250, getHeight()));
@@ -167,8 +229,6 @@ public class VentanaPrincipal extends JFrame {
 
         panel.add(menu, BorderLayout.CENTER);
 
-        panel.add(menu, BorderLayout.CENTER);
-
         JPanel panelInferior = new JPanel();
         panelInferior.setBackground(colorFondo);
         panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
@@ -221,14 +281,28 @@ public class VentanaPrincipal extends JFrame {
         return panel;
     }
 
+    /**
+     * Genera y muestra el informe gráfico de préstamos (activos vs. finalizados).
+     * Utiliza {@link GeneradorReporte} para la creación y visualización del informe.
+     */
     private void generarInformeGraficoPrestamos() {
         GeneradorReporte.mostrarInformeGraficoPrestamos(HibernateUtil.getSession());
     }
 
+    /**
+     * Genera y muestra el informe detallado de préstamos por usuario.
+     * Utiliza {@link GeneradorReporte} para la creación y visualización del informe.
+     */
     private void generarInformePrestamosPorUsuario() {
         GeneradorReporte.mostrarInformePrestamosPorUsuario(HibernateUtil.getSession());
     }
 
+    /**
+     * Muestra una ventana de opciones para el informe de "Libros por Autor".
+     * El usuario puede elegir entre ver un informe detallado o un gráfico.
+     * Una vez seleccionada una opción, se utiliza {@link GeneradorReporte} para
+     * generar y mostrar el informe o gráfico correspondiente.
+     */
     private void generarInformeLibrosPorAutor() {
         JFrame ventanaOpciones = new JFrame("Opciones de informe");
         ventanaOpciones.setSize(400, 250);
@@ -236,29 +310,29 @@ public class VentanaPrincipal extends JFrame {
         ventanaOpciones.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         ventanaOpciones.setLayout(new GridBagLayout());
 
-        Font fuenteBoton = new Font("SansSerif", Font.BOLD, 16);
+        Font fuenteBotonLocal = new Font("SansSerif", Font.BOLD, 16);
         Color colorPrincipal = new Color(33, 150, 243);
-        Color colorTexto = Color.WHITE;
+        Color colorTextoLocal = Color.WHITE;
         Color colorSalir = new Color(120, 120, 120);
 
         JButton btnInforme = new JButton("Ver Informe Detallado");
         JButton btnGrafico = new JButton("Ver Gráfico de Libros por Autor");
-        JButton btnSalir = new JButton("Salir");
+        JButton btnSalirOpciones = new JButton("Salir");
 
         JButton[] botones = {btnInforme, btnGrafico};
         for (JButton boton : botones) {
-            boton.setFont(fuenteBoton);
+            boton.setFont(fuenteBotonLocal);
             boton.setBackground(colorPrincipal);
-            boton.setForeground(colorTexto);
+            boton.setForeground(colorTextoLocal);
             boton.setFocusPainted(false);
             boton.setPreferredSize(new Dimension(280, 40));
         }
 
-        btnSalir.setFont(fuenteBoton);
-        btnSalir.setBackground(colorSalir);
-        btnSalir.setForeground(colorTexto);
-        btnSalir.setFocusPainted(false);
-        btnSalir.setPreferredSize(new Dimension(280, 40));
+        btnSalirOpciones.setFont(fuenteBotonLocal);
+        btnSalirOpciones.setBackground(colorSalir);
+        btnSalirOpciones.setForeground(colorTextoLocal);
+        btnSalirOpciones.setFocusPainted(false);
+        btnSalirOpciones.setPreferredSize(new Dimension(280, 40));
 
         btnInforme.addActionListener(e -> {
             ventanaOpciones.dispose();
@@ -270,7 +344,7 @@ public class VentanaPrincipal extends JFrame {
             GeneradorReporte.mostrarGraficoLibrosPorAutor(HibernateUtil.getSession());
         });
 
-        btnSalir.addActionListener(e -> ventanaOpciones.dispose());
+        btnSalirOpciones.addActionListener(e -> ventanaOpciones.dispose());
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -283,14 +357,20 @@ public class VentanaPrincipal extends JFrame {
         ventanaOpciones.add(btnGrafico, gbc);
 
         gbc.gridy = 2;
-        ventanaOpciones.add(btnSalir, gbc);
+        ventanaOpciones.add(btnSalirOpciones, gbc);
 
         ventanaOpciones.setVisible(true);
     }
 
 
-
-
+    /**
+     * Añade un efecto hover a un botón.
+     * Cambia el color de fondo del botón cuando el cursor entra y sale del área del botón.
+     *
+     * @param btn         El {@link JButton} al que se le añadirá el efecto.
+     * @param hoverColor  El {@link Color} que se mostrará cuando el cursor esté sobre el botón.
+     * @param normalColor El {@link Color} original del fondo del botón.
+     */
     private void addHoverEffect(JButton btn, Color hoverColor, Color normalColor) {
         btn.addMouseListener(new MouseAdapter() {
             public void mouseEntered(MouseEvent evt) {
@@ -302,6 +382,17 @@ public class VentanaPrincipal extends JFrame {
             }
         });
     }
+
+    /**
+     * Crea un botón de menú con estilo y comportamiento estandarizados.
+     * Configura la fuente, colores, bordes, alineación y tamaño máximo.
+     * Añade listeners de ratón para efectos hover y para cambiar la vista
+     * en el {@code panelContenido} cuando se hace clic en el botón.
+     *
+     * @param nombre El texto que se mostrará en el botón y que también se usará como
+     * clave para cambiar la vista en el {@link CardLayout}.
+     * @return Un {@link JButton} configurado para el menú de navegación.
+     */
     private JButton crearBotonMenu(String nombre) {
         JButton boton = new JButton(nombre.toUpperCase());
         boton.setFont(fuenteBoton);
@@ -342,6 +433,7 @@ public class VentanaPrincipal extends JFrame {
                 botonSeleccionado = boton;
 
                 cardLayout.show(panelContenido, nombre);
+                // Si se selecciona la vista de préstamos, se recargan sus datos.
                 if (nombre.equals("Préstamos")) {
                     JPanel panel = vistasPorEntidad.get("Préstamos");
                     if (panel instanceof PanelEntidad) {
@@ -354,9 +446,16 @@ public class VentanaPrincipal extends JFrame {
         return boton;
     }
 
+    /**
+     * Agrega un panel de vista al {@code panelContenido} (gestionado por {@link CardLayout})
+     * y lo almacena en el mapa {@code vistasPorEntidad}.
+     *
+     * @param clave La clave (String) que identificará al panel en el CardLayout y en el mapa.
+     * Normalmente es el nombre de la entidad que representa el panel (ej. "Libros").
+     * @param panel El {@link JPanel} que se va a agregar como una vista.
+     */
     private void agregarVista(String clave, JPanel panel) {
         panelContenido.add(panel, clave);
         vistasPorEntidad.put(clave, panel);
     }
 }
-
