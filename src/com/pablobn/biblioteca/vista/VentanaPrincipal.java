@@ -5,10 +5,14 @@ import com.pablobn.biblioteca.modelo.Usuario;
 import com.pablobn.biblioteca.util.HibernateUtil;
 import com.pablobn.biblioteca.util.TipoUsuario;
 
+import javax.help.HelpBroker;
+import javax.help.HelpSet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -228,6 +232,43 @@ public class VentanaPrincipal extends JFrame {
 
 
         panel.add(menu, BorderLayout.CENTER);
+
+        // ... dentro de crearPanelIzquierdo(), justo después de agregar los botones de informes:
+
+// Botón Ayuda
+        JButton btnAyuda = new JButton("Ayuda");
+        btnAyuda.setFont(fuenteBoton);
+        btnAyuda.setFocusPainted(false);
+        btnAyuda.setBackground(colorFondo);
+        btnAyuda.setForeground(colorTextoNormal);
+        btnAyuda.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 10));
+        btnAyuda.setAlignmentX(Component.LEFT_ALIGNMENT);
+        btnAyuda.setMaximumSize(new Dimension(300, 40));
+        btnAyuda.setHorizontalAlignment(SwingConstants.LEFT);
+        btnAyuda.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+// Acción para abrir el sistema JavaHelp
+        btnAyuda.addActionListener(e -> {
+            try {
+                ClassLoader cl = getClass().getClassLoader();
+                URL hsURL = getClass().getClassLoader().getResource("help/biblioteca.hs");
+
+                if (hsURL == null) {
+                    throw new Exception("No se encontró el archivo helpset.hs");
+                }
+                HelpSet helpSet = new HelpSet(null, hsURL);
+                HelpBroker helpBroker = helpSet.createHelpBroker();
+                helpBroker.setDisplayed(true);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error cargando la ayuda: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+
+        menu.add(btnAyuda);
+        menu.add(Box.createRigidArea(new Dimension(0, 5)));
+
 
         JPanel panelInferior = new JPanel();
         panelInferior.setBackground(colorFondo);

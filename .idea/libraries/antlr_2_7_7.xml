@@ -46,6 +46,7 @@
       <root url="jar://$PROJECT_DIR$/lib/junit-jupiter-engine-5.10.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/junit-jupiter-api-5.10.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/opentest4j-1.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/javahelp-2.0.05.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/lib/commons-collections4-4.4-javadoc.jar!/" />
