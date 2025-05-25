@@ -1,0 +1,9 @@
+com.pablobn.biblioteca
+com.pablobn.biblioteca.jasper
+com.pablobn.biblioteca.modelo
+com.pablobn.biblioteca.modelo.dao
+com.pablobn.biblioteca.tests
+com.pablobn.biblioteca.util
+com.pablobn.biblioteca.vista
+com.pablobn.biblioteca.vista.forms.formsedit
+com.pablobn.biblioteca.vista.forms.formsnew

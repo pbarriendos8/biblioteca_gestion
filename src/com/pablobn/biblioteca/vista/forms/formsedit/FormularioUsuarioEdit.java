@@ -8,8 +8,16 @@ import com.pablobn.biblioteca.util.TipoUsuario;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Formulario para editar un usuario existente.
+ * Muestra los campos del usuario y permite actualizar su información,
+ * excepto la contraseña que no puede modificarse directamente desde este formulario.
+ * <p>
+ * El formulario incluye validación básica y muestra mensajes de error si hay campos obligatorios vacíos.
+ */
 public class FormularioUsuarioEdit extends JDialog {
 
+    // Campos del formulario
     private JTextField txtNombreUsuario;
     private JTextField txtCorreo;
     private JPasswordField txtPassword;
@@ -20,6 +28,12 @@ public class FormularioUsuarioEdit extends JDialog {
 
     private final Usuario usuario;
 
+    /**
+     * Constructor del formulario de edición de usuario.
+     *
+     * @param parent   Ventana principal desde la que se abre el formulario.
+     * @param usuario  Usuario a editar.
+     */
     public FormularioUsuarioEdit(JFrame parent, Usuario usuario) {
         super(parent, "Editar Usuario", true);
         this.usuario = usuario;
@@ -50,6 +64,7 @@ public class FormularioUsuarioEdit extends JDialog {
         agregarCampo(panelCampos, gbc, fila++, "Nombre Completo:", txtNombreCompleto = new JTextField());
         agregarCampo(panelCampos, gbc, fila++, "Dirección:", txtDireccion = new JTextField());
         agregarCampo(panelCampos, gbc, fila++, "Teléfono:", txtTelefono = new JTextField());
+
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         JButton btnGuardar = new JButton("Guardar Autor");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -58,6 +73,7 @@ public class FormularioUsuarioEdit extends JDialog {
         btnGuardar.setFocusPainted(false);
         btnGuardar.setPreferredSize(new Dimension(160, 40));
         btnGuardar.addActionListener(e -> guardarCambios());
+
         JButton btnSalir = new JButton("Salir");
         btnSalir.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnSalir.setBackground(new Color(120, 120, 120));
@@ -71,16 +87,25 @@ public class FormularioUsuarioEdit extends JDialog {
                 dispose();
             }
         });
+
         panelBoton.add(btnGuardar);
         panelBoton.add(btnSalir);
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
-
 
         cargarDatosUsuario();
         txtPassword.setEditable(false);
         setVisible(true);
     }
 
+    /**
+     * Agrega un campo al formulario con su respectiva etiqueta.
+     *
+     * @param panel   Panel donde se agregará el campo.
+     * @param gbc     Restricciones de GridBagLayout.
+     * @param fila    Fila donde colocar el campo.
+     * @param etiqueta Texto de la etiqueta.
+     * @param campo    Componente del campo.
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, int fila, String etiqueta, JComponent campo) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -102,6 +127,9 @@ public class FormularioUsuarioEdit extends JDialog {
         panel.add(campo, gbc);
     }
 
+    /**
+     * Carga los datos del usuario en los campos del formulario.
+     */
     private void cargarDatosUsuario() {
         txtNombreUsuario.setText(usuario.getNombreUsuario());
         txtCorreo.setText(usuario.getCorreo());
@@ -112,6 +140,10 @@ public class FormularioUsuarioEdit extends JDialog {
         txtTelefono.setText(usuario.getTelefono());
     }
 
+    /**
+     * Valida los datos ingresados, actualiza el usuario y guarda los cambios en la base de datos.
+     * Muestra mensajes de error si hay campos inválidos.
+     */
     private void guardarCambios() {
         cmbTipoUsuario.setBorder(UIManager.getBorder("ComboBox.border"));
         txtNombreUsuario.setBorder(UIManager.getBorder("TextField.border"));
@@ -167,3 +199,5 @@ public class FormularioUsuarioEdit extends JDialog {
         }
     }
 }
+
+

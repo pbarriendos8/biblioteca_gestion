@@ -5,41 +5,92 @@ import java.sql.Date;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Entidad que representa un libro en la base de datos.
+ * Contiene información sobre el libro, como título, descripción,
+ * fecha de publicación, portada, archivo PDF, ISBN, disponibilidad,
+ * autor asociado, y el préstamo actual si existe.
+ */
 @Entity
 @Table(name = "libros", schema = "biblioteca_pbarriendos", catalog = "")
 public class Libro {
+    /**
+     * Identificador único del libro.
+     */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id_libro")
     private int idLibro;
+
+    /**
+     * Título del libro.
+     */
     @Basic
     @Column(name = "titulo")
     private String titulo;
+
+    /**
+     * Descripción o sinopsis del libro.
+     */
     @Basic
     @Column(name = "descripcion")
     private String descripcion;
+
+    /**
+     * Fecha de publicación del libro.
+     */
     @Basic
     @Column(name = "fecha_publicacion")
     private Date fechaPublicacion;
+
+    /**
+     * Imagen de portada del libro almacenada como arreglo de bytes.
+     */
     @Basic
     @Column(name = "portada")
     private byte[] portada;
+
+    /**
+     * Archivo PDF del libro almacenado como arreglo de bytes.
+     */
     @Basic
     @Column(name = "archivo_pdf")
     private byte[] archivoPdf;
+
+    /**
+     * Código ISBN del libro.
+     */
     @Basic
     @Column(name = "isbn")
     private String isbn;
+
+    /**
+     * Estado de disponibilidad del libro.
+     * True si está disponible, false si no.
+     */
     @Basic
     @Column(name = "disponible")
     private boolean disponible;
+
+    /**
+     * Autor asociado a este libro.
+     * Relación ManyToOne con la entidad Autor.
+     */
     @ManyToOne
     @JoinColumn(name = "id_autor", referencedColumnName = "id_autor")
     private Autor autor;
+
+    /**
+     * Préstamo actual asociado al libro.
+     * Relación OneToOne con la entidad Prestamo.
+     */
     @OneToOne
     @JoinColumn(name = "id_libro", referencedColumnName = "id_libro", nullable = false)
     private Prestamo prestamo;
 
+    /**
+     * Nombre del archivo PDF asociado al libro.
+     */
     @Basic
     @Column(name = "nombre_archivo_pdf")
     private String nombreArchivoPdf;

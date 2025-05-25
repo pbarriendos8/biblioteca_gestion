@@ -6,31 +6,68 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Entidad que representa un autor en la base de datos.
+ * Contiene información personal y biográfica del autor,
+ * así como la lista de libros asociados a él.
+ */
 @Entity
 @Table(name = "autores", schema = "biblioteca_pbarriendos", catalog = "")
 public class Autor {
+    /**
+     * Identificador único del autor.
+     */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id_autor")
     private int idAutor;
+
+    /**
+     * Nombre del autor.
+     */
     @Basic
     @Column(name = "nombre")
     private String nombre;
+
+    /**
+     * Apellidos del autor.
+     */
     @Basic
     @Column(name = "apellidos")
     private String apellidos;
+
+    /**
+     * Fecha de nacimiento del autor.
+     */
     @Basic
     @Column(name = "fecha_nacimiento")
     private Date fechaNacimiento;
+
+    /**
+     * Nacionalidad del autor.
+     */
     @Basic
     @Column(name = "nacionalidad")
     private String nacionalidad;
+
+    /**
+     * Biografía del autor.
+     */
     @Basic
     @Column(name = "biografia")
     private String biografia;
+
+    /**
+     * Foto del autor almacenada como arreglo de bytes.
+     */
     @Basic
     @Column(name = "foto")
     private byte[] foto;
+
+    /**
+     * Lista de libros asociados a este autor.
+     * Relación OneToMany con la entidad Libro.
+     */
     @OneToMany(mappedBy = "autor")
     private List<Libro> libros;
 

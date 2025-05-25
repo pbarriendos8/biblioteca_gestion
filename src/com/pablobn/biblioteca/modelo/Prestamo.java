@@ -6,31 +6,69 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
+/**
+ * Entidad que representa un préstamo de un libro en la base de datos.
+ * Contiene información sobre fechas del préstamo, estado, observaciones,
+ * y relaciones con el usuario que realiza el préstamo y el libro prestado.
+ */
 @Entity
 @Table(name = "prestamos", schema = "biblioteca_pbarriendos", catalog = "")
 public class Prestamo {
+    /**
+     * Identificador único del préstamo.
+     */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id_prestamo")
     private int idPrestamo;
+
+    /**
+     * Fecha de inicio del préstamo.
+     */
     @Basic
     @Column(name = "fecha_inicio")
     private Date fechaInicio;
+
+    /**
+     * Fecha límite para la devolución del libro.
+     */
     @Basic
     @Column(name = "fecha_fin")
     private Date fechaFin;
+
+    /**
+     * Fecha real en que se devolvió el libro.
+     */
     @Basic
     @Column(name = "fecha_devolucion_real")
     private Date fechaDevolucionReal;
+
+    /**
+     * Estado actual del préstamo (ACTIVO, FINALIZADO).
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "estado")
     private EstadoPrestamo estado;
+
+    /**
+     * Observaciones o comentarios adicionales sobre el préstamo.
+     */
     @Basic
     @Column(name = "observaciones")
     private String observaciones;
+
+    /**
+     * Usuario que realizó el préstamo.
+     * Relación ManyToOne con la entidad Usuario.
+     */
     @ManyToOne
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     private Usuario usuario;
+
+    /**
+     * Libro prestado.
+     * Relación OneToOne con la entidad Libro.
+     */
     @OneToOne
     @JoinColumn(name = "id_libro", referencedColumnName = "id_libro")
     private Libro libro;

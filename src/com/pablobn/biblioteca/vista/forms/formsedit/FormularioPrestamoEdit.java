@@ -16,6 +16,10 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Properties;
 
+/**
+ * Formulario modal para editar un préstamo existente en la biblioteca.
+ * Permite cambiar fechas, usuario, libro y observaciones asociadas.
+ */
 public class FormularioPrestamoEdit extends JDialog {
 
     private final UtilDateModel modelFechaInicio = new UtilDateModel();
@@ -28,6 +32,13 @@ public class FormularioPrestamoEdit extends JDialog {
     private final Usuario usuarioActual;
     private final Prestamo prestamo;
 
+    /**
+     * Crea e inicializa el formulario de edición de un préstamo.
+     *
+     * @param parent         Ventana padre.
+     * @param prestamo       Objeto préstamo que se desea editar.
+     * @param usuarioActual  Usuario que tiene la sesión iniciada (para control de permisos).
+     */
     public FormularioPrestamoEdit(JFrame parent, Prestamo prestamo, Usuario usuarioActual) {
         super(parent, "Editar Préstamo", true);
         this.prestamo = prestamo;
@@ -127,6 +138,17 @@ public class FormularioPrestamoEdit extends JDialog {
         setVisible(true);
     }
 
+
+    /**
+     * Agrega un campo al panel con su respectiva etiqueta alineada a la derecha.
+     *
+     * @param panel     Panel contenedor.
+     * @param gbc       Restricciones de GridBagLayout.
+     * @param texto     Texto de la etiqueta.
+     * @param componente Componente asociado al campo.
+     * @param fontLabel Fuente para la etiqueta.
+     * @param fila      Fila en la que se debe colocar el componente.
+     */
     private void agregarCampo(JPanel panel, GridBagConstraints gbc, String texto, JComponent componente, Font fontLabel, int fila) {
         gbc.gridx = 0;
         gbc.gridy = fila;
@@ -138,6 +160,10 @@ public class FormularioPrestamoEdit extends JDialog {
         panel.add(componente, gbc);
     }
 
+    /**
+     * Carga en el comboBox la lista de usuarios disponibles desde la base de datos.
+     * Incluye una opción nula como selección inicial.
+     */
     private void cargarUsuarios() {
         UsuarioDAO usuarioDAO = new UsuarioDAO();
         comboUsuarios.addItem(null);
@@ -159,6 +185,11 @@ public class FormularioPrestamoEdit extends JDialog {
         });
     }
 
+
+    /**
+     * Carga en el comboBox la lista de libros disponibles desde la base de datos.
+     * Incluye una opción nula como selección inicial.
+     */
     private void cargarLibros() {
         LibroDAO libroDAO = new LibroDAO();
         List<Libro> libros = libroDAO.obtenerTodosLibros();
@@ -180,6 +211,9 @@ public class FormularioPrestamoEdit extends JDialog {
         });
     }
 
+    /**
+     * Carga los datos del préstamo actual en los campos correspondientes del formulario.
+     */
     private void cargarDatosPrestamo() {
         modelFechaInicio.setValue(prestamo.getFechaInicio());
         modelFechaFin.setValue(prestamo.getFechaFin());
@@ -189,6 +223,11 @@ public class FormularioPrestamoEdit extends JDialog {
         textObservaciones.setText(prestamo.getObservaciones());
     }
 
+    /**
+     * Valida los campos del formulario y actualiza los datos del préstamo si la validación es exitosa.
+     * Muestra mensajes de error si faltan datos o si hay incoherencias como fechas inválidas.
+     * Si todo es correcto, solicita confirmación al usuario y guarda los cambios en la base de datos.
+     */
     private void guardarCambios() {
         java.util.Date fechaInicioUtil = (java.util.Date) datePickerInicio.getModel().getValue();
         java.util.Date fechaFinUtil = (java.util.Date) datePickerFin.getModel().getValue();
