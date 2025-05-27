@@ -65,14 +65,6 @@ public class Libro {
     private String isbn;
 
     /**
-     * Estado de disponibilidad del libro.
-     * True si está disponible, false si no.
-     */
-    @Basic
-    @Column(name = "disponible")
-    private boolean disponible;
-
-    /**
      * Autor asociado a este libro.
      * Relación ManyToOne con la entidad Autor.
      */
@@ -159,25 +151,17 @@ public class Libro {
         this.isbn = isbn;
     }
 
-    public boolean isDisponible() {
-        return disponible;
-    }
-
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Libro libro = (Libro) o;
-        return idLibro == libro.idLibro && disponible == libro.disponible && Objects.equals(titulo, libro.titulo) && Objects.equals(descripcion, libro.descripcion) && Objects.equals(fechaPublicacion, libro.fechaPublicacion) && Arrays.equals(portada, libro.portada) && Arrays.equals(archivoPdf, libro.archivoPdf) && Objects.equals(isbn, libro.isbn) && Objects.equals(nombreArchivoPdf, libro.nombreArchivoPdf);
+        return idLibro == libro.idLibro && Objects.equals(titulo, libro.titulo) && Objects.equals(descripcion, libro.descripcion) && Objects.equals(fechaPublicacion, libro.fechaPublicacion) && Arrays.equals(portada, libro.portada) && Arrays.equals(archivoPdf, libro.archivoPdf) && Objects.equals(isbn, libro.isbn) && Objects.equals(nombreArchivoPdf, libro.nombreArchivoPdf);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(idLibro, titulo, descripcion, fechaPublicacion, isbn, disponible, nombreArchivoPdf);
+        int result = Objects.hash(idLibro, titulo, descripcion, fechaPublicacion, isbn, nombreArchivoPdf);
         result = 31 * result + Arrays.hashCode(portada);
         result = 31 * result + Arrays.hashCode(archivoPdf);
         return result;

@@ -90,7 +90,7 @@ public class LoginPanel extends JPanel {
         Image img = logoIcon.getImage().getScaledInstance(300, 300, Image.SCALE_SMOOTH);
         lblLogoImg.setIcon(new ImageIcon(img));
         lblLogoImg.setHorizontalAlignment(SwingConstants.CENTER);
-        lblLogoImg.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        lblLogoImg.setBorder(BorderFactory.createEmptyBorder(60, 0, 20, 0));
         add(lblLogoImg, BorderLayout.NORTH);
 
         // Panel central con formulario
@@ -201,8 +201,8 @@ public class LoginPanel extends JPanel {
         Usuario usuarioLogueado = UsuarioDAO.autenticar(usuario, password);
 
         if (usuarioLogueado != null) {
-            JFrame ventanaPrincipal = new VentanaPrincipal(usuarioLogueado);
-            ventanaPrincipal.setSize(1200, 800);
+            JFrame ventanaPrincipal = new VentanaPrincipal(usuarioLogueado, password);
+            ventanaPrincipal.setSize(1500, 900);
             ventanaPrincipal.setLocationRelativeTo(null);
             ventanaPrincipal.setVisible(true);
 

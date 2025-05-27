@@ -41,6 +41,12 @@ public class FormularioUsuarioNew extends JDialog {
         add(panelPrincipal);
 
         JPanel panelCampos = new JPanel(new GridBagLayout());
+        JLabel titulo = new JLabel("AÑADIR USUARIO", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 30));
+        titulo.setForeground(new Color(0, 0, 0));
+        titulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        panelPrincipal.add(titulo, BorderLayout.NORTH);
+
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -75,7 +81,7 @@ public class FormularioUsuarioNew extends JDialog {
         agregarCampo(panelCampos, gbc, fila++, "Dirección:", txtDireccion = new JTextField());
         agregarCampo(panelCampos, gbc, fila++, "Teléfono:", txtTelefono = new JTextField());
         JPanel panelBoton = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        JButton btnGuardar = new JButton("Guardar Autor");
+        JButton btnGuardar = new JButton("Guardar Usuario");
         btnGuardar.setFont(new Font("SansSerif", Font.BOLD, 14));
         btnGuardar.setBackground(new Color(33, 150, 243));
         btnGuardar.setForeground(Color.WHITE);

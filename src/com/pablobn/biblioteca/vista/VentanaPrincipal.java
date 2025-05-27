@@ -89,7 +89,7 @@ public class VentanaPrincipal extends JFrame {
      * a ciertas funcionalidades (por ejemplo, la vista de "Usuarios"
      * solo es accesible para administradores).
      */
-    public VentanaPrincipal(Usuario usuario) {
+    public VentanaPrincipal(Usuario usuario, String contraseñaSinHashear) {
         this.usuarioLogueado = usuario;
 
         setTitle("Biblioteca - Bienvenido " + usuario.getNombreUsuario());
@@ -99,7 +99,7 @@ public class VentanaPrincipal extends JFrame {
 
         setLayout(new BorderLayout());
 
-        add(crearPanelIzquierdo(), BorderLayout.WEST);
+        add(crearPanelIzquierdo(contraseñaSinHashear), BorderLayout.WEST);
 
         cardLayout = new CardLayout();
         panelContenido = new JPanel(cardLayout);
@@ -126,9 +126,9 @@ public class VentanaPrincipal extends JFrame {
      *
      * @return El {@link JPanel} configurado para el lado izquierdo de la ventana.
      */
-    private JPanel crearPanelIzquierdo() {
+    private JPanel crearPanelIzquierdo(String contraseñaSinHashear) {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setPreferredSize(new Dimension(250, getHeight()));
+        panel.setPreferredSize(new Dimension(300, getHeight()));
         panel.setBackground(colorFondo);
 
         JPanel infoUsuario = new JPanel(new GridLayout(2, 1));
@@ -143,8 +143,8 @@ public class VentanaPrincipal extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 JFrame perfilFrame = new JFrame("Mi Perfil");
-                perfilFrame.setContentPane(new PanelPerfilUsuario(usuarioLogueado));
-                perfilFrame.setSize(500, 600);
+                perfilFrame.setContentPane(new PanelPerfilUsuario(usuarioLogueado, contraseñaSinHashear));
+                perfilFrame.setSize(500, 500);
                 perfilFrame.setLocationRelativeTo(null);
                 perfilFrame.setVisible(true);
             }
@@ -200,54 +200,53 @@ public class VentanaPrincipal extends JFrame {
         menu.add(btnInformeLibrosAutor);
         menu.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        JButton btnInformePrestamosUsuario = new JButton("Préstamos por Usuario");
-        btnInformePrestamosUsuario.setFont(fuenteBoton);
-        btnInformePrestamosUsuario.setFocusPainted(false);
-        btnInformePrestamosUsuario.setBackground(colorFondo);
-        btnInformePrestamosUsuario.setForeground(colorTextoNormal);
-        btnInformePrestamosUsuario.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 10));
-        btnInformePrestamosUsuario.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btnInformePrestamosUsuario.setMaximumSize(new Dimension(300, 40));
-        btnInformePrestamosUsuario.setHorizontalAlignment(SwingConstants.LEFT);
-        btnInformePrestamosUsuario.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnInformePrestamosUsuario.addActionListener(e -> generarInformePrestamosPorUsuario());
+        if (usuarioLogueado.getTipoUsuario().equals(TipoUsuario.ADMIN)){
+            JButton btnInformePrestamosUsuario = new JButton("Préstamos por Usuario");
+            btnInformePrestamosUsuario.setFont(fuenteBoton);
+            btnInformePrestamosUsuario.setFocusPainted(false);
+            btnInformePrestamosUsuario.setBackground(colorFondo);
+            btnInformePrestamosUsuario.setForeground(colorTextoNormal);
+            btnInformePrestamosUsuario.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 10));
+            btnInformePrestamosUsuario.setAlignmentX(Component.LEFT_ALIGNMENT);
+            btnInformePrestamosUsuario.setMaximumSize(new Dimension(300, 40));
+            btnInformePrestamosUsuario.setHorizontalAlignment(SwingConstants.LEFT);
+            btnInformePrestamosUsuario.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            btnInformePrestamosUsuario.addActionListener(e -> generarInformePrestamosPorUsuario());
 
-        menu.add(btnInformePrestamosUsuario);
-        menu.add(Box.createRigidArea(new Dimension(0, 5)));
+            menu.add(btnInformePrestamosUsuario);
+            menu.add(Box.createRigidArea(new Dimension(0, 5)));
 
-        JButton btnGraficoPrestamos = new JButton("Préstamos Activos/Finalizados");
-        btnGraficoPrestamos.setFont(fuenteBoton);
-        btnGraficoPrestamos.setFocusPainted(false);
-        btnGraficoPrestamos.setBackground(colorFondo);
-        btnGraficoPrestamos.setForeground(colorTextoNormal);
-        btnGraficoPrestamos.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 10));
-        btnGraficoPrestamos.setAlignmentX(Component.LEFT_ALIGNMENT);
-        btnGraficoPrestamos.setMaximumSize(new Dimension(300, 40));
-        btnGraficoPrestamos.setHorizontalAlignment(SwingConstants.LEFT);
-        btnGraficoPrestamos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btnGraficoPrestamos.addActionListener(e -> generarInformeGraficoPrestamos());
-
-        menu.add(btnGraficoPrestamos);
-        menu.add(Box.createRigidArea(new Dimension(0, 5)));
+            JButton btnGraficoPrestamos = new JButton("Préstamos Activos/Finalizados");
+            btnGraficoPrestamos.setFont(fuenteBoton);
+            btnGraficoPrestamos.setFocusPainted(false);
+            btnGraficoPrestamos.setBackground(colorFondo);
+            btnGraficoPrestamos.setForeground(colorTextoNormal);
+            btnGraficoPrestamos.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 10));
+            btnGraficoPrestamos.setAlignmentX(Component.LEFT_ALIGNMENT);
+            btnGraficoPrestamos.setMaximumSize(new Dimension(300, 40));
+            btnGraficoPrestamos.setHorizontalAlignment(SwingConstants.LEFT);
+            btnGraficoPrestamos.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            btnGraficoPrestamos.addActionListener(e -> generarInformeGraficoPrestamos());
+            menu.add(btnGraficoPrestamos);
+            menu.add(Box.createRigidArea(new Dimension(0, 5)));
+        }
 
 
         panel.add(menu, BorderLayout.CENTER);
 
-        // ... dentro de crearPanelIzquierdo(), justo después de agregar los botones de informes:
+        JPanel panelInferior = new JPanel();
+        panelInferior.setBackground(colorFondo);
+        panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
+        panelInferior.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
 
-// Botón Ayuda
         JButton btnAyuda = new JButton("Ayuda");
         btnAyuda.setFont(fuenteBoton);
         btnAyuda.setFocusPainted(false);
-        btnAyuda.setBackground(colorFondo);
-        btnAyuda.setForeground(colorTextoNormal);
-        btnAyuda.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 10));
+        btnAyuda.setBackground(new Color(150, 150, 150));
+        btnAyuda.setForeground(Color.WHITE);
         btnAyuda.setAlignmentX(Component.LEFT_ALIGNMENT);
         btnAyuda.setMaximumSize(new Dimension(300, 40));
-        btnAyuda.setHorizontalAlignment(SwingConstants.LEFT);
         btnAyuda.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
-// Acción para abrir el sistema JavaHelp
         btnAyuda.addActionListener(e -> {
             try {
                 ClassLoader cl = getClass().getClassLoader();
@@ -265,16 +264,6 @@ public class VentanaPrincipal extends JFrame {
             }
         });
 
-
-        menu.add(btnAyuda);
-        menu.add(Box.createRigidArea(new Dimension(0, 5)));
-
-
-        JPanel panelInferior = new JPanel();
-        panelInferior.setBackground(colorFondo);
-        panelInferior.setLayout(new BoxLayout(panelInferior, BoxLayout.Y_AXIS));
-        panelInferior.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
-
         JButton btnCerrarSesion = new JButton("Cerrar Sesión");
         btnCerrarSesion.setFont(fuenteBoton);
         btnCerrarSesion.setFocusPainted(false);
@@ -290,7 +279,7 @@ public class VentanaPrincipal extends JFrame {
                 JFrame loginFrame = new JFrame("Login");
                 loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 loginFrame.setContentPane(new LoginPanel());
-                loginFrame.setSize(500, 500);
+                loginFrame.setSize(600, 800);
                 loginFrame.setLocationRelativeTo(null);
                 loginFrame.setVisible(true);
             }
@@ -314,6 +303,8 @@ public class VentanaPrincipal extends JFrame {
         addHoverEffect(btnCerrarSesion, new Color(130, 130, 130), new Color(150, 150, 150));
         addHoverEffect(btnSalir, new Color(90, 90, 90), new Color(120, 120, 120));
 
+        panelInferior.add(btnAyuda);
+        panelInferior.add(Box.createRigidArea(new Dimension(0, 10)));
         panelInferior.add(btnCerrarSesion);
         panelInferior.add(Box.createRigidArea(new Dimension(0, 10)));
         panelInferior.add(btnSalir);

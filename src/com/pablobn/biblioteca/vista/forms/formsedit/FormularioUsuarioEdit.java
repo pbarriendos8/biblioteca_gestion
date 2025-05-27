@@ -20,7 +20,6 @@ public class FormularioUsuarioEdit extends JDialog {
     // Campos del formulario
     private JTextField txtNombreUsuario;
     private JTextField txtCorreo;
-    private JPasswordField txtPassword;
     private JComboBox<TipoUsuario> cmbTipoUsuario;
     private JTextField txtNombreCompleto;
     private JTextField txtDireccion;
@@ -48,6 +47,11 @@ public class FormularioUsuarioEdit extends JDialog {
         add(panelPrincipal);
 
         JPanel panelCampos = new JPanel(new GridBagLayout());
+        JLabel titulo = new JLabel("EDITAR USUARIO", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 30));
+        titulo.setForeground(new Color(0, 0, 0));
+        titulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        panelPrincipal.add(titulo, BorderLayout.NORTH);
         panelPrincipal.add(panelCampos, BorderLayout.CENTER);
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -59,7 +63,6 @@ public class FormularioUsuarioEdit extends JDialog {
 
         agregarCampo(panelCampos, gbc, fila++, "Nombre de Usuario:", txtNombreUsuario = new JTextField());
         agregarCampo(panelCampos, gbc, fila++, "Correo:", txtCorreo = new JTextField());
-        agregarCampo(panelCampos, gbc, fila++, "Contraseña:", txtPassword = new JPasswordField());
         agregarCampo(panelCampos, gbc, fila++, "Tipo de Usuario:", cmbTipoUsuario = new JComboBox<>(TipoUsuario.values()));
         agregarCampo(panelCampos, gbc, fila++, "Nombre Completo:", txtNombreCompleto = new JTextField());
         agregarCampo(panelCampos, gbc, fila++, "Dirección:", txtDireccion = new JTextField());
@@ -93,7 +96,6 @@ public class FormularioUsuarioEdit extends JDialog {
         panelPrincipal.add(panelBoton, BorderLayout.SOUTH);
 
         cargarDatosUsuario();
-        txtPassword.setEditable(false);
         setVisible(true);
     }
 
@@ -133,7 +135,6 @@ public class FormularioUsuarioEdit extends JDialog {
     private void cargarDatosUsuario() {
         txtNombreUsuario.setText(usuario.getNombreUsuario());
         txtCorreo.setText(usuario.getCorreo());
-        txtPassword.setText(usuario.getPassword());
         cmbTipoUsuario.setSelectedItem(usuario.getTipoUsuario());
         txtNombreCompleto.setText(usuario.getNombreCompleto());
         txtDireccion.setText(usuario.getDireccion());
@@ -148,7 +149,6 @@ public class FormularioUsuarioEdit extends JDialog {
         cmbTipoUsuario.setBorder(UIManager.getBorder("ComboBox.border"));
         txtNombreUsuario.setBorder(UIManager.getBorder("TextField.border"));
         txtCorreo.setBorder(UIManager.getBorder("TextField.border"));
-        txtPassword.setBorder(UIManager.getBorder("TextField.border"));
         StringBuilder errores = new StringBuilder();
         boolean hayErrores = false;
 
@@ -162,12 +162,6 @@ public class FormularioUsuarioEdit extends JDialog {
         if (nombreUsuario.isEmpty()) {
             errores.append("- El Email es obligatorio.\n");
             txtCorreo.setBorder(BorderFactory.createLineBorder(Color.RED));
-            hayErrores = true;
-        }
-        String password = new String(txtPassword.getPassword()).trim();
-        if (password.isEmpty()) {
-            errores.append("- La contraseña es obligatoria.\n");
-            txtPassword.setBorder(BorderFactory.createLineBorder(Color.RED));
             hayErrores = true;
         }
         TipoUsuario tipoUsuario = (TipoUsuario) cmbTipoUsuario.getSelectedItem();
@@ -184,7 +178,6 @@ public class FormularioUsuarioEdit extends JDialog {
         try {
             usuario.setNombreUsuario(txtNombreUsuario.getText());
             usuario.setCorreo(txtCorreo.getText());
-            usuario.setPassword(HashUtil.hashPassword(password));
             usuario.setTipoUsuario((TipoUsuario) cmbTipoUsuario.getSelectedItem());
             usuario.setNombreCompleto(txtNombreCompleto.getText());
             usuario.setDireccion(txtDireccion.getText());

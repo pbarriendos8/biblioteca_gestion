@@ -40,12 +40,17 @@ public class FormularioLibroNew extends JDialog {
      */
     public FormularioLibroNew(JFrame parent) {
         super(parent, "Nuevo Libro", true);
-        setSize(600, 700);
+        setSize(600, 850);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JLabel titulo = new JLabel("AÑADIR LIBRO", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 30));
+        titulo.setForeground(new Color(0, 0, 0));
+        titulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        panelPrincipal.add(titulo, BorderLayout.NORTH);
         add(panelPrincipal);
         JPanel panelCampos = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -308,7 +313,6 @@ public class FormularioLibroNew extends JDialog {
                 libro.setFechaPublicacion(new Date(selectedDate.getTime()));
             }
             libro.setIsbn(isbn);
-            libro.setDisponible(true);
             libro.setPortada(portadaBytes);
             libro.setArchivoPdf(archivoPdfBytes);
             libro.setNombreArchivoPdf(nombreArchivoPdf);

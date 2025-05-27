@@ -149,4 +149,9 @@ public class Autor {
     public void setLibros(List<Libro> libros) {
         this.libros = libros;
     }
+
+    @Override
+    public String toString() {
+        return this.nombre + this.apellidos;
+    }
 }

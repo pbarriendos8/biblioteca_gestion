@@ -1,6 +1,7 @@
 package com.pablobn.biblioteca;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import com.pablobn.biblioteca.util.BBDDUtil;
 import com.pablobn.biblioteca.vista.LoginPanel;
 
 import javax.swing.*;
@@ -38,6 +39,7 @@ public class Main {
      * @param args los argumentos de la línea de comandos (no utilizados en esta aplicación).
      */
     public static void main(String[] args) {
+        BBDDUtil.initDatabase();
         try {
             FlatLightLaf.setup();
         } catch (Exception e) {

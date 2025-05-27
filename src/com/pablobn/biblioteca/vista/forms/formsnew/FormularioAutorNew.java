@@ -48,6 +48,11 @@ public class FormularioAutorNew extends JDialog {
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         add(panelPrincipal);
         JPanel panelCampos = new JPanel(new GridBagLayout());
+        JLabel titulo = new JLabel("AÑADIR AUTOR", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 30));
+        titulo.setForeground(new Color(0, 0, 0));
+        titulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        panelPrincipal.add(titulo, BorderLayout.NORTH);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.fill = GridBagConstraints.HORIZONTAL;

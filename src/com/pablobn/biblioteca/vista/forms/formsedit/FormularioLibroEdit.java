@@ -48,13 +48,18 @@ public class FormularioLibroEdit extends JDialog {
     public FormularioLibroEdit(JFrame parent, Libro libro) {
         super(parent, "Editar Libro", true);
         this.libro = libro;
-        setSize(600, 700);
+        setSize(600, 850);
         setLocationRelativeTo(parent);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
 
         JPanel panelPrincipal = new JPanel(new BorderLayout(10, 10));
         panelPrincipal.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JLabel titulo = new JLabel("EDITAR LIBRO", SwingConstants.CENTER);
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 30));
+        titulo.setForeground(new Color(0, 0, 0));
+        titulo.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        panelPrincipal.add(titulo, BorderLayout.NORTH);
         add(panelPrincipal);
 
         JPanel panelCampos = new JPanel(new GridBagLayout());

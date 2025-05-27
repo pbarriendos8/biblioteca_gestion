@@ -226,11 +226,6 @@ public class PanelEntidad extends JPanel {
                     break;
                 case "Libros":
                     List<Libro> libros = LibroDAO.obtenerTodosLibros();
-                    if ("Disponibles".equals(filtro)) {
-                        libros = libros.stream().filter(Libro::isDisponible).collect(Collectors.toList());
-                    } else if ("No disponibles".equals(filtro)) {
-                        libros = libros.stream().filter(libro -> !libro.isDisponible()).collect(Collectors.toList());
-                    }
                     cargarLibrosEnTabla(libros);
                     break;
                 case "Usuarios":
@@ -632,12 +627,34 @@ public class PanelEntidad extends JPanel {
 
             case "Usuarios":
                 id = (int) tableModel.getValueAt(fila, 0);
-                Usuario usuario = UsuarioDAO.obtenerTodosUsuarios().stream().filter(u -> u.getIdUsuario() == id).findFirst().orElse(null);
+                Usuario usuario = UsuarioDAO.obtenerTodosUsuarios().stream()
+                        .filter(u -> u.getIdUsuario() == id)
+                        .findFirst()
+                        .orElse(null);
+
                 if (usuario != null) {
+                    List<Prestamo> prestamosUsuario = PrestamoDAO.obtenerTodosPrestamos().stream()
+                            .filter(p -> p.getUsuario().getIdUsuario() == id)
+                            .collect(Collectors.toList());
+
+
+                    boolean tienePrestamosActivos = prestamosUsuario.stream()
+                            .anyMatch(p -> p.getEstado().name().equals("ACTIVO"));
+
+                    if (tienePrestamosActivos) {
+                        JOptionPane.showMessageDialog(this,
+                                "Este usuario no se puede eliminar porque tiene préstamos activos.",
+                                "Advertencia", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+
+                    prestamosUsuario.forEach(PrestamoDAO::eliminarPrestamo);
+
                     UsuarioDAO.eliminarUsuario(usuario);
-                    JOptionPane.showMessageDialog(this, "Usuario eliminado.");
+                    JOptionPane.showMessageDialog(this, "Usuario y sus préstamos finalizados eliminados.");
                 }
                 break;
+
 
             default:
                 JOptionPane.showMessageDialog(this, "Eliminación no disponible para esta entidad.");
