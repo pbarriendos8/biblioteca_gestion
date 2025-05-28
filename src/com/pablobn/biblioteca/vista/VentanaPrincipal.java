@@ -185,6 +185,7 @@ public class VentanaPrincipal extends JFrame {
         labelInformes.setAlignmentX(Component.LEFT_ALIGNMENT);
         menu.add(labelInformes);
 
+        
         JButton btnInformeLibrosAutor = new JButton("Libros por Autor");
         btnInformeLibrosAutor.setFont(fuenteBoton);
         btnInformeLibrosAutor.setFocusPainted(false);
