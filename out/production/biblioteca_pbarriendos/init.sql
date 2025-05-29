@@ -88,19 +88,19 @@ SELECT * FROM (
                   SELECT 'Don Quijote de la Mancha',
                          'Novela clásica que narra las aventuras del ingenioso hidalgo Don Quijote.',
                          '1605-01-16',
-                         '978-0-14-243723-0',
+                         '978-1-01-000001-1',
                          (SELECT id_autor FROM autores WHERE nombre='Miguel' AND apellidos='de Cervantes Saavedra')
                   UNION ALL
                   SELECT 'La Galatea',
                          'Primera novela pastoral de Cervantes.',
                          '1585-01-01',
-                         '978-0-19-953713-8',
+                         '978-1-01-000002-2',
                          (SELECT id_autor FROM autores WHERE nombre='Miguel' AND apellidos='de Cervantes Saavedra')
                   UNION ALL
                   SELECT 'Novelas Ejemplares',
                          'Colección de doce novelas cortas.',
                          '1613-01-01',
-                         '978-0-14-243749-0',
+                         '978-1-01-000003-3',
                          (SELECT id_autor FROM autores WHERE nombre='Miguel' AND apellidos='de Cervantes Saavedra')
 
                          -- Federico García Lorca
@@ -108,19 +108,19 @@ SELECT * FROM (
                   SELECT 'Bodas de Sangre',
                          'Tragedia dramática que explora el amor y la pasión en un contexto rural andaluz.',
                          '1933-01-01',
-                         '978-0-14-118780-7',
+                         '978-1-01-000004-4',
                          (SELECT id_autor FROM autores WHERE nombre='Federico' AND apellidos='García Lorca')
                   UNION ALL
                   SELECT 'La Casa de Bernarda Alba',
                          'Drama sobre la opresión social y familiar.',
                          '1936-01-01',
-                         '978-0-14-313010-3',
+                         '978-1-01-000005-5',
                          (SELECT id_autor FROM autores WHERE nombre='Federico' AND apellidos='García Lorca')
                   UNION ALL
                   SELECT 'Poeta en Nueva York',
                          'Poemario que refleja su estancia en Nueva York y su visión social.',
                          '1940-01-01',
-                         '978-0-14-310576-3',
+                         '978-1-01-000006-6',
                          (SELECT id_autor FROM autores WHERE nombre='Federico' AND apellidos='García Lorca')
 
                          -- Gabriel García Márquez
@@ -128,19 +128,19 @@ SELECT * FROM (
                   SELECT 'Cien años de soledad',
                          'Novela emblemática del realismo mágico, relata la historia de la familia Buendía.',
                          '1967-05-30',
-                         '978-0-06-088328-7',
+                         '978-1-01-000007-7',
                          (SELECT id_autor FROM autores WHERE nombre='Gabriel' AND apellidos='García Márquez')
                   UNION ALL
                   SELECT 'El amor en los tiempos del cólera',
                          'Historia de amor que trasciende el tiempo y las dificultades.',
                          '1985-01-01',
-                         '978-0-06-112241-5',
+                         '978-1-01-000008-8',
                          (SELECT id_autor FROM autores WHERE nombre='Gabriel' AND apellidos='García Márquez')
                   UNION ALL
                   SELECT 'Crónica de una muerte anunciada',
                          'Novela corta que investiga el asesinato de Santiago Nasar.',
                          '1981-01-01',
-                         '978-0-06-091310-4',
+                         '978-1-01-000009-9',
                          (SELECT id_autor FROM autores WHERE nombre='Gabriel' AND apellidos='García Márquez')
 
                          -- Isabel Allende
@@ -148,19 +148,19 @@ SELECT * FROM (
                   SELECT 'La casa de los espíritus',
                          'Novela que mezcla la historia familiar con elementos mágicos y políticos.',
                          '1982-01-01',
-                         '978-0-06-112241-9',
+                         '978-1-01-000010-1',
                          (SELECT id_autor FROM autores WHERE nombre='Isabel' AND apellidos='Allende')
                   UNION ALL
                   SELECT 'Eva Luna',
                          'Relatos de una mujer con una vida marcada por la imaginación y la rebeldía.',
                          '1987-01-01',
-                         '978-0-06-091646-7',
+                         '978-1-01-000011-2',
                          (SELECT id_autor FROM autores WHERE nombre='Isabel' AND apellidos='Allende')
                   UNION ALL
                   SELECT 'Paula',
                          'Memorias dedicadas a su hija con reflexiones personales.',
                          '1994-01-01',
-                         '978-0-06-093092-6',
+                         '978-1-01-000012-3',
                          (SELECT id_autor FROM autores WHERE nombre='Isabel' AND apellidos='Allende')
 
                          -- Camilo José Cela
@@ -168,13 +168,13 @@ SELECT * FROM (
                   SELECT 'La colmena',
                          'Novela que retrata la sociedad española de la posguerra.',
                          '1951-01-01',
-                         '978-84-206-3133-3',
+                         '978-1-01-000013-4',
                          (SELECT id_autor FROM autores WHERE nombre='Camilo' AND apellidos='José Cela')
                   UNION ALL
                   SELECT 'La familia de Pascual Duarte',
                          'Novela que explora la violencia y la fatalidad en la España rural.',
                          '1942-01-01',
-                         '978-84-7039-571-9',
+                         '978-1-01-000014-5',
                          (SELECT id_autor FROM autores WHERE nombre='Camilo' AND apellidos='José Cela')
 
                          -- Antonio Muñoz Molina
@@ -182,13 +182,13 @@ SELECT * FROM (
                   SELECT 'El jinete polaco',
                          'Novela que trata temas de memoria histórica y pérdida.',
                          '1991-01-01',
-                         '978-84-208-1213-2',
+                         '978-1-01-000015-6',
                          (SELECT id_autor FROM autores WHERE nombre='Antonio' AND apellidos='Muñoz Molina')
                   UNION ALL
                   SELECT 'Sefarad',
                          'Narrativa sobre la historia de la expulsión de los judíos en España.',
                          '2001-01-01',
-                         '978-84-339-4114-6',
+                         '978-1-01-000016-7',
                          (SELECT id_autor FROM autores WHERE nombre='Antonio' AND apellidos='Muñoz Molina')
 
                          -- Jorge Luis Borges
@@ -196,13 +196,13 @@ SELECT * FROM (
                   SELECT 'Ficciones',
                          'Colección de cuentos que exploran la realidad y la ficción.',
                          '1944-01-01',
-                         '978-84-98909-49-6',
+                         '978-1-01-000017-8',
                          (SELECT id_autor FROM autores WHERE nombre='Jorge Luis' AND apellidos='Borges')
                   UNION ALL
                   SELECT 'El Aleph',
                          'Cuentos que exploran la infinitud y el tiempo.',
                          '1949-01-01',
-                         '978-84-339-4466-6',
+                         '978-1-01-000018-9',
                          (SELECT id_autor FROM autores WHERE nombre='Jorge Luis' AND apellidos='Borges')
 
                          -- Rosalía de Castro
@@ -210,36 +210,37 @@ SELECT * FROM (
                   SELECT 'Cantares Gallegos',
                          'Poemario que recoge la cultura y tradición gallega.',
                          '1863-01-01',
-                         '978-84-8226-035-7',
+                         '978-1-01-000019-0',
                          (SELECT id_autor FROM autores WHERE nombre='Rosalía' AND apellidos='de Castro')
                   UNION ALL
                   SELECT 'Follas Novas',
                          'Segundo poemario que sigue el estilo del primero, con temas sociales.',
                          '1880-01-01',
-                         '978-84-9881-202-9',
+                         '978-1-01-000020-1',
                          (SELECT id_autor FROM autores WHERE nombre='Rosalía' AND apellidos='de Castro')
 
-                         -- William Shakespeare (internacional)
+                         -- William Shakespeare
                   UNION ALL
                   SELECT 'Hamlet',
                          'Tragedia sobre la venganza, el poder y la locura del príncipe Hamlet.',
                          '1603-01-01',
-                         '978-0-14-139650-7',
+                         '978-1-01-000021-2',
                          (SELECT id_autor FROM autores WHERE nombre='William' AND apellidos='Shakespeare')
                   UNION ALL
                   SELECT 'Romeo y Julieta',
                          'Historia trágica de amor entre dos jóvenes de familias enemistadas.',
                          '1597-01-01',
-                         '978-0-14-139643-9',
+                         '978-1-01-000022-3',
                          (SELECT id_autor FROM autores WHERE nombre='William' AND apellidos='Shakespeare')
                   UNION ALL
                   SELECT 'Macbeth',
                          'Tragedia sobre la ambición desmedida y la culpa.',
                          '1606-01-01',
-                         '978-0-14-139548-7',
+                         '978-1-01-000023-4',
                          (SELECT id_autor FROM autores WHERE nombre='William' AND apellidos='Shakespeare')
               ) AS tmp
 WHERE NOT EXISTS (SELECT 1 FROM libros);
+
 
 INSERT INTO prestamos (fecha_inicio, fecha_fin, fecha_devolucion_real, estado, observaciones, id_usuario, id_libro)
 SELECT * FROM (

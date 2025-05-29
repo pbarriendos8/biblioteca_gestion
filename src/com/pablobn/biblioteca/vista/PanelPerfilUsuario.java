@@ -27,6 +27,7 @@ public class PanelPerfilUsuario extends JPanel {
     private final CardLayout cardLayoutPassword;
     private final JPanel contenedorPassword;
     private String contraseñaSinHashear;
+    private boolean nuevaContraseña;
 
     /**
      * Construye el panel de perfil con los datos iniciales del usuario.
@@ -77,6 +78,7 @@ public class PanelPerfilUsuario extends JPanel {
                 if (confirm == JOptionPane.YES_OPTION) {
                     cardLayoutPassword.show(contenedorPassword, "real");
                     txtPassword.requestFocus();
+                    nuevaContraseña = true;
                 }
             }
         });
@@ -106,11 +108,14 @@ public class PanelPerfilUsuario extends JPanel {
             txtPassword.setBorder(UIManager.getBorder("TextField.border"));
             StringBuilder errores = new StringBuilder();
             boolean hayErrores = false;
-            String nuevaPassword = new String(txtPassword.getPassword());
-            if (nuevaPassword.isEmpty()) {
-                errores.append("- La contraseña es obligatoria.\n");
-                txtPassword.setBorder(BorderFactory.createLineBorder(Color.RED));
-                hayErrores = true;
+            String nuevaPassword = null;
+            if (nuevaContraseña){
+                nuevaPassword = new String(txtPassword.getPassword());
+                if (nuevaPassword.isEmpty()) {
+                    errores.append("- La contraseña es obligatoria.\n");
+                    txtPassword.setBorder(BorderFactory.createLineBorder(Color.RED));
+                    hayErrores = true;
+                }
             }
             if (hayErrores) {
                 JOptionPane.showMessageDialog(this, "Corrige los siguientes errores:\n" + errores.toString(),
@@ -122,7 +127,9 @@ public class PanelPerfilUsuario extends JPanel {
             usuario.setCorreo(txtCorreo.getText());
             usuario.setDireccion(txtDireccion.getText());
             usuario.setTelefono(txtTelefono.getText());
-            usuario.setPassword(nuevaPasswordHasheada);
+            if (nuevaContraseña){
+                usuario.setPassword(nuevaPasswordHasheada);
+            }
 
             UsuarioDAO.actualizarUsuario(usuario);
             JOptionPane.showMessageDialog(this, "Perfil actualizado correctamente.");
